@@ -6,7 +6,8 @@
       "Bash(git push:*)",
       "Bash(git pull:*)",
       "Bash(gh api:*)",
-      "Bash(python -c \"\nimport sys\nsys.path.insert\\(0, ''.''\\)\nfrom agent.post_generator import create_and_publish_post\n\ntopic = ''''''오늘 날이 굳다. 하지만 워드프레스를 설치를 했고, 블로그와 수익모델에 좀 더 배울 수 있었다. 조금씩 나아가고 있고 이게 나의 노후를 책임져줄 수 있기를 바라본다. 현금흐름이 필요하다.''''''\n\nresult = create_and_publish_post\\(topic\\)\n\nif result.get\\(''success''\\):\n    print\\(''SUCCESS''\\)\n    print\\(''---KO_TITLE---''\\)\n    print\\(result[''title_ko'']\\)\n    print\\(''---KO_CONTENT---''\\)\n    print\\(result[''content_ko'']\\)\n    print\\(''---EN_TITLE---''\\)\n    print\\(result[''title_en'']\\)\n    print\\(''---EN_CONTENT---''\\)\n    print\\(result[''content_en'']\\)\n    print\\(''---FILES---''\\)\n    print\\(result[''filename_ko'']\\)\n    print\\(result[''filename_en'']\\)\nelse:\n    print\\(''FAILED:'', result.get\\(''error''\\)\\)\n\")"
+      "Bash(python -c \"\nimport sys\nsys.path.insert\\(0, ''.''\\)\nfrom agent.post_generator import create_and_publish_post\n\ntopic = ''''''오늘 날이 굳다. 하지만 워드프레스를 설치를 했고, 블로그와 수익모델에 좀 더 배울 수 있었다. 조금씩 나아가고 있고 이게 나의 노후를 책임져줄 수 있기를 바라본다. 현금흐름이 필요하다.''''''\n\nresult = create_and_publish_post\\(topic\\)\n\nif result.get\\(''success''\\):\n    print\\(''SUCCESS''\\)\n    print\\(''---KO_TITLE---''\\)\n    print\\(result[''title_ko'']\\)\n    print\\(''---KO_CONTENT---''\\)\n    print\\(result[''content_ko'']\\)\n    print\\(''---EN_TITLE---''\\)\n    print\\(result[''title_en'']\\)\n    print\\(''---EN_CONTENT---''\\)\n    print\\(result[''content_en'']\\)\n    print\\(''---FILES---''\\)\n    print\\(result[''filename_ko'']\\)\n    print\\(result[''filename_en'']\\)\nelse:\n    print\\(''FAILED:'', result.get\\(''error''\\)\\)\n\")",
+      "Bash(gh secret set:*)"
     ]
   }
 }

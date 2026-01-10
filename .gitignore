@@ -6,3 +6,8 @@ venv/
 .venv/
 *.log
 .DS_Store
+
+# 로컬 posts 파일은 무시 (GitHub에만 저장)
+posts/*.txt
+posts/*.likes
+!posts/.gitkeep
