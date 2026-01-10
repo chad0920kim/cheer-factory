@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Admin - Cheer Factory</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Cheer Factory</h1>
+            <p class="tagline">Admin Panel</p>
+            <div class="admin-nav">
+                <a href="/">View Site</a>
+                <span class="divider">|</span>
+                <a href="/admin/logout">Logout</a>
+            </div>
+        </header>
+
+        <main>
+            <div class="admin-panel">
+                <div class="admin-section">
+                    <h2>AI Generate</h2>
+                    <div class="input-group">
+                        <input type="text" id="topic" placeholder="Topic (optional)">
+                        <button onclick="generatePost()" id="generateBtn">Generate</button>
+                    </div>
+                </div>
+
+                <div class="admin-section">
+                    <h2>Write Post</h2>
+                    <input type="text" id="title" placeholder="Title">
+                    <textarea id="content" placeholder="Content..." rows="8"></textarea>
+                    <button onclick="publishPost()" id="publishBtn" class="primary">Publish</button>
+                </div>
+
+                <div id="status" class="status"></div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        async function generatePost() {
+            const topic = document.getElementById('topic').value;
+            const btn = document.getElementById('generateBtn');
+            const status = document.getElementById('status');
+
+            btn.disabled = true;
+            btn.textContent = 'Generating...';
+            status.textContent = '';
+
+            try {
+                const res = await fetch('/admin/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ topic })
+                });
+                const data = await res.json();
+
+                if (data.error) {
+                    status.textContent = 'Error: ' + data.error;
+                    status.className = 'status error';
+                } else {
+                    document.getElementById('title').value = data.title;
+                    document.getElementById('content').value = data.content;
+                    status.textContent = 'Generated! Edit and publish.';
+                    status.className = 'status success';
+                }
+            } catch (e) {
+                status.textContent = 'Error: ' + e.message;
+                status.className = 'status error';
+            }
+
+            btn.disabled = false;
+            btn.textContent = 'Generate';
+        }
+
+        async function publishPost() {
+            const title = document.getElementById('title').value;
+            const content = document.getElementById('content').value;
+            const btn = document.getElementById('publishBtn');
+            const status = document.getElementById('status');
+
+            if (!title || !content) {
+                status.textContent = 'Title and content required';
+                status.className = 'status error';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Publishing...';
+            status.textContent = '';
+
+            try {
+                const res = await fetch('/admin/publish', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title_ko: title, content_ko: content })
+                });
+                const data = await res.json();
+
+                if (data.error) {
+                    status.textContent = 'Error: ' + data.error;
+                    status.className = 'status error';
+                } else {
+                    status.textContent = 'Published! Auto-deploy will start.';
+                    status.className = 'status success';
+                    document.getElementById('title').value = '';
+                    document.getElementById('content').value = '';
+                    document.getElementById('topic').value = '';
+                }
+            } catch (e) {
+                status.textContent = 'Error: ' + e.message;
+                status.className = 'status error';
+            }
+
+            btn.disabled = false;
+            btn.textContent = 'Publish';
+        }
+    </script>
+</body>
+</html>

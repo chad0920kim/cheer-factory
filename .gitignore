@@ -11,3 +11,4 @@ venv/
 posts/*.txt
 posts/*.likes
 !posts/.gitkeep
+.claude/

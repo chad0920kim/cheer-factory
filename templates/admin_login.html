@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Admin Login - Cheer Factory</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Cheer Factory</h1>
+            <p class="tagline">Admin Login</p>
+        </header>
+
+        <main>
+            <div class="admin-login">
+                <form method="POST" action="/admin/login">
+                    <input type="password" name="password" placeholder="Password" autocomplete="off" required>
+                    <button type="submit">Login</button>
+                </form>
+                {% if error %}
+                <p class="error">{{ error }}</p>
+                {% endif %}
+                <a href="/" class="back-link">Back to Home</a>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

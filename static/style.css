@@ -218,3 +218,183 @@ footer {
     font-size: 12px;
     border-top: 1px solid #eee;
 }
+
+/* Admin Styles */
+.admin-nav {
+    margin-top: 12px;
+}
+
+.admin-nav a {
+    color: #aaa;
+    text-decoration: none;
+    font-size: 13px;
+    padding: 4px 8px;
+    transition: color 0.2s;
+}
+
+.admin-nav a:hover {
+    color: #333;
+}
+
+.admin-nav .divider {
+    color: #ddd;
+    margin: 0 4px;
+}
+
+.admin-login {
+    background: white;
+    border-radius: 12px;
+    padding: 30px 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    text-align: center;
+}
+
+.admin-login form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.admin-login input {
+    padding: 14px 16px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    outline: none;
+    text-align: center;
+}
+
+.admin-login input:focus {
+    border-color: #333;
+}
+
+.admin-login button {
+    padding: 14px;
+    background: #333;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.admin-login button:hover {
+    background: #555;
+}
+
+.admin-login .error {
+    color: #e74c3c;
+    font-size: 14px;
+    margin-top: 12px;
+}
+
+.admin-login .back-link {
+    display: inline-block;
+    margin-top: 20px;
+    color: #888;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.admin-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.admin-section {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.admin-section h2 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #222;
+    margin-bottom: 16px;
+}
+
+.admin-section input,
+.admin-section textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 15px;
+    outline: none;
+    margin-bottom: 12px;
+    font-family: inherit;
+}
+
+.admin-section input:focus,
+.admin-section textarea:focus {
+    border-color: #333;
+}
+
+.admin-section textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.admin-section button {
+    padding: 12px 20px;
+    background: #f5f5f5;
+    color: #333;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.admin-section button:hover {
+    background: #eee;
+}
+
+.admin-section button.primary {
+    background: #333;
+    color: white;
+    width: 100%;
+}
+
+.admin-section button.primary:hover {
+    background: #555;
+}
+
+.admin-section button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.input-group {
+    display: flex;
+    gap: 8px;
+}
+
+.input-group input {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+.input-group button {
+    white-space: nowrap;
+}
+
+.status {
+    text-align: center;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.status.success {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.status.error {
+    background: #ffebee;
+    color: #c62828;
+}
