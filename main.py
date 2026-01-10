@@ -21,8 +21,8 @@ if GOOGLE_API_KEY:
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 GITHUB_REPO = os.getenv("GITHUB_REPO")
 
-# Admin 비밀번호
-ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "cheer2026")
+# Admin 비밀번호 (환경변수 필수)
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD")
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", secrets.token_hex(16))
@@ -260,7 +260,9 @@ def admin():
 @app.route("/admin/login", methods=["GET", "POST"])
 def admin_login():
     error = None
-    if request.method == "POST":
+    if not ADMIN_PASSWORD:
+        error = "Admin not configured"
+    elif request.method == "POST":
         if request.form.get("password") == ADMIN_PASSWORD:
             session["admin_logged_in"] = True
             return redirect(url_for("admin"))
