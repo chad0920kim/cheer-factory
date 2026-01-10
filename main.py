@@ -2,9 +2,15 @@ from flask import Flask, render_template, request, jsonify, session
 import json
 from pathlib import Path
 import secrets
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = secrets.token_hex(16)
+app.secret_key = os.getenv("SECRET_KEY", secrets.token_hex(16))
+
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 
 POSTS_DIR = Path(__file__).parent / "posts"
 
