@@ -1,1 +1,1 @@
-from .post_generator import generate_post, save_post, create_and_save_post
+from .post_generator import generate_post, create_and_publish_post, translate_to_english
