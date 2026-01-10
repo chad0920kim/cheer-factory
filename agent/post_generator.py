@@ -87,6 +87,37 @@ def generate_post(topic: str = None) -> dict:
     return json.loads(text.strip())
 
 
+def translate_to_english(title: str, content: str) -> dict:
+    """
+    한국어 글을 영어로 번역합니다.
+
+    Returns:
+        {"title": str, "content": str}
+    """
+    prompt = f"""다음 한국어 블로그 글을 영어로 자연스럽게 번역해주세요.
+원문의 따뜻하고 진정성 있는 톤을 유지하면서, 영어권 독자에게도 공감이 가도록 번역해주세요.
+
+제목: {title}
+
+본문:
+{content}
+
+JSON 형식으로 응답해주세요:
+{{"title": "영어 제목", "content": "영어 본문"}}"""
+
+    response = model.generate_content(prompt)
+    text = response.text.strip()
+
+    if text.startswith("```json"):
+        text = text[7:]
+    if text.startswith("```"):
+        text = text[3:]
+    if text.endswith("```"):
+        text = text[:-3]
+
+    return json.loads(text.strip())
+
+
 def get_existing_posts_count(date: str) -> int:
     """GitHub에서 해당 날짜의 기존 포스트 수를 확인합니다."""
     url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/posts"
@@ -101,29 +132,22 @@ def get_existing_posts_count(date: str) -> int:
     return count
 
 
-def publish_to_github(title: str, content: str) -> dict:
+def publish_file_to_github(filename: str, file_content: str, commit_message: str) -> dict:
     """
-    GitHub API를 통해 직접 포스트를 생성하고 커밋합니다. (txt 형식)
+    GitHub API를 통해 파일을 생성하고 커밋합니다.
 
     Returns:
         {"success": bool, "filename": str, "url": str}
     """
-    today = datetime.now().strftime("%Y-%m-%d")
-    post_num = get_existing_posts_count(today) + 1
-    filename = f"{today}-{post_num:03d}.txt"
-
-    # txt 형식: 첫 줄 제목, 나머지 본문
-    file_content = f"{title}\n\n{content}"
     content_base64 = base64.b64encode(file_content.encode("utf-8")).decode("utf-8")
 
-    # GitHub API로 파일 생성
     url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/posts/{filename}"
     headers = {
         "Authorization": f"token {GITHUB_TOKEN}",
         "Accept": "application/vnd.github.v3+json"
     }
     data = {
-        "message": f"Add post: {title}",
+        "message": commit_message,
         "content": content_base64,
         "branch": "master"
     }
@@ -144,22 +168,66 @@ def publish_to_github(title: str, content: str) -> dict:
         }
 
 
+def publish_to_github(title_ko: str, content_ko: str, title_en: str, content_en: str) -> dict:
+    """
+    한국어와 영어 포스트를 GitHub에 배포합니다.
+
+    Returns:
+        {"success": bool, "filename_ko": str, "filename_en": str, "url_ko": str, "url_en": str}
+    """
+    today = datetime.now().strftime("%Y-%m-%d")
+    post_num = get_existing_posts_count(today) + 1
+
+    # 한국어 파일
+    filename_ko = f"{today}-{post_num:03d}-ko.txt"
+    file_content_ko = f"{title_ko}\n\n{content_ko}"
+    result_ko = publish_file_to_github(filename_ko, file_content_ko, f"Add post (KO): {title_ko}")
+
+    if not result_ko["success"]:
+        return result_ko
+
+    # 영어 파일
+    filename_en = f"{today}-{post_num:03d}-en.txt"
+    file_content_en = f"{title_en}\n\n{content_en}"
+    result_en = publish_file_to_github(filename_en, file_content_en, f"Add post (EN): {title_en}")
+
+    return {
+        "success": result_ko["success"] and result_en["success"],
+        "filename_ko": filename_ko,
+        "filename_en": filename_en,
+        "url_ko": result_ko.get("url"),
+        "url_en": result_en.get("url"),
+        "error": result_en.get("error") if not result_en["success"] else None
+    }
+
+
 def create_and_publish_post(topic: str = None) -> dict:
     """
-    글을 생성하고 GitHub에 바로 배포합니다.
+    글을 생성하고 한국어/영어 버전을 GitHub에 배포합니다.
 
     Args:
         topic: 글의 주제 (선택사항)
 
     Returns:
-        {"title": str, "content": str, "filename": str, "url": str, "success": bool}
+        {"title_ko": str, "content_ko": str, "title_en": str, "content_en": str, ...}
     """
-    post = generate_post(topic)
-    result = publish_to_github(post["title"], post["content"])
+    # 한국어 글 생성
+    post_ko = generate_post(topic)
+
+    # 영어로 번역
+    post_en = translate_to_english(post_ko["title"], post_ko["content"])
+
+    # 배포
+    result = publish_to_github(
+        post_ko["title"], post_ko["content"],
+        post_en["title"], post_en["content"]
+    )
 
     return {
-        "title": post["title"],
-        "content": post["content"],
+        "title_ko": post_ko["title"],
+        "content_ko": post_ko["content"],
+        "title_en": post_en["title"],
+        "content_en": post_en["content"],
         **result
     }
 
@@ -174,9 +242,13 @@ if __name__ == "__main__":
 
     if result.get("success"):
         print(f"\n✓ 글이 배포되었습니다!")
-        print(f"제목: {result['title']}")
-        print(f"파일: {result['filename']}")
-        print(f"URL: {result['url']}")
-        print(f"\n--- 내용 ---\n{result['content']}")
+        print(f"\n[한국어]")
+        print(f"제목: {result['title_ko']}")
+        print(f"파일: {result['filename_ko']}")
+        print(f"\n[English]")
+        print(f"Title: {result['title_en']}")
+        print(f"File: {result['filename_en']}")
+        print(f"\n--- 한국어 내용 ---\n{result['content_ko']}")
+        print(f"\n--- English Content ---\n{result['content_en']}")
     else:
         print(f"\n✗ 배포 실패: {result.get('error')}")
