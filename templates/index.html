@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cheer Factory</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Cheer Factory</h1>
+            <p class="tagline">anonymous thoughts & stories</p>
+        </header>
+
+        <div class="search-box">
+            <form action="/" method="get">
+                <input type="text" name="q" placeholder="Search..." value="{{ query }}" autocomplete="off">
+                <button type="submit">Search</button>
+            </form>
+        </div>
+
+        <main>
+            {% if posts %}
+                {% for post in posts %}
+                <article class="post">
+                    <h2>{{ post.title }}</h2>
+                    <p class="date">{{ post.date }}</p>
+                    <div class="content">{{ post.content }}</div>
+                    <div class="like-section">
+                        <button class="like-btn" data-id="{{ post.id }}" onclick="toggleLike('{{ post.id }}')">
+                            <span class="heart">♡</span>
+                            <span class="count">{{ post.likes or 0 }}</span>
+                        </button>
+                    </div>
+                </article>
+                {% endfor %}
+            {% else %}
+                <div class="no-posts">
+                    {% if query %}
+                        <p>No results found for "{{ query }}"</p>
+                    {% else %}
+                        <p>No posts yet.</p>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </main>
+
+        {% if total_pages > 1 %}
+        <nav class="pagination">
+            {% if page > 1 %}
+                <a href="?{% if query %}q={{ query }}&{% endif %}page={{ page - 1 }}">&laquo; Prev</a>
+            {% endif %}
+
+            <span class="page-info">{{ page }} / {{ total_pages }}</span>
+
+            {% if page < total_pages %}
+                <a href="?{% if query %}q={{ query }}&{% endif %}page={{ page + 1 }}">Next &raquo;</a>
+            {% endif %}
+        </nav>
+        {% endif %}
+
+        <footer>
+            <p>&copy; Cheer Factory</p>
+        </footer>
+    </div>
+
+    <script>
+        function toggleLike(postId) {
+            fetch('/like/' + postId, { method: 'POST' })
+                .then(res => res.json())
+                .then(data => {
+                    const btn = document.querySelector(`[data-id="${postId}"]`);
+                    btn.querySelector('.count').textContent = data.likes;
+                    btn.querySelector('.heart').textContent = data.liked ? '♥' : '♡';
+                    btn.classList.toggle('liked', data.liked);
+                });
+        }
+    </script>
+</body>
+</html>
