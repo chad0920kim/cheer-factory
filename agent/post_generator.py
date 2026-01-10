@@ -89,31 +89,24 @@ def get_existing_posts_count(date: str) -> int:
         return 0
 
     files = response.json()
-    count = sum(1 for f in files if f["name"].startswith(date))
+    count = sum(1 for f in files if f["name"].startswith(date) and f["name"].endswith(".txt"))
     return count
 
 
 def publish_to_github(title: str, content: str) -> dict:
     """
-    GitHub API를 통해 직접 포스트를 생성하고 커밋합니다.
+    GitHub API를 통해 직접 포스트를 생성하고 커밋합니다. (txt 형식)
 
     Returns:
         {"success": bool, "filename": str, "url": str}
     """
     today = datetime.now().strftime("%Y-%m-%d")
     post_num = get_existing_posts_count(today) + 1
-    filename = f"{today}-{post_num:03d}.json"
+    filename = f"{today}-{post_num:03d}.txt"
 
-    post_data = {
-        "title": title,
-        "date": today,
-        "content": content,
-        "likes": 0
-    }
-
-    # JSON을 base64로 인코딩
-    content_json = json.dumps(post_data, ensure_ascii=False, indent=2)
-    content_base64 = base64.b64encode(content_json.encode("utf-8")).decode("utf-8")
+    # txt 형식: 첫 줄 제목, 나머지 본문
+    file_content = f"{title}\n\n{content}"
+    content_base64 = base64.b64encode(file_content.encode("utf-8")).decode("utf-8")
 
     # GitHub API로 파일 생성
     url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/posts/{filename}"

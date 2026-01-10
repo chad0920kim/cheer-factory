@@ -15,14 +15,31 @@ GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 POSTS_DIR = Path(__file__).parent / "posts"
 
 def load_posts():
-    """posts 폴더에서 모든 포스트를 로드"""
+    """posts 폴더에서 모든 포스트를 로드 (txt 형식 지원)"""
     posts = []
     if POSTS_DIR.exists():
-        for file in sorted(POSTS_DIR.glob("*.json"), reverse=True):
+        for file in sorted(POSTS_DIR.glob("*.txt"), reverse=True):
             with open(file, "r", encoding="utf-8") as f:
-                post = json.load(f)
-                post["id"] = file.stem
-                posts.append(post)
+                lines = f.read().strip().split("\n")
+                # 첫 줄: 제목, 나머지: 본문
+                title = lines[0] if lines else "Untitled"
+                content = "\n".join(lines[1:]).strip() if len(lines) > 1 else ""
+
+                # 파일명에서 날짜 추출 (2026-01-10-001.txt -> 2026-01-10)
+                filename = file.stem
+                date = "-".join(filename.split("-")[:3]) if "-" in filename else filename
+
+                # likes 파일 확인
+                likes_file = POSTS_DIR / f"{filename}.likes"
+                likes = int(likes_file.read_text()) if likes_file.exists() else 0
+
+                posts.append({
+                    "id": filename,
+                    "title": title,
+                    "date": date,
+                    "content": content,
+                    "likes": likes
+                })
     return posts
 
 def search_posts(posts, query):
@@ -61,33 +78,31 @@ def index():
 
 @app.route("/like/<post_id>", methods=["POST"])
 def like_post(post_id):
-    post_file = POSTS_DIR / f"{post_id}.json"
+    post_file = POSTS_DIR / f"{post_id}.txt"
     if not post_file.exists():
         return jsonify({"error": "Post not found"}), 404
 
     if "liked_posts" not in session:
         session["liked_posts"] = []
 
-    with open(post_file, "r", encoding="utf-8") as f:
-        post = json.load(f)
+    likes_file = POSTS_DIR / f"{post_id}.likes"
+    current_likes = int(likes_file.read_text()) if likes_file.exists() else 0
 
     liked = post_id in session["liked_posts"]
 
     if liked:
         session["liked_posts"].remove(post_id)
-        post["likes"] = max(0, post.get("likes", 0) - 1)
+        current_likes = max(0, current_likes - 1)
         liked = False
     else:
         session["liked_posts"].append(post_id)
-        post["likes"] = post.get("likes", 0) + 1
+        current_likes += 1
         liked = True
 
     session.modified = True
+    likes_file.write_text(str(current_likes))
 
-    with open(post_file, "w", encoding="utf-8") as f:
-        json.dump(post, f, ensure_ascii=False, indent=2)
-
-    return jsonify({"likes": post["likes"], "liked": liked})
+    return jsonify({"likes": current_likes, "liked": liked})
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5000)
