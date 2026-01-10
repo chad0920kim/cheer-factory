@@ -14,19 +14,34 @@ GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 
 POSTS_DIR = Path(__file__).parent / "posts"
 
-def load_posts():
+def load_posts(lang=None):
     """posts 폴더에서 모든 포스트를 로드 (txt 형식 지원)"""
     posts = []
     if POSTS_DIR.exists():
         for file in sorted(POSTS_DIR.glob("*.txt"), reverse=True):
+            filename = file.stem
+
+            # template 파일 제외
+            if filename == "template":
+                continue
+
+            # 언어 필터링 (파일명이 -ko 또는 -en으로 끝나는 경우)
+            file_lang = None
+            if filename.endswith("-ko"):
+                file_lang = "ko"
+            elif filename.endswith("-en"):
+                file_lang = "en"
+
+            if lang and file_lang and file_lang != lang:
+                continue
+
             with open(file, "r", encoding="utf-8") as f:
                 lines = f.read().strip().split("\n")
                 # 첫 줄: 제목, 나머지: 본문
                 title = lines[0] if lines else "Untitled"
                 content = "\n".join(lines[1:]).strip() if len(lines) > 1 else ""
 
-                # 파일명에서 날짜 추출 (2026-01-10-001.txt -> 2026-01-10)
-                filename = file.stem
+                # 파일명에서 날짜 추출 (2026-01-10-001-ko.txt -> 2026-01-10)
                 date = "-".join(filename.split("-")[:3]) if "-" in filename else filename
 
                 # likes 파일 확인
@@ -38,7 +53,8 @@ def load_posts():
                     "title": title,
                     "date": date,
                     "content": content,
-                    "likes": likes
+                    "likes": likes,
+                    "lang": file_lang
                 })
     return posts
 
@@ -51,7 +67,8 @@ def search_posts(posts, query):
 
 @app.route("/")
 def index():
-    posts = load_posts()
+    lang = request.args.get("lang", "ko")  # 기본값: 한국어
+    posts = load_posts(lang=lang)
     query = request.args.get("q", "")
     page = request.args.get("page", 1, type=int)
     per_page = 5
@@ -73,7 +90,8 @@ def index():
         query=query,
         page=page,
         total_pages=total_pages,
-        total_posts=total_posts
+        total_posts=total_posts,
+        lang=lang
     )
 
 @app.route("/like/<post_id>", methods=["POST"])

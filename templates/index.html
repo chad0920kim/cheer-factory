@@ -11,10 +11,16 @@
         <header>
             <h1>Cheer Factory</h1>
             <p class="tagline">anonymous thoughts & stories</p>
+            <div class="lang-switch">
+                <a href="?lang=ko{% if query %}&q={{ query }}{% endif %}" class="{% if lang == 'ko' %}active{% endif %}">KO</a>
+                <span class="divider">|</span>
+                <a href="?lang=en{% if query %}&q={{ query }}{% endif %}" class="{% if lang == 'en' %}active{% endif %}">EN</a>
+            </div>
         </header>
 
         <div class="search-box">
             <form action="/" method="get">
+                <input type="hidden" name="lang" value="{{ lang }}">
                 <input type="text" name="q" placeholder="Search..." value="{{ query }}" autocomplete="off">
                 <button type="submit">Search</button>
             </form>
@@ -49,13 +55,13 @@
         {% if total_pages > 1 %}
         <nav class="pagination">
             {% if page > 1 %}
-                <a href="?{% if query %}q={{ query }}&{% endif %}page={{ page - 1 }}">&laquo; Prev</a>
+                <a href="?lang={{ lang }}{% if query %}&q={{ query }}{% endif %}&page={{ page - 1 }}">&laquo; Prev</a>
             {% endif %}
 
             <span class="page-info">{{ page }} / {{ total_pages }}</span>
 
             {% if page < total_pages %}
-                <a href="?{% if query %}q={{ query }}&{% endif %}page={{ page + 1 }}">Next &raquo;</a>
+                <a href="?lang={{ lang }}{% if query %}&q={{ query }}{% endif %}&page={{ page + 1 }}">Next &raquo;</a>
             {% endif %}
         </nav>
         {% endif %}
