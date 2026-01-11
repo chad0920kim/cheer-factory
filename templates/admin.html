@@ -5,6 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Admin - Cheer Factory</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #eee;
+            margin-bottom: 20px;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            background: none;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            color: #888;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .tab-btn:hover {
+            color: #333;
+        }
+        .tab-btn.active {
+            color: #333;
+            border-bottom: 2px solid #333;
+            margin-bottom: -2px;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -20,30 +52,50 @@
 
         <main>
             <div class="admin-panel">
-                <div class="admin-section">
-                    <h2>AI Generate</h2>
-                    <div class="input-group">
-                        <input type="text" id="topic" placeholder="Topic (optional)">
-                        <button onclick="generatePost()" id="generateBtn">Generate</button>
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab('write')">Write</button>
+                    <button class="tab-btn" onclick="switchTab('prompt')">Prompt</button>
+                </div>
+
+                <!-- Write Tab -->
+                <div id="tab-write" class="tab-content active">
+                    <div class="admin-section">
+                        <h2>AI Generate</h2>
+                        <div class="input-group">
+                            <input type="text" id="topic" placeholder="Topic (optional)">
+                            <button onclick="generatePost()" id="generateBtn">Generate</button>
+                        </div>
+                    </div>
+
+                    <div class="admin-section">
+                        <h2>Image Upload + Tags</h2>
+                        <input type="file" id="imageInput" accept="image/*" onchange="analyzeImage()">
+                        <div id="imagePreview" class="image-preview"></div>
+                        <div id="tagsResult" class="tags-result"></div>
+                        <div id="uploadedUrl" class="uploaded-url"></div>
+                        <button onclick="copyTags()" id="copyTagsBtn" style="display:none;">Copy Tags</button>
+                    </div>
+
+                    <div class="admin-section">
+                        <h2>Write Post</h2>
+                        <input type="text" id="title" placeholder="Title">
+                        <textarea id="content" placeholder="Content..." rows="8"></textarea>
+                        <input type="text" id="tags" placeholder="Tags (comma separated)">
+                        <input type="text" id="imageUrl" placeholder="Image URL (from stock site)">
+                        <button onclick="publishPost()" id="publishBtn" class="primary">Publish</button>
                     </div>
                 </div>
 
-                <div class="admin-section">
-                    <h2>Image Upload + Tags</h2>
-                    <input type="file" id="imageInput" accept="image/*" onchange="analyzeImage()">
-                    <div id="imagePreview" class="image-preview"></div>
-                    <div id="tagsResult" class="tags-result"></div>
-                    <div id="uploadedUrl" class="uploaded-url"></div>
-                    <button onclick="copyTags()" id="copyTagsBtn" style="display:none;">Copy Tags</button>
-                </div>
-
-                <div class="admin-section">
-                    <h2>Write Post</h2>
-                    <input type="text" id="title" placeholder="Title">
-                    <textarea id="content" placeholder="Content..." rows="8"></textarea>
-                    <input type="text" id="tags" placeholder="Tags (comma separated)">
-                    <input type="text" id="imageUrl" placeholder="Image URL (from stock site)">
-                    <button onclick="publishPost()" id="publishBtn" class="primary">Publish</button>
+                <!-- Prompt Tab -->
+                <div id="tab-prompt" class="tab-content">
+                    <div class="admin-section">
+                        <h2>AI Prompt Settings</h2>
+                        <p style="font-size: 13px; color: #666; margin-bottom: 12px;">
+                            AI가 글을 생성할 때 사용하는 프롬프트입니다.
+                        </p>
+                        <textarea id="promptText" placeholder="Loading..." rows="15"></textarea>
+                        <button onclick="savePrompt()" id="savePromptBtn" class="primary">Save Prompt</button>
+                    </div>
                 </div>
 
                 <div id="status" class="status"></div>
@@ -53,10 +105,81 @@
 
     <script>
         let generatedTags = [];
-        const MAX_IMAGE_SIZE = 1920; // 최대 가로/세로 픽셀
-        const IMAGE_QUALITY = 0.85; // JPEG 품질
+        const MAX_IMAGE_SIZE = 1920;
+        const IMAGE_QUALITY = 0.85;
 
-        // 이미지 리사이즈 함수
+        // Tab switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+
+            // Load prompt when switching to prompt tab
+            if (tabName === 'prompt') {
+                loadPrompt();
+            }
+        }
+
+        // Prompt functions
+        async function loadPrompt() {
+            const textarea = document.getElementById('promptText');
+            textarea.value = 'Loading...';
+
+            try {
+                const res = await fetch('/admin/prompt');
+                const data = await res.json();
+                if (data.error) {
+                    textarea.value = 'Error: ' + data.error;
+                } else {
+                    textarea.value = data.prompt || '';
+                }
+            } catch (e) {
+                textarea.value = 'Error: ' + e.message;
+            }
+        }
+
+        async function savePrompt() {
+            const prompt = document.getElementById('promptText').value;
+            const btn = document.getElementById('savePromptBtn');
+            const status = document.getElementById('status');
+
+            if (!prompt.trim()) {
+                status.textContent = 'Prompt cannot be empty';
+                status.className = 'status error';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Saving...';
+            status.textContent = '';
+
+            try {
+                const res = await fetch('/admin/prompt', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt })
+                });
+                const data = await res.json();
+
+                if (data.error) {
+                    status.textContent = 'Error: ' + data.error;
+                    status.className = 'status error';
+                } else {
+                    status.textContent = 'Prompt saved!';
+                    status.className = 'status success';
+                }
+            } catch (e) {
+                status.textContent = 'Error: ' + e.message;
+                status.className = 'status error';
+            }
+
+            btn.disabled = false;
+            btn.textContent = 'Save Prompt';
+        }
+
+        // Image resize
         function resizeImage(file) {
             return new Promise((resolve) => {
                 const reader = new FileReader();
@@ -66,13 +189,11 @@
                         let width = img.width;
                         let height = img.height;
 
-                        // 리사이즈가 필요한지 확인
                         if (width <= MAX_IMAGE_SIZE && height <= MAX_IMAGE_SIZE) {
-                            resolve(file); // 리사이즈 불필요
+                            resolve(file);
                             return;
                         }
 
-                        // 비율 유지하면서 리사이즈
                         if (width > height) {
                             if (width > MAX_IMAGE_SIZE) {
                                 height = Math.round(height * MAX_IMAGE_SIZE / width);
@@ -85,14 +206,12 @@
                             }
                         }
 
-                        // Canvas로 리사이즈
                         const canvas = document.createElement('canvas');
                         canvas.width = width;
                         canvas.height = height;
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
 
-                        // Blob으로 변환
                         canvas.toBlob((blob) => {
                             const resizedFile = new File([blob], file.name, {
                                 type: 'image/jpeg',
@@ -118,20 +237,17 @@
 
             let file = input.files[0];
 
-            // 미리보기
             const reader = new FileReader();
             reader.onload = (e) => {
                 preview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
             };
             reader.readAsDataURL(file);
 
-            // 분석 시작
             tagsResult.innerHTML = '<p>Resizing & Uploading...</p>';
             status.textContent = '';
             const uploadedUrl = document.getElementById('uploadedUrl');
             uploadedUrl.innerHTML = '';
 
-            // 이미지 리사이즈
             file = await resizeImage(file);
             tagsResult.innerHTML = '<p>Analyzing...</p>';
 
@@ -155,11 +271,8 @@
                         <div class="tags-list">${tagsHtml}</div>
                     `;
                     copyBtn.style.display = 'block';
-
-                    // 태그 필드에 자동 입력 (공백 없이)
                     document.getElementById('tags').value = generatedTags.join(',');
 
-                    // Cloudinary URL 자동 입력
                     if (data.image_url) {
                         document.getElementById('imageUrl').value = data.image_url;
                         uploadedUrl.innerHTML = `<p class="success">Image uploaded to Cloudinary!</p>`;
