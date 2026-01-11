@@ -33,12 +33,6 @@
                     <h2>{{ post.title }}</h2>
                     <p class="date">{{ post.date }}</p>
                     <div class="content">{{ post.content }}</div>
-                    <div class="like-section">
-                        <button class="like-btn" data-id="{{ post.id }}" onclick="toggleLike('{{ post.id }}')">
-                            <span class="heart">♡</span>
-                            <span class="count">{{ post.likes or 0 }}</span>
-                        </button>
-                    </div>
                 </article>
                 {% endfor %}
             {% else %}
@@ -72,17 +66,5 @@
         </footer>
     </div>
 
-    <script>
-        function toggleLike(postId) {
-            fetch('/like/' + postId, { method: 'POST' })
-                .then(res => res.json())
-                .then(data => {
-                    const btn = document.querySelector(`[data-id="${postId}"]`);
-                    btn.querySelector('.count').textContent = data.likes;
-                    btn.querySelector('.heart').textContent = data.liked ? '♥' : '♡';
-                    btn.classList.toggle('liked', data.liked);
-                });
-        }
-    </script>
 </body>
 </html>

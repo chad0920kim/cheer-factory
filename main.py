@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 import json
-from pathlib import Path
 import secrets
 import os
 import base64
@@ -22,86 +21,11 @@ if GOOGLE_API_KEY:
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 GITHUB_REPO = os.getenv("GITHUB_REPO")
 
-# GitHub likes 캐시 (서버 재시작 시에도 GitHub에서 읽어옴)
-_likes_cache = {}
-_likes_cache_loaded = False
-
-def get_github_likes():
-    """GitHub에서 모든 likes 파일을 읽어옴"""
-    global _likes_cache, _likes_cache_loaded
-
-    if _likes_cache_loaded:
-        return _likes_cache
-
-    if not GITHUB_TOKEN or not GITHUB_REPO:
-        return {}
-
-    url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/posts"
-    headers = {"Authorization": f"token {GITHUB_TOKEN}"}
-
-    try:
-        response = requests.get(url, headers=headers)
-        if response.status_code == 200:
-            files = response.json()
-            for f in files:
-                if f["name"].endswith(".likes"):
-                    post_id = f["name"][:-6]  # .likes 제거
-                    # 파일 내용 가져오기
-                    content_response = requests.get(f["download_url"])
-                    if content_response.status_code == 200:
-                        try:
-                            _likes_cache[post_id] = int(content_response.text.strip())
-                        except:
-                            _likes_cache[post_id] = 0
-        _likes_cache_loaded = True
-    except:
-        pass
-
-    return _likes_cache
-
-def update_github_likes(post_id, likes_count):
-    """GitHub에 likes 파일 업데이트"""
-    global _likes_cache
-
-    if not GITHUB_TOKEN or not GITHUB_REPO:
-        return False
-
-    filename = f"{post_id}.likes"
-    url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/posts/{filename}"
-    headers = {
-        "Authorization": f"token {GITHUB_TOKEN}",
-        "Accept": "application/vnd.github.v3+json"
-    }
-
-    # 기존 파일 SHA 확인
-    sha = None
-    response = requests.get(url, headers=headers)
-    if response.status_code == 200:
-        sha = response.json().get("sha")
-
-    # 파일 생성/업데이트
-    content = base64.b64encode(str(likes_count).encode("utf-8")).decode("utf-8")
-    data = {
-        "message": f"Update likes for {post_id}",
-        "content": content,
-        "branch": "master"
-    }
-    if sha:
-        data["sha"] = sha
-
-    response = requests.put(url, headers=headers, json=data)
-    if response.status_code in [200, 201]:
-        _likes_cache[post_id] = likes_count
-        return True
-    return False
-
 # Admin 비밀번호 (환경변수 필수)
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD")
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", secrets.token_hex(16))
-
-POSTS_DIR = Path(__file__).parent / "posts"
 
 # AI 글 생성용 프롬프트
 SYSTEM_PROMPT = """당신은 'Cheer Factory'라는 익명 블로그의 작가입니다.
@@ -122,20 +46,28 @@ SYSTEM_PROMPT = """당신은 'Cheer Factory'라는 익명 블로그의 작가입
 주어진 주제나 키워드를 바탕으로 직장인들의 일상, 고민, 작은 행복에 대해 씁니다."""
 
 def load_posts(lang=None):
-    """posts 폴더에서 모든 포스트를 로드 (txt 형식 지원)"""
+    """GitHub에서 모든 포스트를 로드"""
     posts = []
-    # GitHub에서 likes 캐시 로드
-    likes_cache = get_github_likes()
 
-    if POSTS_DIR.exists():
-        for file in sorted(POSTS_DIR.glob("*.txt"), reverse=True):
-            filename = file.stem
+    if not GITHUB_TOKEN or not GITHUB_REPO:
+        return posts
 
-            # template 파일 제외
-            if filename == "template":
-                continue
+    url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/posts"
+    headers = {"Authorization": f"token {GITHUB_TOKEN}"}
 
-            # 언어 필터링 (파일명이 -ko 또는 -en으로 끝나는 경우)
+    try:
+        response = requests.get(url, headers=headers)
+        if response.status_code != 200:
+            return posts
+
+        files = response.json()
+        txt_files = [f for f in files if f["name"].endswith(".txt") and f["name"] != "template.txt"]
+        txt_files.sort(key=lambda x: x["name"], reverse=True)
+
+        for f in txt_files:
+            filename = f["name"][:-4]  # .txt 제거
+
+            # 언어 필터링
             file_lang = None
             if filename.endswith("-ko"):
                 file_lang = "ko"
@@ -145,26 +77,26 @@ def load_posts(lang=None):
             if lang and file_lang and file_lang != lang:
                 continue
 
-            with open(file, "r", encoding="utf-8") as f:
-                lines = f.read().strip().split("\n")
-                # 첫 줄: 제목, 나머지: 본문
+            # 파일 내용 가져오기
+            content_response = requests.get(f["download_url"])
+            if content_response.status_code == 200:
+                lines = content_response.text.strip().split("\n")
                 title = lines[0] if lines else "Untitled"
                 content = "\n".join(lines[1:]).strip() if len(lines) > 1 else ""
 
-                # 파일명에서 날짜 추출 (2026-01-10-001-ko.txt -> 2026-01-10)
+                # 파일명에서 날짜 추출
                 date = "-".join(filename.split("-")[:3]) if "-" in filename else filename
-
-                # GitHub에서 likes 가져오기 (캐시 사용)
-                likes = likes_cache.get(filename, 0)
 
                 posts.append({
                     "id": filename,
                     "title": title,
                     "date": date,
                     "content": content,
-                    "likes": likes,
                     "lang": file_lang
                 })
+    except:
+        pass
+
     return posts
 
 def search_posts(posts, query):
@@ -202,33 +134,6 @@ def index():
         total_posts=total_posts,
         lang=lang
     )
-
-@app.route("/like/<post_id>", methods=["POST"])
-def like_post(post_id):
-    if "liked_posts" not in session:
-        session["liked_posts"] = []
-
-    # GitHub에서 현재 likes 가져오기
-    likes_cache = get_github_likes()
-    current_likes = likes_cache.get(post_id, 0)
-
-    liked = post_id in session["liked_posts"]
-
-    if liked:
-        session["liked_posts"].remove(post_id)
-        current_likes = max(0, current_likes - 1)
-        liked = False
-    else:
-        session["liked_posts"].append(post_id)
-        current_likes += 1
-        liked = True
-
-    session.modified = True
-
-    # GitHub에 likes 저장
-    update_github_likes(post_id, current_likes)
-
-    return jsonify({"likes": current_likes, "liked": liked})
 
 # ============ Admin 기능 ============
 
