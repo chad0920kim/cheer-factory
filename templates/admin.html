@@ -156,8 +156,8 @@
                     `;
                     copyBtn.style.display = 'block';
 
-                    // 태그 필드에 자동 입력
-                    document.getElementById('tags').value = generatedTags.join(', ');
+                    // 태그 필드에 자동 입력 (공백 없이)
+                    document.getElementById('tags').value = generatedTags.join(',');
 
                     // Cloudinary URL 자동 입력
                     if (data.image_url) {
@@ -171,7 +171,7 @@
         }
 
         function copyTags() {
-            const tagsText = generatedTags.join(', ');
+            const tagsText = generatedTags.join(',');
             navigator.clipboard.writeText(tagsText).then(() => {
                 const btn = document.getElementById('copyTagsBtn');
                 btn.textContent = 'Copied!';

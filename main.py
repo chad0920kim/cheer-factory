@@ -438,7 +438,7 @@ def admin_edit(post_id):
 
 @app.route("/admin/update", methods=["POST"])
 def admin_update():
-    """포스트 업데이트"""
+    """포스트 업데이트 (한국어 수정 시 영문도 자동 번역)"""
     if not session.get("admin_logged_in"):
         return jsonify({"error": "Unauthorized"}), 401
 
@@ -452,41 +452,83 @@ def admin_update():
     if not post_id or not title:
         return jsonify({"error": "Post ID and title required"}), 400
 
-    # 파일 내용 구성
-    file_content = f"{title}\n"
-    if tags:
-        file_content += f"TAGS: {tags}\n"
-    if image_url:
-        file_content += f"IMAGE: {image_url}\n"
-    file_content += f"\n{content}"
+    # post_id에서 base_id 추출 (-ko, -en 제거)
+    if post_id.endswith("-ko") or post_id.endswith("-en"):
+        base_id = post_id[:-3]
+    else:
+        base_id = post_id
 
-    # GitHub에서 기존 파일 SHA 가져오기
-    url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/posts/{post_id}.txt"
     headers = {
         "Authorization": f"token {GITHUB_TOKEN}",
         "Accept": "application/vnd.github.v3+json"
     }
 
-    response = requests.get(url, headers=headers)
-    if response.status_code != 200:
+    # 1. 먼저 영어 번역 시도 (실패하면 업데이트 중단)
+    try:
+        translated = translate_to_english(title, content)
+        title_en = translated.get("title", title)
+        content_en = translated.get("content", content)
+    except Exception as e:
+        return jsonify({"error": f"Translation failed: {str(e)}"}), 500
+
+    # 2. 한국어 버전 업데이트
+    file_content_ko = f"{title}\n"
+    if tags:
+        file_content_ko += f"TAGS: {tags}\n"
+    if image_url:
+        file_content_ko += f"IMAGE: {image_url}\n"
+    file_content_ko += f"\n{content}"
+
+    url_ko = f"https://api.github.com/repos/{GITHUB_REPO}/contents/posts/{base_id}-ko.txt"
+    response_ko = requests.get(url_ko, headers=headers)
+    if response_ko.status_code != 200:
         return jsonify({"error": "Post not found"}), 404
 
-    sha = response.json().get("sha")
+    sha_ko = response_ko.json().get("sha")
+    content_base64_ko = base64.b64encode(file_content_ko.encode("utf-8")).decode("utf-8")
 
-    # 파일 업데이트
-    content_base64 = base64.b64encode(file_content.encode("utf-8")).decode("utf-8")
-    update_response = requests.put(url, headers=headers, json={
-        "message": f"Update post: {title}",
-        "content": content_base64,
-        "sha": sha,
+    update_ko = requests.put(url_ko, headers=headers, json={
+        "message": f"Update post (KO): {title}",
+        "content": content_base64_ko,
+        "sha": sha_ko,
         "branch": "master"
     })
 
-    if update_response.status_code in [200, 201]:
-        return jsonify({"success": True, "message": "Updated!"})
+    if update_ko.status_code not in [200, 201]:
+        error_msg = update_ko.json().get("message", "Unknown error")
+        return jsonify({"error": f"KO update failed: {error_msg}"}), 500
+
+    # 3. 영어 버전 업데이트
+    file_content_en = f"{title_en}\n"
+    if tags:
+        file_content_en += f"TAGS: {tags}\n"
+    if image_url:
+        file_content_en += f"IMAGE: {image_url}\n"
+    file_content_en += f"\n{content_en}"
+
+    url_en = f"https://api.github.com/repos/{GITHUB_REPO}/contents/posts/{base_id}-en.txt"
+    response_en = requests.get(url_en, headers=headers)
+
+    content_base64_en = base64.b64encode(file_content_en.encode("utf-8")).decode("utf-8")
+
+    if response_en.status_code == 200:
+        # 기존 영문 파일 업데이트
+        sha_en = response_en.json().get("sha")
+        requests.put(url_en, headers=headers, json={
+            "message": f"Update post (EN): {title_en}",
+            "content": content_base64_en,
+            "sha": sha_en,
+            "branch": "master"
+        })
     else:
-        error_msg = update_response.json().get("message", "Unknown error")
-        return jsonify({"error": error_msg}), 500
+        # 영문 파일이 없으면 새로 생성
+        requests.put(url_en, headers=headers, json={
+            "message": f"Add post (EN): {title_en}",
+            "content": content_base64_en,
+            "branch": "master"
+        })
+
+    return jsonify({"success": True, "message": "Updated (KO + EN)"})
 
 @app.route("/admin/delete", methods=["POST"])
 def admin_delete():
