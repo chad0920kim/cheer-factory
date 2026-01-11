@@ -30,13 +30,13 @@
             {% if posts %}
                 {% for post in posts %}
                 <article class="post">
+                    <h2>{{ post.title }}</h2>
+                    <p class="date">{{ post.date }}</p>
                     {% if post.image_url %}
                     <div class="post-image">
                         <img src="{{ post.image_url }}" alt="{{ post.title }}">
                     </div>
                     {% endif %}
-                    <h2>{{ post.title }}</h2>
-                    <p class="date">{{ post.date }}</p>
                     <div class="content">{{ post.content }}</div>
                     {% if post.tags %}
                     <div class="post-tags">
