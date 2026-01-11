@@ -488,5 +488,60 @@ def admin_update():
         error_msg = update_response.json().get("message", "Unknown error")
         return jsonify({"error": error_msg}), 500
 
+@app.route("/admin/delete", methods=["POST"])
+def admin_delete():
+    """포스트 삭제"""
+    if not session.get("admin_logged_in"):
+        return jsonify({"error": "Unauthorized"}), 401
+
+    data = request.json
+    post_id = data.get("post_id", "")
+
+    if not post_id:
+        return jsonify({"error": "Post ID required"}), 400
+
+    headers = {
+        "Authorization": f"token {GITHUB_TOKEN}",
+        "Accept": "application/vnd.github.v3+json"
+    }
+
+    # 한국어/영어 버전 모두 삭제
+    deleted = []
+    errors = []
+
+    for suffix in ["-ko", "-en"]:
+        # post_id가 이미 -ko나 -en으로 끝나면 base_id 추출
+        if post_id.endswith("-ko") or post_id.endswith("-en"):
+            base_id = post_id[:-3]
+        else:
+            base_id = post_id
+
+        file_id = f"{base_id}{suffix}"
+        url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/posts/{file_id}.txt"
+
+        # SHA 가져오기
+        response = requests.get(url, headers=headers)
+        if response.status_code != 200:
+            continue
+
+        sha = response.json().get("sha")
+
+        # 파일 삭제
+        delete_response = requests.delete(url, headers=headers, json={
+            "message": f"Delete post: {file_id}",
+            "sha": sha,
+            "branch": "master"
+        })
+
+        if delete_response.status_code in [200, 204]:
+            deleted.append(file_id)
+        else:
+            errors.append(file_id)
+
+    if deleted:
+        return jsonify({"success": True, "message": f"Deleted: {', '.join(deleted)}"})
+    else:
+        return jsonify({"error": "Failed to delete posts"}), 500
+
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5000)

@@ -509,3 +509,22 @@ footer .admin-link:hover {
     color: #2e7d32;
     font-size: 13px;
 }
+
+/* Button Group */
+.button-group {
+    display: flex;
+    gap: 12px;
+}
+
+.button-group button {
+    flex: 1;
+}
+
+.admin-section button.danger {
+    background: #ffebee;
+    color: #c62828;
+}
+
+.admin-section button.danger:hover {
+    background: #ffcdd2;
+}
