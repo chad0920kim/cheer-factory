@@ -1,0 +1,7 @@
+드디어 사진도 입력할 수 있게 됐어
+TAGS: cat, dog, kitchen, cooking, pet, domestic animal, cute, funny, tabby cat, husky mix, animal friends, food preparation, kitchenware, bowl
+IMAGE: https://res.cloudinary.com/df0kpimbc/image/upload/v1768113801/cheer-factory/pakoprxro4fj4jasdhik.png
+
+Cheer Factory 블로그, 드디어 이미지 업로드 기능을 추가했습니다! 짝짝짝. 뭔가 엄청난 변화는 아니지만, 저에겐 나름 의미있는 발전이거든요. 
+
+그동안 글로만 끄적거렸는데, 이제 좀 더 다채로운 이야기를 풀어낼 수 있겠어요. 코딩 초보가 삽질하며 만든 기능이라 어설플지도 모르지만… 예쁘게 봐주세요. 앞으로 종종 사진 곁들여 소소한 일상이나 깨달음을 공유하려구요. 기대해도 좋습니다! (아, 물론 엄청난 고화질은 기대하지 마시구요. 😅)
