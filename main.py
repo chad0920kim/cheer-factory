@@ -36,8 +36,8 @@ ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD")
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", secrets.token_hex(16))
 
-# AI 글 생성용 프롬프트 (기본값)
-DEFAULT_PROMPT = """당신은 'Cheer Factory'라는 익명 블로그의 작가입니다.
+# AI 글 생성용 프롬프트
+SYSTEM_PROMPT = """당신은 'Cheer Factory'라는 익명 블로그의 작가입니다.
 
 ## 페르소나
 - 10년 넘게 인사담당자로 일해온 40대 후반 남성
@@ -53,27 +53,6 @@ DEFAULT_PROMPT = """당신은 'Cheer Factory'라는 익명 블로그의 작가�
 
 ## 주제
 주어진 주제나 키워드를 바탕으로 직장인들의 일상, 고민, 작은 행복에 대해 씁니다."""
-
-def get_system_prompt():
-    """GitHub에서 프롬프트 로드, 없으면 기본값 사용"""
-    if not GITHUB_TOKEN or not GITHUB_REPO:
-        return DEFAULT_PROMPT
-
-    url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/config/prompt.txt"
-    headers = {
-        "Authorization": f"token {GITHUB_TOKEN}",
-        "Accept": "application/vnd.github.v3+json"
-    }
-
-    try:
-        response = requests.get(url, headers=headers)
-        if response.status_code == 200:
-            content = response.json().get("content", "")
-            return base64.b64decode(content).decode("utf-8")
-    except:
-        pass
-
-    return DEFAULT_PROMPT
 
 def parse_post_content(text):
     """포스트 텍스트를 파싱하여 메타데이터와 본문 분리"""
@@ -193,8 +172,7 @@ def generate_post_content(topic=None):
     if not model:
         raise Exception("AI model not configured. Please set GOOGLE_API_KEY.")
 
-    system_prompt = get_system_prompt()
-    prompt = f"""{system_prompt}
+    prompt = f"""{SYSTEM_PROMPT}
 
 다음 주제로 블로그 글을 작성해주세요: {topic if topic else '자유 주제'}
 
@@ -327,58 +305,6 @@ def admin_logout():
     session.pop("admin_logged_in", None)
     return redirect(url_for("index"))
 
-@app.route("/admin/prompt", methods=["GET"])
-def admin_get_prompt():
-    """현재 프롬프트 조회"""
-    if not session.get("admin_logged_in"):
-        return jsonify({"error": "Unauthorized"}), 401
-
-    prompt = get_system_prompt()
-    return jsonify({"prompt": prompt})
-
-@app.route("/admin/prompt", methods=["POST"])
-def admin_save_prompt():
-    """프롬프트 저장"""
-    if not session.get("admin_logged_in"):
-        return jsonify({"error": "Unauthorized"}), 401
-
-    data = request.json
-    new_prompt = data.get("prompt", "")
-
-    if not new_prompt.strip():
-        return jsonify({"error": "Prompt cannot be empty"}), 400
-
-    headers = {
-        "Authorization": f"token {GITHUB_TOKEN}",
-        "Accept": "application/vnd.github.v3+json"
-    }
-
-    url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/config/prompt.txt"
-
-    # 기존 파일 SHA 확인
-    response = requests.get(url, headers=headers)
-    sha = None
-    if response.status_code == 200:
-        sha = response.json().get("sha")
-
-    # 파일 저장
-    content_base64 = base64.b64encode(new_prompt.encode("utf-8")).decode("utf-8")
-    payload = {
-        "message": "Update AI prompt",
-        "content": content_base64,
-        "branch": "master"
-    }
-    if sha:
-        payload["sha"] = sha
-
-    save_response = requests.put(url, headers=headers, json=payload)
-
-    if save_response.status_code in [200, 201]:
-        return jsonify({"success": True, "message": "Prompt saved!"})
-    else:
-        error_msg = save_response.json().get("message", "Unknown error")
-        return jsonify({"error": error_msg}), 500
-
 @app.route("/admin/generate", methods=["POST"])
 def admin_generate():
     if not session.get("admin_logged_in"):
@@ -507,7 +433,7 @@ def admin_edit(post_id):
                            post_id=post_id,
                            title=title,
                            content=content,
-                           tags=", ".join(tags),
+                           tags=",".join(tags),
                            image_url=image_url)
 
 @app.route("/admin/update", methods=["POST"])

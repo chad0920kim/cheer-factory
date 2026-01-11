@@ -8,23 +8,23 @@
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>Cheer Factory</h1>
-            <p class="tagline">anonymous thoughts & stories</p>
-            <div class="lang-switch">
-                <a href="?lang=ko{% if query %}&q={{ query }}{% endif %}" class="{% if lang == 'ko' %}active{% endif %}">KO</a>
-                <span class="divider">|</span>
-                <a href="?lang=en{% if query %}&q={{ query }}{% endif %}" class="{% if lang == 'en' %}active{% endif %}">EN</a>
+        <header class="compact-header">
+            <div class="header-top">
+                <h1>Cheer Factory</h1>
+                <div class="lang-switch">
+                    <a href="?lang=ko{% if query %}&q={{ query }}{% endif %}" class="{% if lang == 'ko' %}active{% endif %}">KO</a>
+                    <span class="divider">|</span>
+                    <a href="?lang=en{% if query %}&q={{ query }}{% endif %}" class="{% if lang == 'en' %}active{% endif %}">EN</a>
+                </div>
+            </div>
+            <div class="search-box">
+                <form action="/" method="get">
+                    <input type="hidden" name="lang" value="{{ lang }}">
+                    <input type="text" name="q" placeholder="Search..." value="{{ query }}" autocomplete="off">
+                    <button type="submit">Search</button>
+                </form>
             </div>
         </header>
-
-        <div class="search-box">
-            <form action="/" method="get">
-                <input type="hidden" name="lang" value="{{ lang }}">
-                <input type="text" name="q" placeholder="Search..." value="{{ query }}" autocomplete="off">
-                <button type="submit">Search</button>
-            </form>
-        </div>
 
         <main>
             {% if posts %}
