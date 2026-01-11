@@ -219,14 +219,26 @@ footer {
     border-top: 1px solid #eee;
 }
 
-footer .admin-link {
-    display: block;
+footer .footer-links {
     margin-top: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+}
+
+footer .footer-links .divider {
+    color: #ddd;
+}
+
+footer .stock-link,
+footer .admin-link {
     color: #ccc;
     text-decoration: none;
     font-size: 11px;
 }
 
+footer .stock-link:hover,
 footer .admin-link:hover {
     color: #888;
 }
