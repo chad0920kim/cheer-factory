@@ -13,6 +13,7 @@ load_dotenv()
 
 # Gemini AI 설정
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+model = None
 if GOOGLE_API_KEY:
     genai.configure(api_key=GOOGLE_API_KEY)
     model = genai.GenerativeModel("gemini-2.0-flash")
@@ -20,6 +21,79 @@ if GOOGLE_API_KEY:
 # GitHub 설정
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 GITHUB_REPO = os.getenv("GITHUB_REPO")
+
+# GitHub likes 캐시 (서버 재시작 시에도 GitHub에서 읽어옴)
+_likes_cache = {}
+_likes_cache_loaded = False
+
+def get_github_likes():
+    """GitHub에서 모든 likes 파일을 읽어옴"""
+    global _likes_cache, _likes_cache_loaded
+
+    if _likes_cache_loaded:
+        return _likes_cache
+
+    if not GITHUB_TOKEN or not GITHUB_REPO:
+        return {}
+
+    url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/posts"
+    headers = {"Authorization": f"token {GITHUB_TOKEN}"}
+
+    try:
+        response = requests.get(url, headers=headers)
+        if response.status_code == 200:
+            files = response.json()
+            for f in files:
+                if f["name"].endswith(".likes"):
+                    post_id = f["name"][:-6]  # .likes 제거
+                    # 파일 내용 가져오기
+                    content_response = requests.get(f["download_url"])
+                    if content_response.status_code == 200:
+                        try:
+                            _likes_cache[post_id] = int(content_response.text.strip())
+                        except:
+                            _likes_cache[post_id] = 0
+        _likes_cache_loaded = True
+    except:
+        pass
+
+    return _likes_cache
+
+def update_github_likes(post_id, likes_count):
+    """GitHub에 likes 파일 업데이트"""
+    global _likes_cache
+
+    if not GITHUB_TOKEN or not GITHUB_REPO:
+        return False
+
+    filename = f"{post_id}.likes"
+    url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/posts/{filename}"
+    headers = {
+        "Authorization": f"token {GITHUB_TOKEN}",
+        "Accept": "application/vnd.github.v3+json"
+    }
+
+    # 기존 파일 SHA 확인
+    sha = None
+    response = requests.get(url, headers=headers)
+    if response.status_code == 200:
+        sha = response.json().get("sha")
+
+    # 파일 생성/업데이트
+    content = base64.b64encode(str(likes_count).encode("utf-8")).decode("utf-8")
+    data = {
+        "message": f"Update likes for {post_id}",
+        "content": content,
+        "branch": "master"
+    }
+    if sha:
+        data["sha"] = sha
+
+    response = requests.put(url, headers=headers, json=data)
+    if response.status_code in [200, 201]:
+        _likes_cache[post_id] = likes_count
+        return True
+    return False
 
 # Admin 비밀번호 (환경변수 필수)
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD")
@@ -50,6 +124,9 @@ SYSTEM_PROMPT = """당신은 'Cheer Factory'라는 익명 블로그의 작가입
 def load_posts(lang=None):
     """posts 폴더에서 모든 포스트를 로드 (txt 형식 지원)"""
     posts = []
+    # GitHub에서 likes 캐시 로드
+    likes_cache = get_github_likes()
+
     if POSTS_DIR.exists():
         for file in sorted(POSTS_DIR.glob("*.txt"), reverse=True):
             filename = file.stem
@@ -77,9 +154,8 @@ def load_posts(lang=None):
                 # 파일명에서 날짜 추출 (2026-01-10-001-ko.txt -> 2026-01-10)
                 date = "-".join(filename.split("-")[:3]) if "-" in filename else filename
 
-                # likes 파일 확인
-                likes_file = POSTS_DIR / f"{filename}.likes"
-                likes = int(likes_file.read_text()) if likes_file.exists() else 0
+                # GitHub에서 likes 가져오기 (캐시 사용)
+                likes = likes_cache.get(filename, 0)
 
                 posts.append({
                     "id": filename,
@@ -129,15 +205,12 @@ def index():
 
 @app.route("/like/<post_id>", methods=["POST"])
 def like_post(post_id):
-    post_file = POSTS_DIR / f"{post_id}.txt"
-    if not post_file.exists():
-        return jsonify({"error": "Post not found"}), 404
-
     if "liked_posts" not in session:
         session["liked_posts"] = []
 
-    likes_file = POSTS_DIR / f"{post_id}.likes"
-    current_likes = int(likes_file.read_text()) if likes_file.exists() else 0
+    # GitHub에서 현재 likes 가져오기
+    likes_cache = get_github_likes()
+    current_likes = likes_cache.get(post_id, 0)
 
     liked = post_id in session["liked_posts"]
 
@@ -151,7 +224,9 @@ def like_post(post_id):
         liked = True
 
     session.modified = True
-    likes_file.write_text(str(current_likes))
+
+    # GitHub에 likes 저장
+    update_github_likes(post_id, current_likes)
 
     return jsonify({"likes": current_likes, "liked": liked})
 
@@ -159,6 +234,9 @@ def like_post(post_id):
 
 def generate_post_content(topic=None):
     """AI로 글 생성"""
+    if not model:
+        raise Exception("AI model not configured. Please set GOOGLE_API_KEY.")
+
     prompt = f"""{SYSTEM_PROMPT}
 
 다음 주제로 블로그 글을 작성해주세요: {topic if topic else '자유 주제'}
@@ -180,6 +258,9 @@ JSON 형식으로 응답해주세요:
 
 def translate_to_english(title, content):
     """한국어를 영어로 번역"""
+    if not model:
+        raise Exception("AI model not configured. Please set GOOGLE_API_KEY.")
+
     prompt = f"""다음 한국어 블로그 글을 영어로 자연스럽게 번역해주세요.
 
 제목: {title}
@@ -237,6 +318,10 @@ def publish_to_github(title_ko, content_ko, title_en, content_en):
         "branch": "master"
     })
 
+    if response_ko.status_code not in [200, 201]:
+        error_msg = response_ko.json().get("message", "Unknown error")
+        raise Exception(f"KO publish failed: {error_msg} (status: {response_ko.status_code})")
+
     # 영어 파일
     filename_en = f"{today}-{post_num:03d}-en.txt"
     file_content_en = f"{title_en}\n\n{content_en}"
@@ -249,7 +334,11 @@ def publish_to_github(title_ko, content_ko, title_en, content_en):
         "branch": "master"
     })
 
-    return response_ko.status_code == 201 and response_en.status_code == 201
+    if response_en.status_code not in [200, 201]:
+        error_msg = response_en.json().get("message", "Unknown error")
+        raise Exception(f"EN publish failed: {error_msg} (status: {response_en.status_code})")
+
+    return True
 
 @app.route("/admin")
 def admin():
