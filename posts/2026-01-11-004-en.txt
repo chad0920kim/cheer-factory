@@ -1,0 +1,7 @@
+Finally! Images are Now Supported!
+TAGS: cat, dog, kitchen, cooking, pet, domestic animal, cute, funny, tabby cat, husky mix, animal friends, food preparation, kitchenware, bowl
+IMAGE: https://res.cloudinary.com/df0kpimbc/image/upload/v1768113801/cheer-factory/pakoprxro4fj4jasdhik.png
+
+The Cheer Factory blog finally has image upload capabilities! Hooray! It's not a huge change, but it's a pretty significant step for me. 
+
+I've only been able to write text until now, but I can finally tell more diverse stories. Since it's a feature created by a coding newbie after a lot of trial and error, it might be a little clumsy... but please be understanding. I'm planning to share snippets of my daily life and insights, often with photos. You can look forward to it! (Oh, and don't expect super high-resolution images, though. 😅)
