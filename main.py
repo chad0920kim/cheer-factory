@@ -4,6 +4,8 @@ import secrets
 import os
 import base64
 import requests
+import cloudinary
+import cloudinary.uploader
 from datetime import datetime
 from dotenv import load_dotenv
 import google.generativeai as genai
@@ -20,6 +22,13 @@ if GOOGLE_API_KEY:
 # GitHub 설정
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 GITHUB_REPO = os.getenv("GITHUB_REPO")
+
+# Cloudinary 설정
+cloudinary.config(
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.getenv("CLOUDINARY_API_KEY"),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET")
+)
 
 # Admin 비밀번호 (환경변수 필수)
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD")
@@ -343,7 +352,7 @@ def admin_publish():
 
 @app.route("/admin/analyze-image", methods=["POST"])
 def admin_analyze_image():
-    """이미지를 분석하여 태그 생성"""
+    """이미지를 분석하여 태그 생성 + Cloudinary 업로드"""
     if not session.get("admin_logged_in"):
         return jsonify({"error": "Unauthorized"}), 401
 
@@ -386,6 +395,15 @@ JSON 형식으로 응답:
             text = text[:-3]
 
         result = json.loads(text.strip())
+
+        # Cloudinary에 이미지 업로드
+        upload_result = cloudinary.uploader.upload(
+            f"data:{image_file.content_type};base64,{image_base64}",
+            folder="cheer-factory",
+            tags=result.get("tags", [])
+        )
+        result["image_url"] = upload_result.get("secure_url", "")
+
         return jsonify(result)
     except Exception as e:
         return jsonify({"error": str(e)}), 500

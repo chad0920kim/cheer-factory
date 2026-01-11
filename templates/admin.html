@@ -29,10 +29,11 @@
                 </div>
 
                 <div class="admin-section">
-                    <h2>Image Tags (for Stock Sites)</h2>
+                    <h2>Image Upload + Tags</h2>
                     <input type="file" id="imageInput" accept="image/*" onchange="analyzeImage()">
                     <div id="imagePreview" class="image-preview"></div>
                     <div id="tagsResult" class="tags-result"></div>
+                    <div id="uploadedUrl" class="uploaded-url"></div>
                     <button onclick="copyTags()" id="copyTagsBtn" style="display:none;">Copy Tags</button>
                 </div>
 
@@ -72,8 +73,10 @@
             reader.readAsDataURL(file);
 
             // 분석 시작
-            tagsResult.innerHTML = '<p>Analyzing...</p>';
+            tagsResult.innerHTML = '<p>Uploading & Analyzing...</p>';
             status.textContent = '';
+            const uploadedUrl = document.getElementById('uploadedUrl');
+            uploadedUrl.innerHTML = '';
 
             const formData = new FormData();
             formData.append('image', file);
@@ -98,6 +101,12 @@
 
                     // 태그 필드에 자동 입력
                     document.getElementById('tags').value = generatedTags.join(', ');
+
+                    // Cloudinary URL 자동 입력
+                    if (data.image_url) {
+                        document.getElementById('imageUrl').value = data.image_url;
+                        uploadedUrl.innerHTML = `<p class="success">Image uploaded to Cloudinary!</p>`;
+                    }
                 }
             } catch (e) {
                 tagsResult.innerHTML = `<p class="error">Error: ${e.message}</p>`;

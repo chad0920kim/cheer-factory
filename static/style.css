@@ -499,3 +499,13 @@ footer .admin-link:hover {
     flex-wrap: wrap;
     gap: 6px;
 }
+
+/* Uploaded URL */
+.uploaded-url {
+    margin: 8px 0;
+}
+
+.uploaded-url .success {
+    color: #2e7d32;
+    font-size: 13px;
+}
