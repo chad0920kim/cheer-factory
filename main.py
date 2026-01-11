@@ -107,10 +107,13 @@ def load_posts(lang=None):
             if lang and file_lang and file_lang != lang:
                 continue
 
-            # 파일 내용 가져오기
-            content_response = requests.get(f["download_url"])
-            if content_response.status_code == 200:
-                title, content, tags, image_url = parse_post_content(content_response.text)
+            # 파일 내용 가져오기 (API로 직접 가져와서 캐시 방지)
+            file_url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/posts/{f['name']}"
+            file_response = requests.get(file_url, headers=headers)
+            if file_response.status_code == 200:
+                file_data = file_response.json()
+                file_content = base64.b64decode(file_data["content"]).decode("utf-8")
+                title, content, tags, image_url = parse_post_content(file_content)
 
                 # 파일명에서 날짜 추출
                 date = "-".join(filename.split("-")[:3]) if "-" in filename else filename
