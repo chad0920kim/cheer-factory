@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Edit Post - Cheer Factory</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Cheer Factory</h1>
+            <p class="tagline">Edit Post</p>
+            <div class="admin-nav">
+                <a href="/">View Site</a>
+                <span class="divider">|</span>
+                <a href="/admin">Admin</a>
+                <span class="divider">|</span>
+                <a href="/admin/logout">Logout</a>
+            </div>
+        </header>
+
+        <main>
+            <div class="admin-panel">
+                <div class="admin-section">
+                    <h2>Edit Post</h2>
+                    <input type="text" id="title" placeholder="Title" value="{{ title }}">
+                    <textarea id="content" placeholder="Content..." rows="8">{{ content }}</textarea>
+                    <input type="text" id="tags" placeholder="Tags (comma separated)" value="{{ tags }}">
+                    <input type="text" id="imageUrl" placeholder="Image URL (from stock site)" value="{{ image_url }}">
+
+                    {% if image_url %}
+                    <div class="image-preview">
+                        <img src="{{ image_url }}" alt="Current image">
+                    </div>
+                    {% endif %}
+
+                    <button onclick="updatePost()" id="updateBtn" class="primary">Update</button>
+                </div>
+
+                <div id="status" class="status"></div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const postId = "{{ post_id }}";
+
+        async function updatePost() {
+            const title = document.getElementById('title').value;
+            const content = document.getElementById('content').value;
+            const tags = document.getElementById('tags').value;
+            const imageUrl = document.getElementById('imageUrl').value;
+            const btn = document.getElementById('updateBtn');
+            const status = document.getElementById('status');
+
+            if (!title) {
+                status.textContent = 'Title required';
+                status.className = 'status error';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Updating...';
+            status.textContent = '';
+
+            try {
+                const res = await fetch('/admin/update', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        post_id: postId,
+                        title: title,
+                        content: content,
+                        tags: tags,
+                        image_url: imageUrl
+                    })
+                });
+                const data = await res.json();
+
+                if (data.error) {
+                    status.textContent = 'Error: ' + data.error;
+                    status.className = 'status error';
+                } else {
+                    status.textContent = 'Updated! Redirecting...';
+                    status.className = 'status success';
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 1500);
+                }
+            } catch (e) {
+                status.textContent = 'Error: ' + e.message;
+                status.className = 'status error';
+            }
+
+            btn.disabled = false;
+            btn.textContent = 'Update';
+        }
+    </script>
+</body>
+</html>

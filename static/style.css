@@ -410,3 +410,80 @@ footer .admin-link:hover {
     background: #ffebee;
     color: #c62828;
 }
+
+/* Post Image */
+.post-image {
+    margin: -20px -20px 16px -20px;
+    border-radius: 12px 12px 0 0;
+    overflow: hidden;
+}
+
+.post-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Post Tags */
+.post-tags {
+    margin-top: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.post-tags .tag,
+.tags-list .tag {
+    display: inline-block;
+    padding: 4px 10px;
+    background: #f0f0f0;
+    border-radius: 12px;
+    font-size: 11px;
+    color: #666;
+}
+
+/* Post Footer */
+.post-footer {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #f0f0f0;
+    text-align: right;
+}
+
+.edit-link {
+    color: #ccc;
+    text-decoration: none;
+    font-size: 12px;
+}
+
+.edit-link:hover {
+    color: #888;
+}
+
+/* Image Preview */
+.image-preview {
+    margin: 12px 0;
+}
+
+.image-preview img {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 8px;
+}
+
+/* Tags Result */
+.tags-result {
+    margin: 12px 0;
+}
+
+.tags-result .description {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 8px;
+}
+
+.tags-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}

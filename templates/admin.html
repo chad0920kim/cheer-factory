@@ -29,9 +29,19 @@
                 </div>
 
                 <div class="admin-section">
+                    <h2>Image Tags (for Stock Sites)</h2>
+                    <input type="file" id="imageInput" accept="image/*" onchange="analyzeImage()">
+                    <div id="imagePreview" class="image-preview"></div>
+                    <div id="tagsResult" class="tags-result"></div>
+                    <button onclick="copyTags()" id="copyTagsBtn" style="display:none;">Copy Tags</button>
+                </div>
+
+                <div class="admin-section">
                     <h2>Write Post</h2>
                     <input type="text" id="title" placeholder="Title">
                     <textarea id="content" placeholder="Content..." rows="8"></textarea>
+                    <input type="text" id="tags" placeholder="Tags (comma separated)">
+                    <input type="text" id="imageUrl" placeholder="Image URL (from stock site)">
                     <button onclick="publishPost()" id="publishBtn" class="primary">Publish</button>
                 </div>
 
@@ -41,6 +51,68 @@
     </div>
 
     <script>
+        let generatedTags = [];
+
+        async function analyzeImage() {
+            const input = document.getElementById('imageInput');
+            const preview = document.getElementById('imagePreview');
+            const tagsResult = document.getElementById('tagsResult');
+            const copyBtn = document.getElementById('copyTagsBtn');
+            const status = document.getElementById('status');
+
+            if (!input.files || !input.files[0]) return;
+
+            const file = input.files[0];
+
+            // 미리보기
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                preview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+            };
+            reader.readAsDataURL(file);
+
+            // 분석 시작
+            tagsResult.innerHTML = '<p>Analyzing...</p>';
+            status.textContent = '';
+
+            const formData = new FormData();
+            formData.append('image', file);
+
+            try {
+                const res = await fetch('/admin/analyze-image', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await res.json();
+
+                if (data.error) {
+                    tagsResult.innerHTML = `<p class="error">Error: ${data.error}</p>`;
+                } else {
+                    generatedTags = data.tags || [];
+                    const tagsHtml = generatedTags.map(t => `<span class="tag">${t}</span>`).join('');
+                    tagsResult.innerHTML = `
+                        <p class="description">${data.description || ''}</p>
+                        <div class="tags-list">${tagsHtml}</div>
+                    `;
+                    copyBtn.style.display = 'block';
+
+                    // 태그 필드에 자동 입력
+                    document.getElementById('tags').value = generatedTags.join(', ');
+                }
+            } catch (e) {
+                tagsResult.innerHTML = `<p class="error">Error: ${e.message}</p>`;
+            }
+        }
+
+        function copyTags() {
+            const tagsText = generatedTags.join(', ');
+            navigator.clipboard.writeText(tagsText).then(() => {
+                const btn = document.getElementById('copyTagsBtn');
+                btn.textContent = 'Copied!';
+                setTimeout(() => { btn.textContent = 'Copy Tags'; }, 2000);
+            });
+        }
+
         async function generatePost() {
             const topic = document.getElementById('topic').value;
             const btn = document.getElementById('generateBtn');
@@ -79,6 +151,8 @@
         async function publishPost() {
             const title = document.getElementById('title').value;
             const content = document.getElementById('content').value;
+            const tags = document.getElementById('tags').value;
+            const imageUrl = document.getElementById('imageUrl').value;
             const btn = document.getElementById('publishBtn');
             const status = document.getElementById('status');
 
@@ -96,7 +170,12 @@
                 const res = await fetch('/admin/publish', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ title_ko: title, content_ko: content })
+                    body: JSON.stringify({
+                        title_ko: title,
+                        content_ko: content,
+                        tags: tags,
+                        image_url: imageUrl
+                    })
                 });
                 const data = await res.json();
 
@@ -109,6 +188,11 @@
                     document.getElementById('title').value = '';
                     document.getElementById('content').value = '';
                     document.getElementById('topic').value = '';
+                    document.getElementById('tags').value = '';
+                    document.getElementById('imageUrl').value = '';
+                    document.getElementById('imagePreview').innerHTML = '';
+                    document.getElementById('tagsResult').innerHTML = '';
+                    document.getElementById('copyTagsBtn').style.display = 'none';
                 }
             } catch (e) {
                 status.textContent = 'Error: ' + e.message;

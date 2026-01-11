@@ -45,6 +45,27 @@ SYSTEM_PROMPT = """당신은 'Cheer Factory'라는 익명 블로그의 작가입
 ## 주제
 주어진 주제나 키워드를 바탕으로 직장인들의 일상, 고민, 작은 행복에 대해 씁니다."""
 
+def parse_post_content(text):
+    """포스트 텍스트를 파싱하여 메타데이터와 본문 분리"""
+    lines = text.strip().split("\n")
+    title = lines[0] if lines else "Untitled"
+
+    tags = []
+    image_url = ""
+    content_lines = []
+
+    for line in lines[1:]:
+        line_stripped = line.strip()
+        if line_stripped.startswith("TAGS:"):
+            tags = [t.strip() for t in line_stripped[5:].split(",") if t.strip()]
+        elif line_stripped.startswith("IMAGE:"):
+            image_url = line_stripped[6:].strip()
+        else:
+            content_lines.append(line)
+
+    content = "\n".join(content_lines).strip()
+    return title, content, tags, image_url
+
 def load_posts(lang=None):
     """GitHub에서 모든 포스트를 로드"""
     posts = []
@@ -80,9 +101,7 @@ def load_posts(lang=None):
             # 파일 내용 가져오기
             content_response = requests.get(f["download_url"])
             if content_response.status_code == 200:
-                lines = content_response.text.strip().split("\n")
-                title = lines[0] if lines else "Untitled"
-                content = "\n".join(lines[1:]).strip() if len(lines) > 1 else ""
+                title, content, tags, image_url = parse_post_content(content_response.text)
 
                 # 파일명에서 날짜 추출
                 date = "-".join(filename.split("-")[:3]) if "-" in filename else filename
@@ -92,6 +111,8 @@ def load_posts(lang=None):
                     "title": title,
                     "date": date,
                     "content": content,
+                    "tags": tags,
+                    "image_url": image_url,
                     "lang": file_lang
                 })
     except:
@@ -201,7 +222,7 @@ def get_existing_posts_count(date):
     count = sum(1 for f in files if f["name"].startswith(date) and f["name"].endswith("-ko.txt"))
     return count
 
-def publish_to_github(title_ko, content_ko, title_en, content_en):
+def publish_to_github(title_ko, content_ko, title_en, content_en, tags="", image_url=""):
     """GitHub에 포스트 배포"""
     today = datetime.now().strftime("%Y-%m-%d")
     post_num = get_existing_posts_count(today) + 1
@@ -211,9 +232,16 @@ def publish_to_github(title_ko, content_ko, title_en, content_en):
         "Accept": "application/vnd.github.v3+json"
     }
 
+    # 메타데이터 추가
+    meta_lines = ""
+    if tags:
+        meta_lines += f"TAGS: {tags}\n"
+    if image_url:
+        meta_lines += f"IMAGE: {image_url}\n"
+
     # 한국어 파일
     filename_ko = f"{today}-{post_num:03d}-ko.txt"
-    file_content_ko = f"{title_ko}\n\n{content_ko}"
+    file_content_ko = f"{title_ko}\n{meta_lines}\n{content_ko}"
     content_base64_ko = base64.b64encode(file_content_ko.encode("utf-8")).decode("utf-8")
 
     url_ko = f"https://api.github.com/repos/{GITHUB_REPO}/contents/posts/{filename_ko}"
@@ -229,7 +257,7 @@ def publish_to_github(title_ko, content_ko, title_en, content_en):
 
     # 영어 파일
     filename_en = f"{today}-{post_num:03d}-en.txt"
-    file_content_en = f"{title_en}\n\n{content_en}"
+    file_content_en = f"{title_en}\n{meta_lines}\n{content_en}"
     content_base64_en = base64.b64encode(file_content_en.encode("utf-8")).decode("utf-8")
 
     url_en = f"https://api.github.com/repos/{GITHUB_REPO}/contents/posts/{filename_en}"
@@ -292,6 +320,9 @@ def admin_publish():
     if not title_ko or not content_ko:
         return jsonify({"error": "Title and content required"}), 400
 
+    tags = data.get("tags", "")
+    image_url = data.get("image_url", "")
+
     try:
         # 영어 번역
         translated = translate_to_english(title_ko, content_ko)
@@ -299,7 +330,8 @@ def admin_publish():
         # GitHub 배포
         success = publish_to_github(
             title_ko, content_ko,
-            translated["title"], translated["content"]
+            translated["title"], translated["content"],
+            tags, image_url
         )
 
         if success:
@@ -308,6 +340,135 @@ def admin_publish():
             return jsonify({"error": "GitHub publish failed"}), 500
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@app.route("/admin/analyze-image", methods=["POST"])
+def admin_analyze_image():
+    """이미지를 분석하여 태그 생성"""
+    if not session.get("admin_logged_in"):
+        return jsonify({"error": "Unauthorized"}), 401
+
+    if not model:
+        return jsonify({"error": "AI model not configured"}), 500
+
+    if "image" not in request.files:
+        return jsonify({"error": "No image uploaded"}), 400
+
+    image_file = request.files["image"]
+    image_data = image_file.read()
+    image_base64 = base64.b64encode(image_data).decode("utf-8")
+
+    try:
+        # Gemini Vision으로 이미지 분석
+        image_part = {
+            "mime_type": image_file.content_type,
+            "data": image_base64
+        }
+
+        prompt = """이 이미지를 분석해서 스톡 이미지 사이트에 업로드할 때 사용할 태그를 생성해주세요.
+
+태그 요구사항:
+- 영어로 작성
+- 10-15개의 태그
+- 구체적이고 검색에 유용한 키워드
+- 쉼표로 구분
+
+JSON 형식으로 응답:
+{"tags": ["tag1", "tag2", ...], "description": "이미지 설명 (한국어)"}"""
+
+        response = model.generate_content([prompt, image_part])
+        text = response.text.strip()
+
+        if text.startswith("```json"):
+            text = text[7:]
+        if text.startswith("```"):
+            text = text[3:]
+        if text.endswith("```"):
+            text = text[:-3]
+
+        result = json.loads(text.strip())
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/admin/edit/<post_id>")
+def admin_edit(post_id):
+    """포스트 수정 페이지"""
+    if not session.get("admin_logged_in"):
+        return redirect(url_for("admin_login"))
+
+    # GitHub에서 포스트 가져오기
+    url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/posts/{post_id}.txt"
+    headers = {"Authorization": f"token {GITHUB_TOKEN}"}
+
+    response = requests.get(url, headers=headers)
+    if response.status_code != 200:
+        return redirect(url_for("admin"))
+
+    file_info = response.json()
+    content_response = requests.get(file_info["download_url"])
+    if content_response.status_code != 200:
+        return redirect(url_for("admin"))
+
+    title, content, tags, image_url = parse_post_content(content_response.text)
+
+    return render_template("admin_edit.html",
+                           post_id=post_id,
+                           title=title,
+                           content=content,
+                           tags=", ".join(tags),
+                           image_url=image_url)
+
+@app.route("/admin/update", methods=["POST"])
+def admin_update():
+    """포스트 업데이트"""
+    if not session.get("admin_logged_in"):
+        return jsonify({"error": "Unauthorized"}), 401
+
+    data = request.json
+    post_id = data.get("post_id", "")
+    title = data.get("title", "")
+    content = data.get("content", "")
+    tags = data.get("tags", "")
+    image_url = data.get("image_url", "")
+
+    if not post_id or not title:
+        return jsonify({"error": "Post ID and title required"}), 400
+
+    # 파일 내용 구성
+    file_content = f"{title}\n"
+    if tags:
+        file_content += f"TAGS: {tags}\n"
+    if image_url:
+        file_content += f"IMAGE: {image_url}\n"
+    file_content += f"\n{content}"
+
+    # GitHub에서 기존 파일 SHA 가져오기
+    url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/posts/{post_id}.txt"
+    headers = {
+        "Authorization": f"token {GITHUB_TOKEN}",
+        "Accept": "application/vnd.github.v3+json"
+    }
+
+    response = requests.get(url, headers=headers)
+    if response.status_code != 200:
+        return jsonify({"error": "Post not found"}), 404
+
+    sha = response.json().get("sha")
+
+    # 파일 업데이트
+    content_base64 = base64.b64encode(file_content.encode("utf-8")).decode("utf-8")
+    update_response = requests.put(url, headers=headers, json={
+        "message": f"Update post: {title}",
+        "content": content_base64,
+        "sha": sha,
+        "branch": "master"
+    })
+
+    if update_response.status_code in [200, 201]:
+        return jsonify({"success": True, "message": "Updated!"})
+    else:
+        error_msg = update_response.json().get("message", "Unknown error")
+        return jsonify({"error": error_msg}), 500
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5000)

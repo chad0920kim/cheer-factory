@@ -30,9 +30,24 @@
             {% if posts %}
                 {% for post in posts %}
                 <article class="post">
+                    {% if post.image_url %}
+                    <div class="post-image">
+                        <img src="{{ post.image_url }}" alt="{{ post.title }}">
+                    </div>
+                    {% endif %}
                     <h2>{{ post.title }}</h2>
                     <p class="date">{{ post.date }}</p>
                     <div class="content">{{ post.content }}</div>
+                    {% if post.tags %}
+                    <div class="post-tags">
+                        {% for tag in post.tags %}
+                        <span class="tag">{{ tag }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    <div class="post-footer">
+                        <a href="/admin/edit/{{ post.id }}" class="edit-link">Edit</a>
+                    </div>
                 </article>
                 {% endfor %}
             {% else %}
