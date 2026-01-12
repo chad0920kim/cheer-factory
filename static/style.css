@@ -9,17 +9,31 @@ body {
     background-color: #fafafa;
     color: #333;
     line-height: 1.6;
+    height: 100dvh;
     height: 100vh;
     overflow: hidden;
+}
+
+@supports (height: 100dvh) {
+    body {
+        height: 100dvh;
+    }
 }
 
 .container {
     max-width: 480px;
     margin: 0 auto;
     padding: 0 16px;
+    height: 100dvh;
     height: 100vh;
     display: flex;
     flex-direction: column;
+}
+
+@supports (height: 100dvh) {
+    .container {
+        height: 100dvh;
+    }
 }
 
 header {
@@ -300,8 +314,10 @@ main {
 footer {
     text-align: center;
     padding: 8px 0 16px 0;
+    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
     color: #aaa;
     font-size: 11px;
+    flex-shrink: 0;
 }
 
 footer .footer-links {
