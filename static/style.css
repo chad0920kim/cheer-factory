@@ -67,6 +67,11 @@ header h1 {
     letter-spacing: -0.5px;
 }
 
+header h1 a {
+    color: inherit;
+    text-decoration: none;
+}
+
 .tagline {
     font-size: 14px;
     color: #888;
