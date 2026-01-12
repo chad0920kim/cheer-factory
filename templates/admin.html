@@ -97,6 +97,82 @@
             width: 100%;
             margin-top: 8px;
         }
+        /* Pagination */
+        .image-pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            margin: 12px 0;
+        }
+        .image-pagination button {
+            padding: 8px 16px;
+            font-size: 13px;
+        }
+        .image-pagination button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .image-pagination .page-info {
+            font-size: 13px;
+            color: #666;
+        }
+        /* Image Modal */
+        .image-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .image-modal.active {
+            display: flex;
+        }
+        .image-modal img {
+            max-width: 100%;
+            max-height: 80vh;
+            border-radius: 8px;
+        }
+        .image-modal .modal-info {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: white;
+        }
+        .image-modal .modal-info .photographer {
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+        .image-modal .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            font-size: 24px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .image-modal .modal-select {
+            padding: 12px 24px;
+            background: #2e7d32;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -137,6 +213,11 @@
                             </div>
                             <div id="translatedQuery" class="translated-query"></div>
                             <div id="imageSearchResults" class="image-grid"></div>
+                            <div id="imagePagination" class="image-pagination" style="display:none;">
+                                <button onclick="loadPage(currentPage - 1)" id="prevPageBtn">Prev</button>
+                                <span class="page-info" id="pageInfo"></span>
+                                <button onclick="loadPage(currentPage + 1)" id="nextPageBtn">Next</button>
+                            </div>
                             <button onclick="useSelectedImage()" id="useImageBtn" class="use-image-btn" style="display:none;">Use This Image</button>
                         </div>
                     </div>
@@ -177,18 +258,34 @@
         </main>
     </div>
 
+    <!-- Image Modal -->
+    <div id="imageModal" class="image-modal" onclick="closeModal(event)">
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+        <img id="modalImage" src="" alt="Preview">
+        <div class="modal-info">
+            <div class="photographer" id="modalPhotographer"></div>
+            <button class="modal-select" onclick="selectFromModal()">Select This Image</button>
+        </div>
+    </div>
+
     <script>
         let generatedTags = [];
         let selectedImage = null;
+        let currentPage = 1;
+        let currentQuery = '';
+        let totalResults = 0;
+        let modalImageData = null;
         const MAX_IMAGE_SIZE = 1920;
         const IMAGE_QUALITY = 0.85;
+        const PER_PAGE = 12;
 
         // Image Search functions
-        async function searchImages() {
+        async function searchImages(page = 1) {
             const query = document.getElementById('imageSearchQuery').value;
             const btn = document.getElementById('searchImagesBtn');
             const resultsDiv = document.getElementById('imageSearchResults');
             const translatedDiv = document.getElementById('translatedQuery');
+            const paginationDiv = document.getElementById('imagePagination');
             const useBtn = document.getElementById('useImageBtn');
             const status = document.getElementById('status');
 
@@ -201,7 +298,10 @@
             btn.disabled = true;
             btn.textContent = 'Searching...';
             resultsDiv.innerHTML = '';
-            translatedDiv.textContent = '';
+            if (page === 1) {
+                translatedDiv.textContent = '';
+                paginationDiv.style.display = 'none';
+            }
             useBtn.style.display = 'none';
             selectedImage = null;
 
@@ -209,7 +309,7 @@
                 const res = await fetch('/admin/search-images', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ query })
+                    body: JSON.stringify({ query, page })
                 });
                 const data = await res.json();
 
@@ -217,19 +317,35 @@
                     status.textContent = 'Error: ' + data.error;
                     status.className = 'status error';
                 } else {
+                    currentQuery = query;
+                    currentPage = page;
+                    totalResults = data.total_results || 0;
+
                     if (data.translated_query) {
                         translatedDiv.textContent = `Translated: "${data.translated_query}"`;
                     }
 
                     if (data.images && data.images.length > 0) {
                         resultsDiv.innerHTML = data.images.map(img => `
-                            <div class="image-grid-item" onclick="selectImage(this, '${img.regular}', '${img.photographer}')">
+                            <div class="image-grid-item" onclick="previewImage('${img.regular}', '${img.photographer}')">
                                 <img src="${img.thumb}" alt="Search result">
                                 <div class="photographer">${img.photographer}</div>
                             </div>
                         `).join('');
+
+                        // Show pagination if there are more results
+                        const totalPages = Math.ceil(totalResults / PER_PAGE);
+                        if (totalPages > 1) {
+                            paginationDiv.style.display = 'flex';
+                            document.getElementById('pageInfo').textContent = `${currentPage} / ${totalPages}`;
+                            document.getElementById('prevPageBtn').disabled = currentPage <= 1;
+                            document.getElementById('nextPageBtn').disabled = currentPage >= totalPages;
+                        } else {
+                            paginationDiv.style.display = 'none';
+                        }
                     } else {
                         resultsDiv.innerHTML = '<p style="grid-column: span 3; text-align: center; color: #888;">No images found</p>';
+                        paginationDiv.style.display = 'none';
                     }
                 }
             } catch (e) {
@@ -239,6 +355,34 @@
 
             btn.disabled = false;
             btn.textContent = 'Search';
+        }
+
+        function loadPage(page) {
+            if (page < 1) return;
+            document.getElementById('imageSearchQuery').value = currentQuery;
+            searchImages(page);
+        }
+
+        function previewImage(url, photographer) {
+            modalImageData = { url, photographer };
+            document.getElementById('modalImage').src = url;
+            document.getElementById('modalPhotographer').textContent = `Photo by ${photographer} on Pexels`;
+            document.getElementById('imageModal').classList.add('active');
+        }
+
+        function closeModal(event) {
+            if (event && event.target !== event.currentTarget && !event.target.classList.contains('modal-close')) return;
+            document.getElementById('imageModal').classList.remove('active');
+            modalImageData = null;
+        }
+
+        function selectFromModal() {
+            if (!modalImageData) return;
+            selectedImage = modalImageData;
+            document.getElementById('useImageBtn').style.display = 'block';
+            closeModal();
+            document.getElementById('status').textContent = 'Image selected! Click "Use This Image" to upload.';
+            document.getElementById('status').className = 'status success';
         }
 
         function selectImage(element, url, photographer) {

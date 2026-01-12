@@ -865,6 +865,7 @@ def admin_search_images():
 
     data = request.json
     query = data.get("query", "")
+    page = data.get("page", 1)
 
     if not query:
         return jsonify({"error": "Search query required"}), 400
@@ -877,6 +878,7 @@ def admin_search_images():
         params = {
             "query": translated_query,
             "per_page": 12,
+            "page": page,
             "orientation": "landscape"
         }
         headers = {
@@ -902,6 +904,8 @@ def admin_search_images():
 
         return jsonify({
             "images": images,
+            "total_results": data.get("total_results", 0),
+            "page": page,
             "translated_query": translated_query if translated_query != query else None
         })
     except Exception as e:
