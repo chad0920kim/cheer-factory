@@ -45,7 +45,11 @@ header.compact-header h1 {
 }
 
 header.compact-header .search-box {
-    margin-bottom: 0;
+    margin-bottom: 8px;
+}
+
+.coupang-widget {
+    margin-top: 0;
 }
 
 header h1 {
