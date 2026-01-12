@@ -11,7 +11,9 @@
         <header class="compact-header">
             <div class="header-top">
                 <h1><a href="/">Cheer Factory</a></h1>
-                <div class="lang-switch">
+                <div class="header-right">
+                    <a href="/admin" class="admin-link">Admin</a>
+                    <span class="divider">|</span>
                     <a href="?lang=ko{% if query %}&q={{ query }}{% endif %}" class="{% if lang == 'ko' %}active{% endif %}">KO</a>
                     <span class="divider">|</span>
                     <a href="?lang=en{% if query %}&q={{ query }}{% endif %}" class="{% if lang == 'en' %}active{% endif %}">EN</a>
@@ -81,13 +83,6 @@
 
         <footer>
             <p>&copy; Cheer Factory</p>
-            <div class="footer-links">
-                <a href="https://submit.shutterstock.com/" target="_blank" class="stock-link">Shutterstock</a>
-                <span class="divider">|</span>
-                <a href="https://contributor.stock.adobe.com/" target="_blank" class="stock-link">Adobe Stock</a>
-                <span class="divider">|</span>
-                <a href="/admin" class="admin-link">Admin</a>
-            </div>
         </footer>
     </div>
 
