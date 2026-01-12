@@ -219,7 +219,12 @@ def translate_to_english(title, content):
     if not model:
         raise Exception("AI model not configured. Please set GOOGLE_API_KEY.")
 
-    prompt = f"""다음 한국어 블로그 글을 영어로 자연스럽게 번역해주세요.
+    prompt = f"""다음 한국어 블로그 글을 영어로 번역해주세요.
+
+번역 스타일:
+- 한국 대학생 수준의 영어로 번역
+- 너무 어렵거나 고급스러운 표현은 피하고, 일상적이고 친근한 영어 사용
+- 자연스럽고 읽기 쉬운 문장으로 작성
 
 제목: {title}
 
