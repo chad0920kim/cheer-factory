@@ -65,25 +65,25 @@
                     {% endif %}
                 </div>
             {% endif %}
+
+            {% if total_pages > 1 %}
+            <nav class="pagination">
+                {% if page > 1 %}
+                    <a href="?lang={{ lang }}{% if query %}&q={{ query }}{% endif %}&page={{ page - 1 }}">&laquo; Prev</a>
+                {% endif %}
+
+                <span class="page-info">{{ page }} / {{ total_pages }}</span>
+
+                {% if page < total_pages %}
+                    <a href="?lang={{ lang }}{% if query %}&q={{ query }}{% endif %}&page={{ page + 1 }}">Next &raquo;</a>
+                {% endif %}
+            </nav>
+            {% endif %}
+
+            <footer>
+                <p>&copy; Cheer Factory</p>
+            </footer>
         </main>
-
-        {% if total_pages > 1 %}
-        <nav class="pagination">
-            {% if page > 1 %}
-                <a href="?lang={{ lang }}{% if query %}&q={{ query }}{% endif %}&page={{ page - 1 }}">&laquo; Prev</a>
-            {% endif %}
-
-            <span class="page-info">{{ page }} / {{ total_pages }}</span>
-
-            {% if page < total_pages %}
-                <a href="?lang={{ lang }}{% if query %}&q={{ query }}{% endif %}&page={{ page + 1 }}">Next &raquo;</a>
-            {% endif %}
-        </nav>
-        {% endif %}
-
-        <footer>
-            <p>&copy; Cheer Factory</p>
-        </footer>
     </div>
 
 </body>
