@@ -36,6 +36,67 @@
         .tab-content.active {
             display: block;
         }
+        /* Image Search Grid */
+        .image-search-section {
+            margin-bottom: 12px;
+        }
+        .image-search-input {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .image-search-input input {
+            flex: 1;
+            margin-bottom: 0;
+        }
+        .translated-query {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 8px;
+        }
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .image-grid-item {
+            position: relative;
+            aspect-ratio: 4/3;
+            cursor: pointer;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        .image-grid-item:hover {
+            border-color: #333;
+        }
+        .image-grid-item.selected {
+            border-color: #2e7d32;
+        }
+        .image-grid-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .image-grid-item .photographer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            font-size: 9px;
+            padding: 2px 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .use-image-btn {
+            width: 100%;
+            margin-top: 8px;
+        }
     </style>
 </head>
 <body>
@@ -64,6 +125,19 @@
                         <div class="input-group">
                             <input type="text" id="topic" placeholder="Topic (optional)">
                             <button onclick="generatePost()" id="generateBtn">Generate</button>
+                        </div>
+                    </div>
+
+                    <div class="admin-section">
+                        <h2>Image Search (Unsplash)</h2>
+                        <div class="image-search-section">
+                            <div class="image-search-input">
+                                <input type="text" id="imageSearchQuery" placeholder="Search images (Korean OK)">
+                                <button onclick="searchImages()" id="searchImagesBtn">Search</button>
+                            </div>
+                            <div id="translatedQuery" class="translated-query"></div>
+                            <div id="imageSearchResults" class="image-grid"></div>
+                            <button onclick="useSelectedImage()" id="useImageBtn" class="use-image-btn" style="display:none;">Use This Image</button>
                         </div>
                     </div>
 
@@ -105,8 +179,124 @@
 
     <script>
         let generatedTags = [];
+        let selectedImage = null;
         const MAX_IMAGE_SIZE = 1920;
         const IMAGE_QUALITY = 0.85;
+
+        // Image Search functions
+        async function searchImages() {
+            const query = document.getElementById('imageSearchQuery').value;
+            const btn = document.getElementById('searchImagesBtn');
+            const resultsDiv = document.getElementById('imageSearchResults');
+            const translatedDiv = document.getElementById('translatedQuery');
+            const useBtn = document.getElementById('useImageBtn');
+            const status = document.getElementById('status');
+
+            if (!query.trim()) {
+                status.textContent = 'Enter a search query';
+                status.className = 'status error';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Searching...';
+            resultsDiv.innerHTML = '';
+            translatedDiv.textContent = '';
+            useBtn.style.display = 'none';
+            selectedImage = null;
+
+            try {
+                const res = await fetch('/admin/search-images', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query })
+                });
+                const data = await res.json();
+
+                if (data.error) {
+                    status.textContent = 'Error: ' + data.error;
+                    status.className = 'status error';
+                } else {
+                    if (data.translated_query) {
+                        translatedDiv.textContent = `Translated: "${data.translated_query}"`;
+                    }
+
+                    if (data.images && data.images.length > 0) {
+                        resultsDiv.innerHTML = data.images.map(img => `
+                            <div class="image-grid-item" onclick="selectImage(this, '${img.regular}', '${img.download}', '${img.photographer}')">
+                                <img src="${img.thumb}" alt="Search result">
+                                <div class="photographer">${img.photographer}</div>
+                            </div>
+                        `).join('');
+                    } else {
+                        resultsDiv.innerHTML = '<p style="grid-column: span 3; text-align: center; color: #888;">No images found</p>';
+                    }
+                }
+            } catch (e) {
+                status.textContent = 'Error: ' + e.message;
+                status.className = 'status error';
+            }
+
+            btn.disabled = false;
+            btn.textContent = 'Search';
+        }
+
+        function selectImage(element, url, download, photographer) {
+            document.querySelectorAll('.image-grid-item').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedImage = { url, download, photographer };
+            document.getElementById('useImageBtn').style.display = 'block';
+        }
+
+        async function useSelectedImage() {
+            if (!selectedImage) return;
+
+            const btn = document.getElementById('useImageBtn');
+            const status = document.getElementById('status');
+
+            btn.disabled = true;
+            btn.textContent = 'Uploading to Cloudinary...';
+
+            try {
+                const res = await fetch('/admin/download-image', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        image_url: selectedImage.url,
+                        download_location: selectedImage.download
+                    })
+                });
+                const data = await res.json();
+
+                if (data.error) {
+                    status.textContent = 'Error: ' + data.error;
+                    status.className = 'status error';
+                } else {
+                    document.getElementById('imageUrl').value = data.image_url;
+                    status.textContent = `Image uploaded! Photo by ${selectedImage.photographer} on Unsplash`;
+                    status.className = 'status success';
+
+                    // Clear search
+                    document.getElementById('imageSearchResults').innerHTML = '';
+                    document.getElementById('translatedQuery').textContent = '';
+                    btn.style.display = 'none';
+                    selectedImage = null;
+                }
+            } catch (e) {
+                status.textContent = 'Error: ' + e.message;
+                status.className = 'status error';
+            }
+
+            btn.disabled = false;
+            btn.textContent = 'Use This Image';
+        }
+
+        // Allow Enter key to search
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('imageSearchQuery').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') searchImages();
+            });
+        });
 
         // Tab switching
         function switchTab(tabName) {

@@ -9,8 +9,16 @@ import cloudinary.uploader
 from datetime import datetime
 from dotenv import load_dotenv
 import google.generativeai as genai
+import time
 
 load_dotenv()
+
+# 메모리 캐시
+_posts_cache = {
+    "data": None,
+    "timestamp": 0,
+    "ttl": 60  # 60초 캐시
+}
 
 # Gemini AI 설정
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
@@ -32,6 +40,9 @@ cloudinary.config(
 
 # Admin 비밀번호 (환경변수 필수)
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD")
+
+# Unsplash API 설정
+UNSPLASH_ACCESS_KEY = os.getenv("UNSPLASH_ACCESS_KEY")
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", secrets.token_hex(16))
@@ -94,8 +105,91 @@ def parse_post_content(text):
     content = "\n".join(content_lines).strip()
     return title, content, tags, image_url
 
+def get_posts_index():
+    """GitHub에서 posts/index.json 가져오기"""
+    if not GITHUB_TOKEN or not GITHUB_REPO:
+        return None
+
+    url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/posts/index.json"
+    headers = {"Authorization": f"token {GITHUB_TOKEN}"}
+
+    try:
+        response = requests.get(url, headers=headers)
+        if response.status_code == 200:
+            file_data = response.json()
+            content = base64.b64decode(file_data["content"]).decode("utf-8")
+            return json.loads(content)
+    except:
+        pass
+    return None
+
+def save_posts_index(index_data):
+    """GitHub에 posts/index.json 저장"""
+    if not GITHUB_TOKEN or not GITHUB_REPO:
+        return False
+
+    headers = {
+        "Authorization": f"token {GITHUB_TOKEN}",
+        "Accept": "application/vnd.github.v3+json"
+    }
+
+    url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/posts/index.json"
+
+    # 기존 SHA 가져오기
+    sha = None
+    response = requests.get(url, headers=headers)
+    if response.status_code == 200:
+        sha = response.json().get("sha")
+
+    # 저장
+    content_base64 = base64.b64encode(json.dumps(index_data, ensure_ascii=False, indent=2).encode("utf-8")).decode("utf-8")
+    payload = {
+        "message": "Update posts index",
+        "content": content_base64,
+        "branch": "master"
+    }
+    if sha:
+        payload["sha"] = sha
+
+    save_response = requests.put(url, headers=headers, json=payload)
+    return save_response.status_code in [200, 201]
+
+def invalidate_cache():
+    """캐시 무효화"""
+    _posts_cache["data"] = None
+    _posts_cache["timestamp"] = 0
+
 def load_posts(lang=None):
-    """GitHub에서 모든 포스트를 로드"""
+    """GitHub에서 포스트 로드 (index.json 사용, 캐싱 적용)"""
+    global _posts_cache
+
+    # 캐시 확인
+    now = time.time()
+    if _posts_cache["data"] is not None and (now - _posts_cache["timestamp"]) < _posts_cache["ttl"]:
+        all_posts = _posts_cache["data"]
+    else:
+        # index.json에서 로드 시도
+        index_data = get_posts_index()
+
+        if index_data and "posts" in index_data:
+            all_posts = index_data["posts"]
+        else:
+            # index.json이 없으면 기존 방식으로 로드 후 index.json 생성
+            all_posts = load_posts_legacy()
+            if all_posts:
+                save_posts_index({"posts": all_posts, "updated": datetime.now().isoformat()})
+
+        # 캐시 저장
+        _posts_cache["data"] = all_posts
+        _posts_cache["timestamp"] = now
+
+    # 언어 필터링
+    if lang:
+        return [p for p in all_posts if p.get("lang") == lang]
+    return all_posts
+
+def load_posts_legacy():
+    """GitHub에서 모든 포스트를 로드 (기존 방식 - index.json 없을 때 사용)"""
     posts = []
 
     if not GITHUB_TOKEN or not GITHUB_REPO:
@@ -122,9 +216,6 @@ def load_posts(lang=None):
                 file_lang = "ko"
             elif filename.endswith("-en"):
                 file_lang = "en"
-
-            if lang and file_lang and file_lang != lang:
-                continue
 
             # 파일 내용 가져오기 (API로 직접 가져와서 캐시 방지)
             file_url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/posts/{f['name']}"
@@ -259,6 +350,44 @@ def get_existing_posts_count(date):
     count = sum(1 for f in files if f["name"].startswith(date) and f["name"].endswith("-ko.txt"))
     return count
 
+def add_post_to_index(post_data_ko, post_data_en):
+    """index.json에 새 포스트 추가"""
+    index_data = get_posts_index() or {"posts": [], "updated": ""}
+
+    # 새 포스트를 맨 앞에 추가 (최신순)
+    index_data["posts"].insert(0, post_data_ko)
+    index_data["posts"].insert(1, post_data_en)
+    index_data["updated"] = datetime.now().isoformat()
+
+    save_posts_index(index_data)
+    invalidate_cache()
+
+def update_post_in_index(post_id, updated_data):
+    """index.json에서 포스트 업데이트"""
+    index_data = get_posts_index()
+    if not index_data:
+        return
+
+    for i, post in enumerate(index_data.get("posts", [])):
+        if post.get("id") == post_id:
+            index_data["posts"][i].update(updated_data)
+            break
+
+    index_data["updated"] = datetime.now().isoformat()
+    save_posts_index(index_data)
+    invalidate_cache()
+
+def remove_post_from_index(post_id):
+    """index.json에서 포스트 삭제"""
+    index_data = get_posts_index()
+    if not index_data:
+        return
+
+    index_data["posts"] = [p for p in index_data.get("posts", []) if p.get("id") != post_id]
+    index_data["updated"] = datetime.now().isoformat()
+    save_posts_index(index_data)
+    invalidate_cache()
+
 def publish_to_github(title_ko, content_ko, title_en, content_en, tags="", image_url=""):
     """GitHub에 포스트 배포"""
     today = datetime.now().strftime("%Y-%m-%d")
@@ -307,6 +436,28 @@ def publish_to_github(title_ko, content_ko, title_en, content_en, tags="", image
     if response_en.status_code not in [200, 201]:
         error_msg = response_en.json().get("message", "Unknown error")
         raise Exception(f"EN publish failed: {error_msg} (status: {response_en.status_code})")
+
+    # index.json 업데이트
+    tags_list = [t.strip() for t in tags.split(",") if t.strip()] if tags else []
+    post_data_ko = {
+        "id": filename_ko[:-4],
+        "title": title_ko,
+        "date": today,
+        "content": content_ko,
+        "tags": tags_list,
+        "image_url": image_url,
+        "lang": "ko"
+    }
+    post_data_en = {
+        "id": filename_en[:-4],
+        "title": title_en,
+        "date": today,
+        "content": content_en,
+        "tags": tags_list,
+        "image_url": image_url,
+        "lang": "en"
+    }
+    add_post_to_index(post_data_ko, post_data_en)
 
     return True
 
@@ -608,6 +759,25 @@ def admin_update():
             "branch": "master"
         })
 
+    # index.json 업데이트
+    tags_list = [t.strip() for t in tags.split(",") if t.strip()] if tags else []
+    date = "-".join(base_id.split("-")[:3]) if "-" in base_id else base_id
+
+    update_post_in_index(f"{base_id}-ko", {
+        "title": title,
+        "content": content,
+        "tags": tags_list,
+        "image_url": image_url,
+        "date": date
+    })
+    update_post_in_index(f"{base_id}-en", {
+        "title": title_en,
+        "content": content_en,
+        "tags": tags_list,
+        "image_url": image_url,
+        "date": date
+    })
+
     return jsonify({"success": True, "message": "Updated (KO + EN)"})
 
 @app.route("/admin/delete", methods=["POST"])
@@ -657,6 +827,8 @@ def admin_delete():
 
         if delete_response.status_code in [200, 204]:
             deleted.append(file_id)
+            # index.json에서도 삭제
+            remove_post_from_index(file_id)
         else:
             errors.append(file_id)
 
@@ -664,6 +836,110 @@ def admin_delete():
         return jsonify({"success": True, "message": f"Deleted: {', '.join(deleted)}"})
     else:
         return jsonify({"error": "Failed to delete posts"}), 500
+
+def translate_query_to_english(query):
+    """한국어 검색어를 영어로 번역"""
+    if not model:
+        return query
+
+    # 영어만 있으면 그대로 반환
+    if query.isascii():
+        return query
+
+    try:
+        prompt = f"""다음 검색어를 영어로 번역해주세요. 번역 결과만 출력하세요.
+검색어: {query}"""
+        response = model.generate_content(prompt)
+        return response.text.strip()
+    except:
+        return query
+
+@app.route("/admin/search-images", methods=["POST"])
+def admin_search_images():
+    """Unsplash에서 이미지 검색"""
+    if not session.get("admin_logged_in"):
+        return jsonify({"error": "Unauthorized"}), 401
+
+    if not UNSPLASH_ACCESS_KEY:
+        return jsonify({"error": "Unsplash API key not configured"}), 500
+
+    data = request.json
+    query = data.get("query", "")
+
+    if not query:
+        return jsonify({"error": "Search query required"}), 400
+
+    # 한국어를 영어로 번역
+    translated_query = translate_query_to_english(query)
+
+    try:
+        url = "https://api.unsplash.com/search/photos"
+        params = {
+            "query": translated_query,
+            "per_page": 12,
+            "orientation": "landscape"
+        }
+        headers = {
+            "Authorization": f"Client-ID {UNSPLASH_ACCESS_KEY}"
+        }
+
+        response = requests.get(url, params=params, headers=headers)
+
+        if response.status_code != 200:
+            return jsonify({"error": f"Unsplash API error: {response.status_code}"}), 500
+
+        data = response.json()
+        images = []
+
+        for photo in data.get("results", []):
+            images.append({
+                "id": photo["id"],
+                "thumb": photo["urls"]["thumb"],
+                "regular": photo["urls"]["regular"],
+                "download": photo["links"]["download_location"],
+                "photographer": photo["user"]["name"],
+                "photographer_url": photo["user"]["links"]["html"]
+            })
+
+        return jsonify({
+            "images": images,
+            "translated_query": translated_query if translated_query != query else None
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/admin/download-image", methods=["POST"])
+def admin_download_image():
+    """Unsplash 이미지 다운로드 및 Cloudinary 업로드"""
+    if not session.get("admin_logged_in"):
+        return jsonify({"error": "Unauthorized"}), 401
+
+    data = request.json
+    image_url = data.get("image_url", "")
+    download_location = data.get("download_location", "")
+
+    if not image_url:
+        return jsonify({"error": "Image URL required"}), 400
+
+    try:
+        # Unsplash 다운로드 트래킹 (API 요구사항)
+        if download_location and UNSPLASH_ACCESS_KEY:
+            requests.get(download_location, headers={
+                "Authorization": f"Client-ID {UNSPLASH_ACCESS_KEY}"
+            })
+
+        # Cloudinary에 URL로 직접 업로드
+        upload_result = cloudinary.uploader.upload(
+            image_url,
+            folder="cheer-factory"
+        )
+
+        return jsonify({
+            "success": True,
+            "image_url": upload_result.get("secure_url", "")
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5000)
