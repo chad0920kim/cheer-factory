@@ -52,6 +52,14 @@ header.compact-header .search-box {
     margin-top: 0;
 }
 
+.coupang-notice {
+    font-size: 9px;
+    color: #999;
+    margin-top: 4px;
+    text-align: center;
+    white-space: nowrap;
+}
+
 header h1 {
     font-size: 28px;
     font-weight: 700;
