@@ -41,8 +41,8 @@ cloudinary.config(
 # Admin 비밀번호 (환경변수 필수)
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD")
 
-# Unsplash API 설정
-UNSPLASH_ACCESS_KEY = os.getenv("UNSPLASH_ACCESS_KEY")
+# Pexels API 설정
+PEXELS_API_KEY = os.getenv("PEXELS_API_KEY")
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", secrets.token_hex(16))
@@ -856,12 +856,12 @@ def translate_query_to_english(query):
 
 @app.route("/admin/search-images", methods=["POST"])
 def admin_search_images():
-    """Unsplash에서 이미지 검색"""
+    """Pexels에서 이미지 검색"""
     if not session.get("admin_logged_in"):
         return jsonify({"error": "Unauthorized"}), 401
 
-    if not UNSPLASH_ACCESS_KEY:
-        return jsonify({"error": "Unsplash API key not configured"}), 500
+    if not PEXELS_API_KEY:
+        return jsonify({"error": "Pexels API key not configured"}), 500
 
     data = request.json
     query = data.get("query", "")
@@ -873,32 +873,31 @@ def admin_search_images():
     translated_query = translate_query_to_english(query)
 
     try:
-        url = "https://api.unsplash.com/search/photos"
+        url = "https://api.pexels.com/v1/search"
         params = {
             "query": translated_query,
             "per_page": 12,
             "orientation": "landscape"
         }
         headers = {
-            "Authorization": f"Client-ID {UNSPLASH_ACCESS_KEY}"
+            "Authorization": PEXELS_API_KEY
         }
 
         response = requests.get(url, params=params, headers=headers)
 
         if response.status_code != 200:
-            return jsonify({"error": f"Unsplash API error: {response.status_code}"}), 500
+            return jsonify({"error": f"Pexels API error: {response.status_code}"}), 500
 
         data = response.json()
         images = []
 
-        for photo in data.get("results", []):
+        for photo in data.get("photos", []):
             images.append({
                 "id": photo["id"],
-                "thumb": photo["urls"]["thumb"],
-                "regular": photo["urls"]["regular"],
-                "download": photo["links"]["download_location"],
-                "photographer": photo["user"]["name"],
-                "photographer_url": photo["user"]["links"]["html"]
+                "thumb": photo["src"]["small"],
+                "regular": photo["src"]["large"],
+                "photographer": photo["photographer"],
+                "photographer_url": photo["photographer_url"]
             })
 
         return jsonify({
@@ -910,24 +909,17 @@ def admin_search_images():
 
 @app.route("/admin/download-image", methods=["POST"])
 def admin_download_image():
-    """Unsplash 이미지 다운로드 및 Cloudinary 업로드"""
+    """Pexels 이미지 다운로드 및 Cloudinary 업로드"""
     if not session.get("admin_logged_in"):
         return jsonify({"error": "Unauthorized"}), 401
 
     data = request.json
     image_url = data.get("image_url", "")
-    download_location = data.get("download_location", "")
 
     if not image_url:
         return jsonify({"error": "Image URL required"}), 400
 
     try:
-        # Unsplash 다운로드 트래킹 (API 요구사항)
-        if download_location and UNSPLASH_ACCESS_KEY:
-            requests.get(download_location, headers={
-                "Authorization": f"Client-ID {UNSPLASH_ACCESS_KEY}"
-            })
-
         # Cloudinary에 URL로 직접 업로드
         upload_result = cloudinary.uploader.upload(
             image_url,

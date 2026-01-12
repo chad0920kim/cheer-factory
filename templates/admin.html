@@ -129,7 +129,7 @@
                     </div>
 
                     <div class="admin-section">
-                        <h2>Image Search (Unsplash)</h2>
+                        <h2>Image Search (Pexels)</h2>
                         <div class="image-search-section">
                             <div class="image-search-input">
                                 <input type="text" id="imageSearchQuery" placeholder="Search images (Korean OK)">
@@ -223,7 +223,7 @@
 
                     if (data.images && data.images.length > 0) {
                         resultsDiv.innerHTML = data.images.map(img => `
-                            <div class="image-grid-item" onclick="selectImage(this, '${img.regular}', '${img.download}', '${img.photographer}')">
+                            <div class="image-grid-item" onclick="selectImage(this, '${img.regular}', '${img.photographer}')">
                                 <img src="${img.thumb}" alt="Search result">
                                 <div class="photographer">${img.photographer}</div>
                             </div>
@@ -241,10 +241,10 @@
             btn.textContent = 'Search';
         }
 
-        function selectImage(element, url, download, photographer) {
+        function selectImage(element, url, photographer) {
             document.querySelectorAll('.image-grid-item').forEach(el => el.classList.remove('selected'));
             element.classList.add('selected');
-            selectedImage = { url, download, photographer };
+            selectedImage = { url, photographer };
             document.getElementById('useImageBtn').style.display = 'block';
         }
 
@@ -262,8 +262,7 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        image_url: selectedImage.url,
-                        download_location: selectedImage.download
+                        image_url: selectedImage.url
                     })
                 });
                 const data = await res.json();
@@ -273,7 +272,7 @@
                     status.className = 'status error';
                 } else {
                     document.getElementById('imageUrl').value = data.image_url;
-                    status.textContent = `Image uploaded! Photo by ${selectedImage.photographer} on Unsplash`;
+                    status.textContent = `Image uploaded! Photo by ${selectedImage.photographer} on Pexels`;
                     status.className = 'status success';
 
                     // Clear search
