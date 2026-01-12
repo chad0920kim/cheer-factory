@@ -44,6 +44,12 @@ ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD")
 # Pexels API 설정
 PEXELS_API_KEY = os.getenv("PEXELS_API_KEY")
 
+# Google Analytics ID (환경변수)
+GA_ID = os.getenv("GA_ID")
+
+# 사이트 URL
+SITE_URL = os.getenv("SITE_URL", "https://cheer-factory.onrender.com")
+
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", secrets.token_hex(16))
 
@@ -275,8 +281,67 @@ def index():
         page=page,
         total_pages=total_pages,
         total_posts=total_posts,
-        lang=lang
+        lang=lang,
+        ga_id=GA_ID
     )
+
+# ============ SEO 기능 ============
+
+@app.route("/sitemap.xml")
+def sitemap():
+    """동적 sitemap.xml 생성"""
+    posts = load_posts()
+
+    xml_content = '<?xml version="1.0" encoding="UTF-8"?>\n'
+    xml_content += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+
+    # 메인 페이지
+    xml_content += f'  <url>\n'
+    xml_content += f'    <loc>{SITE_URL}/?lang=ko</loc>\n'
+    xml_content += f'    <changefreq>daily</changefreq>\n'
+    xml_content += f'    <priority>1.0</priority>\n'
+    xml_content += f'  </url>\n'
+
+    xml_content += f'  <url>\n'
+    xml_content += f'    <loc>{SITE_URL}/?lang=en</loc>\n'
+    xml_content += f'    <changefreq>daily</changefreq>\n'
+    xml_content += f'    <priority>1.0</priority>\n'
+    xml_content += f'  </url>\n'
+
+    # 포스트별 URL (날짜 기반)
+    added_dates = set()
+    for post in posts:
+        date = post.get("date", "")
+        lang = post.get("lang", "ko")
+        if date and f"{date}-{lang}" not in added_dates:
+            added_dates.add(f"{date}-{lang}")
+            xml_content += f'  <url>\n'
+            xml_content += f'    <loc>{SITE_URL}/?lang={lang}</loc>\n'
+            xml_content += f'    <lastmod>{date}</lastmod>\n'
+            xml_content += f'    <changefreq>weekly</changefreq>\n'
+            xml_content += f'    <priority>0.8</priority>\n'
+            xml_content += f'  </url>\n'
+
+    xml_content += '</urlset>'
+
+    from flask import Response
+    return Response(xml_content, mimetype='application/xml')
+
+@app.route("/robots.txt")
+def robots():
+    """robots.txt 제공"""
+    content = f"""User-agent: *
+Allow: /
+
+Sitemap: {SITE_URL}/sitemap.xml
+"""
+    from flask import Response
+    return Response(content, mimetype='text/plain')
+
+@app.route("/google076b9b43a09642c3.html")
+def google_verification():
+    """Google Search Console 소유권 확인 파일"""
+    return "google-site-verification: google076b9b43a09642c3.html"
 
 # ============ Admin 기능 ============
 
@@ -466,6 +531,33 @@ def admin():
     if not session.get("admin_logged_in"):
         return redirect(url_for("admin_login"))
     return render_template("admin.html")
+
+@app.route("/admin/stats")
+def admin_stats():
+    """사이트 통계 조회"""
+    if not session.get("admin_logged_in"):
+        return jsonify({"error": "Unauthorized"}), 401
+
+    posts = load_posts()
+
+    # 통계 계산
+    total_posts = len(posts)
+    posts_ko = len([p for p in posts if p.get("lang") == "ko"])
+    posts_en = len([p for p in posts if p.get("lang") == "en"])
+    posts_with_images = len([p for p in posts if p.get("image_url")])
+
+    # 최근 포스트 (한국어만, 5개)
+    recent_posts = [p for p in posts if p.get("lang") == "ko"][:5]
+
+    return jsonify({
+        "total_posts": total_posts,
+        "posts_ko": posts_ko,
+        "posts_en": posts_en,
+        "posts_with_images": posts_with_images,
+        "recent_posts": recent_posts,
+        "ga_configured": bool(GA_ID),
+        "ga_id": GA_ID[:10] + "..." if GA_ID and len(GA_ID) > 10 else GA_ID
+    })
 
 @app.route("/admin/login", methods=["GET", "POST"])
 def admin_login():

@@ -173,6 +173,79 @@
             font-size: 14px;
             cursor: pointer;
         }
+        /* Stats Styles */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .stat-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+        .stat-card .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #333;
+        }
+        .stat-card .stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+        .recent-posts {
+            margin-top: 16px;
+        }
+        .recent-posts h3 {
+            font-size: 14px;
+            margin-bottom: 8px;
+            color: #444;
+        }
+        .recent-post-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 13px;
+        }
+        .recent-post-item:last-child {
+            border-bottom: none;
+        }
+        .recent-post-item .post-date {
+            color: #888;
+        }
+        .seo-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 0;
+            font-size: 13px;
+        }
+        .seo-item .check {
+            color: #2e7d32;
+            font-weight: bold;
+        }
+        .seo-item .cross {
+            color: #c62828;
+            font-weight: bold;
+        }
+        .ga-configured {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        .ga-not-configured {
+            background: #fff3e0;
+            color: #e65100;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
@@ -192,6 +265,7 @@
                 <div class="tabs">
                     <button class="tab-btn active" onclick="switchTab('write')">Write</button>
                     <button class="tab-btn" onclick="switchTab('prompt')">Prompt</button>
+                    <button class="tab-btn" onclick="switchTab('stats')">Stats</button>
                 </div>
 
                 <!-- Write Tab -->
@@ -250,6 +324,43 @@
                         </p>
                         <textarea id="promptText" placeholder="Loading..." rows="15"></textarea>
                         <button onclick="savePrompt()" id="savePromptBtn" class="primary">Save Prompt</button>
+                    </div>
+                </div>
+
+                <!-- Stats Tab -->
+                <div id="tab-stats" class="tab-content">
+                    <div class="admin-section">
+                        <h2>Site Statistics</h2>
+                        <div id="statsContent" class="stats-content">
+                            <p style="color: #888;">Loading statistics...</p>
+                        </div>
+                    </div>
+
+                    <div class="admin-section">
+                        <h2>Google Analytics</h2>
+                        <p style="font-size: 13px; color: #666; margin-bottom: 12px;">
+                            Google Analytics를 설정하면 방문자 통계를 확인할 수 있습니다.
+                        </p>
+                        <div id="gaStatus" class="ga-status">
+                            <p style="color: #888;">Checking GA status...</p>
+                        </div>
+                        <div style="margin-top: 16px;">
+                            <h3 style="font-size: 14px; margin-bottom: 8px;">설정 방법:</h3>
+                            <ol style="font-size: 13px; color: #666; padding-left: 20px; line-height: 1.8;">
+                                <li><a href="https://analytics.google.com" target="_blank" style="color: #2196F3;">Google Analytics</a> 접속 후 계정 생성</li>
+                                <li>속성 추가 > 웹 선택 > URL 입력</li>
+                                <li>측정 ID(G-XXXXXXX) 복사</li>
+                                <li>Render 환경변수에 <code style="background: #f5f5f5; padding: 2px 6px; border-radius: 4px;">GA_ID=G-XXXXXXX</code> 추가</li>
+                                <li>서비스 재배포</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div class="admin-section">
+                        <h2>SEO Status</h2>
+                        <div id="seoStatus" class="seo-status">
+                            <p style="color: #888;">Loading SEO status...</p>
+                        </div>
                     </div>
                 </div>
 
@@ -452,6 +563,99 @@
             // Load prompt when switching to prompt tab
             if (tabName === 'prompt') {
                 loadPrompt();
+            }
+            // Load stats when switching to stats tab
+            if (tabName === 'stats') {
+                loadStats();
+            }
+        }
+
+        // Stats functions
+        async function loadStats() {
+            const statsContent = document.getElementById('statsContent');
+            const gaStatus = document.getElementById('gaStatus');
+            const seoStatus = document.getElementById('seoStatus');
+
+            try {
+                const res = await fetch('/admin/stats');
+                const data = await res.json();
+
+                if (data.error) {
+                    statsContent.innerHTML = `<p class="error">Error: ${data.error}</p>`;
+                    return;
+                }
+
+                // Render stats
+                statsContent.innerHTML = `
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value">${data.total_posts}</div>
+                            <div class="stat-label">Total Posts</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${data.posts_ko}</div>
+                            <div class="stat-label">Korean Posts</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${data.posts_en}</div>
+                            <div class="stat-label">English Posts</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${data.posts_with_images}</div>
+                            <div class="stat-label">Posts with Images</div>
+                        </div>
+                    </div>
+                    <div class="recent-posts">
+                        <h3>Recent Posts (KO)</h3>
+                        ${data.recent_posts.map(p => `
+                            <div class="recent-post-item">
+                                <span class="post-title">${p.title.substring(0, 30)}${p.title.length > 30 ? '...' : ''}</span>
+                                <span class="post-date">${p.date}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+
+                // GA Status
+                if (data.ga_configured) {
+                    gaStatus.innerHTML = `
+                        <div class="ga-configured">
+                            <strong>Google Analytics Configured</strong><br>
+                            ID: ${data.ga_id}<br><br>
+                            <a href="https://analytics.google.com" target="_blank" style="color: #1b5e20;">
+                                Open Google Analytics Dashboard
+                            </a>
+                        </div>
+                    `;
+                } else {
+                    gaStatus.innerHTML = `
+                        <div class="ga-not-configured">
+                            <strong>Google Analytics Not Configured</strong><br>
+                            환경변수 GA_ID를 설정해주세요.
+                        </div>
+                    `;
+                }
+
+                // SEO Status
+                seoStatus.innerHTML = `
+                    <div class="seo-item">
+                        <span class="check">✓</span> Meta tags configured
+                    </div>
+                    <div class="seo-item">
+                        <span class="check">✓</span> Open Graph tags configured
+                    </div>
+                    <div class="seo-item">
+                        <span class="check">✓</span> <a href="/sitemap.xml" target="_blank" style="color: #2196F3;">sitemap.xml</a> available
+                    </div>
+                    <div class="seo-item">
+                        <span class="check">✓</span> <a href="/robots.txt" target="_blank" style="color: #2196F3;">robots.txt</a> available
+                    </div>
+                    <div class="seo-item">
+                        ${data.ga_configured ? '<span class="check">✓</span>' : '<span class="cross">✗</span>'} Google Analytics
+                    </div>
+                `;
+            } catch (e) {
+                statsContent.innerHTML = `<p class="error">Error: ${e.message}</p>`;
             }
         }
 

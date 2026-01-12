@@ -1,9 +1,47 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="{{ lang }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cheer Factory</title>
+
+    <!-- SEO Meta Tags -->
+    <title>{% if query %}{{ query }} - {% endif %}Cheer Factory</title>
+    <meta name="description" content="{% if posts %}{{ posts[0].content[:150] }}...{% else %}직장인을 위한 따뜻한 응원 메시지. Warm encouragement messages for workers.{% endif %}">
+    <meta name="keywords" content="응원, 직장인, 힐링, 블로그, cheer, motivation, worker, healing">
+    <meta name="author" content="Cheer Factory">
+    <link rel="canonical" href="https://cheer-factory.onrender.com/?lang={{ lang }}{% if query %}&q={{ query }}{% endif %}{% if page > 1 %}&page={{ page }}{% endif %}">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://cheer-factory.onrender.com/?lang={{ lang }}">
+    <meta property="og:title" content="{% if query %}{{ query }} - {% endif %}Cheer Factory">
+    <meta property="og:description" content="{% if posts %}{{ posts[0].content[:150] }}...{% else %}직장인을 위한 따뜻한 응원 메시지{% endif %}">
+    {% if posts and posts[0].image_url %}
+    <meta property="og:image" content="{{ posts[0].image_url }}">
+    {% else %}
+    <meta property="og:image" content="https://cheer-factory.onrender.com/static/og-image.png">
+    {% endif %}
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://cheer-factory.onrender.com/?lang={{ lang }}">
+    <meta property="twitter:title" content="{% if query %}{{ query }} - {% endif %}Cheer Factory">
+    <meta property="twitter:description" content="{% if posts %}{{ posts[0].content[:150] }}...{% else %}직장인을 위한 따뜻한 응원 메시지{% endif %}">
+    {% if posts and posts[0].image_url %}
+    <meta property="twitter:image" content="{{ posts[0].image_url }}">
+    {% endif %}
+
+    <!-- Google Analytics -->
+    {% if ga_id %}
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ ga_id }}"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '{{ ga_id }}');
+    </script>
+    {% endif %}
+
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
