@@ -1,6 +1,24 @@
 {
   "posts": [
     {
+      "id": "2026-01-12-003-ko",
+      "title": "이불 밖은 위험해, 알아도 출근",
+      "date": "2026-01-12",
+      "content": "한겨울 아침, 이불 속은 천국이 따로 없지. 따뜻하고 포근하고, 모든 게 완벽한 도피처거든. \n\n눈은 감겨오고, 뇌는 '5분만 더'를 외치지만, 몸은 이미 알고 있지. 출근해야 한다는 잔혹한 현실을. \n\n이불을 박차고 나가는 순간, 칼바람이 뺨을 때리겠지만... 어쩌겠어, 밥벌이해야지.",
+      "tags": [],
+      "image_url": "",
+      "lang": "ko"
+    },
+    {
+      "id": "2026-01-12-003-en",
+      "title": "It's Dangerous Outside the Blanket, But I Still Gotta Go to Work",
+      "date": "2026-01-12",
+      "content": "Winter mornings are the best inside the blanket, right? It's warm and cozy, like the perfect escape. \n\nMy eyes feel heavy, and my brain's screaming 'Just five more minutes!', but my body already knows the cruel reality: I have to go to work. \n\nThe moment I kick off the blanket, a freezing wind will slap my face... but what can I do? Gotta make a living.",
+      "tags": [],
+      "image_url": "",
+      "lang": "en"
+    },
+    {
       "id": "2026-01-12-002-ko",
       "title": "바이브 코딩, 이 맛에 하는 거였어?",
       "date": "2026-01-12",
@@ -321,5 +339,5 @@
       "lang": "en"
     }
   ],
-  "updated": "2026-01-12T16:17:54.969130"
+  "updated": "2026-01-12T21:45:50.820936"
 }
