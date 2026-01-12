@@ -1,0 +1,307 @@
+{
+  "posts": [
+    {
+      "id": "2026-01-12-001-ko",
+      "title": "월요일, 살아남았다!",
+      "date": "2026-01-12",
+      "content": "정신없이 월요일이 지나갔네. 휴우. \n\n다들 무사히 살아남으셨는지 모르겠네. 월요병은 불치병이라더니, 정말 약도 없나 봐요. \n\n그래도 어찌 됐든 하루는 갔으니, 그걸로 된 거겠죠? 퇴근 후 맥주 한 잔으로 털어버리자구요! \n\n바이브 코딩하며 스트레스 날려버려야지. 뭐, 그것도 일의 연장이려나… 😅",
+      "tags": [],
+      "image_url": "",
+      "lang": "ko"
+    },
+    {
+      "id": "2026-01-12-001-en",
+      "title": "Survived Monday!",
+      "date": "2026-01-12",
+      "content": "Monday is finally over, what a whirlwind! Whew. \n\nHope everyone made it through unscathed. They say the Monday blues are incurable, and I guess there really is no cure. \n\nBut hey, at least one day is down, right? Let's wash it all away with a beer after work!\n\nGonna code with Vibe and blow off some steam. Although, I guess that's just an extension of work... 😅",
+      "tags": [],
+      "image_url": "",
+      "lang": "en"
+    },
+    {
+      "id": "2026-01-11-008-ko",
+      "title": "냉동피자 예찬",
+      "date": "2026-01-11",
+      "content": "냉동피자 구워 먹었는데, 세상 참 좋아졌어. 냉동 퀄리티가 거의 매장 수준이더라니까. \n\n집에 오븐 하나 들여놓으니 삶의 질이 달라지네. 비싼 피자 시켜 먹을 필요 없이, 맥주 한 캔 딱 따서 혼자 즐기는 여유. 이게 바로 소소한 행복 아니겠어? \n\n가끔은 완벽한 음식보다, 간편하게 즐기는 냉동피자가 더 위로가 될 때도 있더라.",
+      "tags": [
+        "pizza",
+        "slice of pizza",
+        "pepperoni",
+        "corn",
+        "cheese",
+        "ham",
+        "meat",
+        "tomato sauce",
+        "crust",
+        "wooden board",
+        "food photography",
+        "Italian cuisine",
+        "delicious",
+        "meal"
+      ],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1768174216/cheer-factory/yfqywcos0lkj9rl9rbn3.jpg",
+      "lang": "ko"
+    },
+    {
+      "id": "2026-01-11-008-en",
+      "title": "Ode to Frozen Pizza",
+      "date": "2026-01-11",
+      "content": "I baked a frozen pizza, and wow, times have really changed. The quality is almost restaurant-level now. \n\nGetting an oven at home has really improved my quality of life. No need to order expensive pizzas anymore, I can just crack open a beer and enjoy some me-time. Isn't this the definition of simple joys?\n\nSometimes, a conveniently-made frozen pizza is more comforting than a perfect meal.",
+      "tags": [
+        "pizza",
+        "slice of pizza",
+        "pepperoni",
+        "corn",
+        "cheese",
+        "ham",
+        "meat",
+        "tomato sauce",
+        "crust",
+        "wooden board",
+        "food photography",
+        "Italian cuisine",
+        "delicious",
+        "meal"
+      ],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1768174216/cheer-factory/yfqywcos0lkj9rl9rbn3.jpg",
+      "lang": "en"
+    },
+    {
+      "id": "2026-01-11-007-ko",
+      "title": "그 이름들을 다시 불러봅니다",
+      "date": "2026-01-11",
+      "content": "전태일, 박종철, 이한열... 이름만 들어도 가슴이 뭉클해지는 분들입니다.\n\n먹고 살기 힘든 시절, 더 나은 세상을 위해 자신의 모든 것을 던지셨죠.\n덕분에 지금 우리는 조금이라도 나은 환경에서 일할 수 있게 된 거겠죠. \n\n가끔 숨 막히는 야근에 투덜거릴 때면, 그분들의 희생이 떠오르더라구요.\n오늘 하루도 감사하는 마음으로, 조금이라도 더 좋은 세상을 만들기 위해 노력해야겠습니다.\n\n꼰대 같나요? 뭐, 어쩔 수 없네요. 저도 늙었나 봅니다. 껄껄.",
+      "tags": [],
+      "image_url": "",
+      "lang": "ko"
+    },
+    {
+      "id": "2026-01-11-007-en",
+      "title": "Calling Out Those Names Again",
+      "date": "2026-01-11",
+      "content": "Jeon Tae-il, Park Jong-cheol, Lee Han-yeol... Just hearing their names brings a lump to my throat.\n\nIn times when making ends meet was a struggle, they gave their all for a better world. Thanks to them, we can now work in a slightly better environment.\n\nSometimes, when I complain about suffocating late-night work, their sacrifices come to mind. I should spend today with a grateful heart, striving to make the world a little better.\n\nDoes that sound like something an old-timer would say? Well, I can't help it. I guess I'm getting old. Heh heh.",
+      "tags": [],
+      "image_url": "",
+      "lang": "en"
+    },
+    {
+      "id": "2026-01-11-006-ko",
+      "title": "미안한 밤, 데킬라 한 잔",
+      "date": "2026-01-11",
+      "content": "어젯밤, 묵혀뒀던 데킬라를 깠어. 사실 아끼고 아끼던 술이거든. 바이브코딩에 빠져 지내는 동안 와이프랑 제대로 데이트도 못 했잖아. 그 미안함에 큰 맘 먹고 오픈했지. \n\n오랜만에 마주 앉아 술잔을 기울이니, 그동안 소홀했던 시간이 스쳐 지나가더라. 코딩도 좋지만, 역시 옆에 있는 사람이 제일 중요한 거 같아.",
+      "tags": [
+        "Don Ramon",
+        "Tequila",
+        "Platinum",
+        "Anejo Cristalino",
+        "Alcohol",
+        "Liquor",
+        "Bottle",
+        "Clear bottle",
+        "Drink",
+        "Spirits",
+        "Mexican liquor",
+        "700ml",
+        "Alcoholic beverage",
+        "Glass bottle"
+      ],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1768118964/cheer-factory/fwrvi2gdrldqcakxehff.jpg",
+      "lang": "ko"
+    },
+    {
+      "id": "2026-01-11-006-en",
+      "title": "A Tequila Shot on a Sorry Night",
+      "date": "2026-01-11",
+      "content": "Last night, I finally cracked open that tequila I'd been saving. To be honest, it was a bottle I'd been cherishing. I've been so caught up in vibe coding lately that I haven't taken my wife out on a proper date. Feeling guilty, I decided to take the plunge and open it. \n\nSitting across from her, sipping our drinks after so long, I felt a pang of regret for the time I'd neglected her. Coding is great, but it's clear that the person beside me is the most important thing.",
+      "tags": [
+        "Don Ramon",
+        "Tequila",
+        "Platinum",
+        "Anejo Cristalino",
+        "Alcohol",
+        "Liquor",
+        "Bottle",
+        "Clear bottle",
+        "Drink",
+        "Spirits",
+        "Mexican liquor",
+        "700ml",
+        "Alcoholic beverage",
+        "Glass bottle"
+      ],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1768118964/cheer-factory/fwrvi2gdrldqcakxehff.jpg",
+      "lang": "en"
+    },
+    {
+      "id": "2026-01-11-005-ko",
+      "title": "인터컨티넨탈 롱바풀, 에일 한 잔의 사치",
+      "date": "2026-01-11",
+      "content": "인터컨티넨탈 다낭 롱바풀에서 시원한 에일 한 잔 들이키니, 세상 시름이 싹 잊히더라.\n\n물론 가격은 사악했지만...😂 텅 빈 내 통장 잔고를 생각하면 눈물이 찔끔 나지만, 오늘 하루 열심히 산 나를 위한 투자라고 생각하렵니다.\n\n가끔은 이런 일탈도 괜찮거든요. 너무 쳇바퀴처럼 굴러가지 말고, 자신만의 작은 행복을 찾아보세요. 물론 과소비는 금물! 😉",
+      "tags": [
+        "beer",
+        "pool",
+        "tropical",
+        "vacation",
+        "relax",
+        "luxury",
+        "travel",
+        "hand holding beer",
+        "palm trees",
+        "mountain",
+        "blue sky",
+        "swimming pool",
+        "summer",
+        "leisure",
+        "alcohol"
+      ],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1768114778/cheer-factory/rbifrhys67csbcymp1bz.jpg",
+      "lang": "ko"
+    },
+    {
+      "id": "2026-01-11-005-en",
+      "title": "InterContinental Danang Long Bar: An Extravagant Pint of Ale",
+      "date": "2026-01-11",
+      "content": "Sipping on a cold ale at the InterContinental Danang Long Bar completely washed away all my worries.\n\nOf course, the price was quite evil... 😂 Thinking about my empty bank account almost brought a tear to my eye, but I'll consider it an investment in myself for working hard today.\n\nSometimes, these little indulgences are okay. Don't get stuck in a rut, and find your own small moments of happiness. But remember, excessive spending is a no-no! 😉",
+      "tags": [
+        "beer",
+        "pool",
+        "tropical",
+        "vacation",
+        "relax",
+        "luxury",
+        "travel",
+        "hand holding beer",
+        "palm trees",
+        "mountain",
+        "blue sky",
+        "swimming pool",
+        "summer",
+        "leisure",
+        "alcohol"
+      ],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1768114778/cheer-factory/rbifrhys67csbcymp1bz.jpg",
+      "lang": "en"
+    },
+    {
+      "id": "2026-01-11-004-ko",
+      "title": "드디어 사진도 입력할 수 있게 됐어",
+      "date": "2026-01-11",
+      "content": "Cheer Factory 블로그, 드디어 이미지 업로드 기능을 추가했습니다! 짝짝짝. 뭔가 엄청난 변화는 아니지만, 저에겐 나름 의미있는 발전이거든요. \n\n그동안 글로만 끄적거렸는데, 이제 좀 더 다채로운 이야기를 풀어낼 수 있겠어요. 코딩 초보가 삽질하며 만든 기능이라 어설플지도 모르지만… 예쁘게 봐주세요. 앞으로 종종 사진 곁들여 소소한 일상이나 깨달음을 공유하려구요. 기대해도 좋습니다! (아, 물론 엄청난 고화질은 기대하지 마시구요. 😅)",
+      "tags": [
+        "cat",
+        "dog",
+        "kitchen",
+        "cooking",
+        "pet",
+        "domestic animal",
+        "cute",
+        "funny",
+        "tabby cat",
+        "husky mix",
+        "animal friends",
+        "food preparation",
+        "kitchenware",
+        "bowl"
+      ],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1768113801/cheer-factory/pakoprxro4fj4jasdhik.png",
+      "lang": "ko"
+    },
+    {
+      "id": "2026-01-11-004-en",
+      "title": "Finally! Images are Now Supported!",
+      "date": "2026-01-11",
+      "content": "The Cheer Factory blog finally has image upload capabilities! Hooray! It's not a huge change, but it's a pretty significant step for me. \n\nI've only been able to write text until now, but I can finally tell more diverse stories. Since it's a feature created by a coding newbie after a lot of trial and error, it might be a little clumsy... but please be understanding. I'm planning to share snippets of my daily life and insights, often with photos. You can look forward to it! (Oh, and don't expect super high-resolution images, though. 😅)",
+      "tags": [
+        "cat",
+        "dog",
+        "kitchen",
+        "cooking",
+        "pet",
+        "domestic animal",
+        "cute",
+        "funny",
+        "tabby cat",
+        "husky mix",
+        "animal friends",
+        "food preparation",
+        "kitchenware",
+        "bowl"
+      ],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1768113801/cheer-factory/pakoprxro4fj4jasdhik.png",
+      "lang": "en"
+    },
+    {
+      "id": "2026-01-11-003-ko",
+      "title": "이 블로그, 사업 삘 좀 나는데?",
+      "date": "2026-01-11",
+      "content": "솔직히 말해서, 처음엔 그냥 끄적거리는 낙서장이었거든. 누가 볼까 싶기도 하고.\n\n'Cheer Factory' 이거, 어쩌면 진짜 사업 아이템 될 수도 있겠다? 바이브코딩 배우는 김에 웹사이트 멋지게 만들어볼까. 아니, 너무 나갔나? 일단 조회수부터 좀 올려보자. (긁적)",
+      "tags": [],
+      "image_url": "",
+      "lang": "ko"
+    },
+    {
+      "id": "2026-01-11-003-en",
+      "title": "This Blog's Giving Off Business Vibes, No?",
+      "date": "2026-01-11",
+      "content": "To be honest, at first it was just a place for random scribbles. I wasn't even sure if anyone would see it.\n\n'Cheer Factory' - could this actually become a real business item? Maybe I should learn some vibe coding and make a cool website while I'm at it. Or am I getting ahead of myself? Let's try to boost those views first. (Scratching head)",
+      "tags": [],
+      "image_url": "",
+      "lang": "en"
+    },
+    {
+      "id": "2026-01-11-002-ko",
+      "title": "딸내미와 더치커피 사업, 인생 2막 시작?",
+      "date": "2026-01-11",
+      "content": "딸이랑 같이 더치커피를 만들어서 팔아보려고 계획 중이다. 5:5 수익 배분! 캬, 아주 공정하지. \n\n애 키우는 재미도 쏠쏠한데, 이제 사업 파트너라니. 감개무량하구먼. 근데… 벌써부터 '아빠, 마케팅은 이렇게 해야지!' 잔소리 폭격이다. \n\n그래도 좋다. 퇴근 후 딸이랑 커피 내리는 소소한 재미. 이게 바로 워라밸…인가?\n\n(긁적) 잘 되면 좋고, 안 돼도 뭐, 인생 경험이지 않겠나.",
+      "tags": [],
+      "image_url": "",
+      "lang": "ko"
+    },
+    {
+      "id": "2026-01-11-002-en",
+      "title": "Starting My Second Act: A Dutch Coffee Business with My Daughter?",
+      "date": "2026-01-11",
+      "content": "Planning to make and sell Dutch coffee with my daughter. A 50/50 profit split! Haha, perfectly fair. \n\nRaising her is already a lot of fun, but now she's my business partner too. It's incredibly moving. But... already getting bombarded with nagging: 'Dad, you gotta do marketing like this!'\n\nStill, it's great. The small joy of brewing coffee with my daughter after work. Is this what they call work-life balance...?\n\n(Scratching head) It'd be great if it works out, but if it doesn't, well, it'll be life experience, right?",
+      "tags": [],
+      "image_url": "",
+      "lang": "en"
+    },
+    {
+      "id": "2026-01-11-001-ko",
+      "title": "일요일 아침 커피 한 잔의 의미",
+      "date": "2026-01-11",
+      "content": "주말 아침, 늦잠 자고 싶지만 괜히 몸이 먼저 깨는 날 있잖아요. 밍기적거리다 결국 커피 한 잔 하러 나섭니다. 동네 카페에 삼삼오오 모여 앉아 각자의 시간을 보내는 사람들 구경하는 재미도 쏠쏠하거든요.\n\n일상적인 풍경인데, 평일의 분주함과는 다른 여유가 느껴져요. 따뜻한 커피 한 모금에 괜히 마음이 몽글몽글해지는 기분.\n\n이게 바로 소소한 행복 아닐까요? 별 거 아닌 일요일 아침 루틴이지만, 한 주를 버티게 해주는 힘이 되더라.\n바이브 코딩만큼 짜릿하진 않지만, 이 맛에 또 살아가는 거죠, 뭐.",
+      "tags": [],
+      "image_url": "",
+      "lang": "ko"
+    },
+    {
+      "id": "2026-01-11-001-en",
+      "title": "The Significance of a Sunday Morning Coffee",
+      "date": "2026-01-11",
+      "content": "There are those weekend mornings when you'd love to sleep in, but your body decides otherwise. After a bit of lazy lingering, you eventually head out for a cup of coffee. There's something quite enjoyable about watching the small groups of people gathered at the local cafe, each absorbed in their own little world.\n\nIt's a familiar scene, but it exudes a sense of calm that's absent during the weekday hustle. Taking a sip of warm coffee inexplicably makes my heart feel all soft and fuzzy.\n\nIsn't this what they call simple happiness? It's just a mundane Sunday morning routine, but it gives me the strength to get through the week. It's not as thrilling as, say, vibe coding, but hey, this is what makes life worth living.",
+      "tags": [],
+      "image_url": "",
+      "lang": "en"
+    },
+    {
+      "id": "2026-01-10-001-ko",
+      "title": "오늘 날이 굳다",
+      "date": "2026-01-10",
+      "content": "아침에 일어나니 하늘이 흐리다.\n이런 날은 괜히 마음도 무거워진다.\n\n하지만 생각해보면, 흐린 날이 있어야 맑은 날이 더 반갑지 않나.\n힘든 시간이 있어야 좋은 시간이 더 소중하게 느껴지듯이.\n\n오늘 하루도 그냥 버티는 거다.\n내일은 또 다를 테니까.",
+      "tags": [],
+      "image_url": "",
+      "lang": "ko"
+    },
+    {
+      "id": "2026-01-10-001-en",
+      "title": "A Cloudy Day",
+      "date": "2026-01-10",
+      "content": "I woke up this morning to a cloudy sky.\nDays like this make my heart feel heavy for no reason.\n\nBut when I think about it, don't we need cloudy days to appreciate sunny ones more?\nJust like how difficult times make the good times feel more precious.\n\nToday, I just keep going.\nTomorrow will be different.",
+      "tags": [],
+      "image_url": "",
+      "lang": "en"
+    }
+  ],
+  "updated": "2026-01-12T15:51:48.289939"
+}
