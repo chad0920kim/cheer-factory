@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Guestbook - Cheer Factory</title>
+    <meta name="description" content="Leave a message for Cheer Factory">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    {% if ga_id %}
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ ga_id }}"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '{{ ga_id }}');
+    </script>
+    {% endif %}
+
+    <style>
+        .guestbook-form {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+        .guestbook-form h2 {
+            font-size: 16px;
+            margin-bottom: 16px;
+            color: #333;
+        }
+        .guestbook-form input,
+        .guestbook-form textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 12px;
+            font-family: inherit;
+        }
+        .guestbook-form input:focus,
+        .guestbook-form textarea:focus {
+            outline: none;
+            border-color: #333;
+        }
+        .guestbook-form textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .guestbook-form button {
+            width: 100%;
+            padding: 12px;
+            background: #333;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .guestbook-form button:hover {
+            background: #555;
+        }
+        .guestbook-form button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        /* 허니팟 숨기기 */
+        .hp-field {
+            position: absolute;
+            left: -9999px;
+        }
+        .entry {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+        .entry-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .entry-nickname {
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+        .entry-date {
+            font-size: 11px;
+            color: #999;
+        }
+        .entry-message {
+            font-size: 14px;
+            color: #444;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .entry-reply {
+            margin-top: 12px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 3px solid #2e7d32;
+        }
+        .entry-reply-label {
+            font-size: 11px;
+            color: #2e7d32;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .entry-reply-text {
+            font-size: 13px;
+            color: #444;
+            white-space: pre-wrap;
+        }
+        .admin-actions {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #eee;
+        }
+        .admin-actions input {
+            width: calc(100% - 70px);
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+        .admin-actions button {
+            padding: 8px 12px;
+            font-size: 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-left: 4px;
+        }
+        .admin-actions .reply-btn {
+            background: #2e7d32;
+            color: white;
+        }
+        .admin-actions .delete-btn {
+            background: #ffebee;
+            color: #c62828;
+        }
+        .no-entries {
+            text-align: center;
+            padding: 40px 20px;
+            color: #888;
+            font-size: 14px;
+        }
+        .form-status {
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            margin-bottom: 12px;
+            display: none;
+        }
+        .form-status.success {
+            display: block;
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        .form-status.error {
+            display: block;
+            background: #ffebee;
+            color: #c62828;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="compact-header">
+            <div class="header-top">
+                <h1><a href="/">Cheer Factory</a></h1>
+                <div class="header-right">
+                    <a href="/?lang={{ lang }}">Home</a>
+                    <span class="divider">|</span>
+                    <a href="?lang=ko" class="{% if lang == 'ko' %}active{% endif %}">KO</a>
+                    <span class="divider">|</span>
+                    <a href="?lang=en" class="{% if lang == 'en' %}active{% endif %}">EN</a>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <div class="guestbook-form">
+                <h2>{% if lang == 'ko' %}방명록{% else %}Guestbook{% endif %}</h2>
+                <div id="formStatus" class="form-status"></div>
+                <form id="guestbookForm" onsubmit="submitEntry(event)">
+                    <input type="text" id="nickname" name="nickname"
+                           placeholder="{% if lang == 'ko' %}닉네임 (최대 20자){% else %}Nickname (max 20){% endif %}"
+                           maxlength="20" required>
+                    <textarea id="message" name="message"
+                              placeholder="{% if lang == 'ko' %}메시지를 남겨주세요 (최대 500자){% else %}Leave a message (max 500){% endif %}"
+                              maxlength="500" required></textarea>
+                    <!-- 허니팟 필드 (봇 탐지용) -->
+                    <input type="text" name="website" class="hp-field" tabindex="-1" autocomplete="off">
+                    <button type="submit" id="submitBtn">
+                        {% if lang == 'ko' %}등록하기{% else %}Submit{% endif %}
+                    </button>
+                </form>
+            </div>
+
+            <div id="entries">
+                <p style="text-align: center; color: #888;">Loading...</p>
+            </div>
+
+            <footer>
+                <p>&copy; Cheer Factory</p>
+            </footer>
+        </main>
+    </div>
+
+    <script>
+        const isAdmin = {{ 'true' if is_admin else 'false' }};
+        const lang = '{{ lang }}';
+
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString(lang === 'ko' ? 'ko-KR' : 'en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        async function loadEntries() {
+            try {
+                const res = await fetch('/api/guestbook');
+                const data = await res.json();
+
+                const container = document.getElementById('entries');
+
+                if (!data.entries || data.entries.length === 0) {
+                    container.innerHTML = `<div class="no-entries">${lang === 'ko' ? '아직 방명록이 없습니다.' : 'No entries yet.'}</div>`;
+                    return;
+                }
+
+                container.innerHTML = data.entries.map(entry => `
+                    <div class="entry" id="entry-${entry.id}">
+                        <div class="entry-header">
+                            <span class="entry-nickname">${escapeHtml(entry.nickname)}</span>
+                            <span class="entry-date">${formatDate(entry.created_at)}</span>
+                        </div>
+                        <div class="entry-message">${escapeHtml(entry.message)}</div>
+                        ${entry.reply ? `
+                            <div class="entry-reply">
+                                <div class="entry-reply-label">Admin Reply</div>
+                                <div class="entry-reply-text">${escapeHtml(entry.reply)}</div>
+                            </div>
+                        ` : ''}
+                        ${isAdmin ? `
+                            <div class="admin-actions">
+                                <input type="text" id="reply-${entry.id}" placeholder="Reply..." value="${entry.reply || ''}">
+                                <button class="reply-btn" onclick="replyEntry(${entry.id})">Reply</button>
+                                <button class="delete-btn" onclick="deleteEntry(${entry.id})">Delete</button>
+                            </div>
+                        ` : ''}
+                    </div>
+                `).join('');
+            } catch (e) {
+                console.error('Load failed:', e);
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        async function submitEntry(e) {
+            e.preventDefault();
+
+            const btn = document.getElementById('submitBtn');
+            const status = document.getElementById('formStatus');
+            const nickname = document.getElementById('nickname').value.trim();
+            const message = document.getElementById('message').value.trim();
+            const website = document.querySelector('input[name="website"]').value;
+
+            btn.disabled = true;
+            btn.textContent = lang === 'ko' ? '등록 중...' : 'Submitting...';
+
+            try {
+                const res = await fetch('/api/guestbook', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nickname, message, website })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    status.className = 'form-status success';
+                    status.textContent = lang === 'ko' ? '등록되었습니다!' : 'Submitted!';
+                    document.getElementById('guestbookForm').reset();
+                    loadEntries();
+                } else {
+                    status.className = 'form-status error';
+                    status.textContent = data.error || 'Error';
+                }
+            } catch (e) {
+                status.className = 'form-status error';
+                status.textContent = 'Network error';
+            }
+
+            btn.disabled = false;
+            btn.textContent = lang === 'ko' ? '등록하기' : 'Submit';
+
+            setTimeout(() => {
+                status.className = 'form-status';
+            }, 3000);
+        }
+
+        async function replyEntry(id) {
+            const reply = document.getElementById(`reply-${id}`).value.trim();
+            if (!reply) return;
+
+            try {
+                const res = await fetch(`/api/guestbook/${id}/reply`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ reply })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    loadEntries();
+                } else {
+                    alert(data.error || 'Error');
+                }
+            } catch (e) {
+                alert('Network error');
+            }
+        }
+
+        async function deleteEntry(id) {
+            if (!confirm(lang === 'ko' ? '삭제하시겠습니까?' : 'Delete this entry?')) return;
+
+            try {
+                const res = await fetch(`/api/guestbook/${id}`, {
+                    method: 'DELETE'
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    loadEntries();
+                } else {
+                    alert(data.error || 'Error');
+                }
+            } catch (e) {
+                alert('Network error');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadEntries);
+    </script>
+</body>
+</html>

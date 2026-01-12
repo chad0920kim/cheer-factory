@@ -10,8 +10,16 @@ from datetime import datetime
 from dotenv import load_dotenv
 import google.generativeai as genai
 import time
+from supabase import create_client, Client
 
 load_dotenv()
+
+# Supabase 설정
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+supabase: Client = None
+if SUPABASE_URL and SUPABASE_KEY:
+    supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # 메모리 캐시
 _posts_cache = {
@@ -342,6 +350,232 @@ Sitemap: {SITE_URL}/sitemap.xml
 def google_verification():
     """Google Search Console 소유권 확인 파일"""
     return "google-site-verification: google076b9b43a09642c3.html"
+
+# ============ 좋아요 기능 ============
+
+@app.route("/api/like/<post_id>", methods=["POST"])
+def add_like(post_id):
+    """좋아요 추가"""
+    if not supabase:
+        return jsonify({"error": "Database not configured"}), 500
+
+    try:
+        supabase.table("likes").insert({"post_id": post_id}).execute()
+        # 현재 좋아요 수 반환
+        result = supabase.table("likes").select("*", count="exact").eq("post_id", post_id).execute()
+        return jsonify({"success": True, "likes": result.count})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/likes/<post_id>", methods=["GET"])
+def get_likes(post_id):
+    """좋아요 수 조회"""
+    if not supabase:
+        return jsonify({"likes": 0})
+
+    try:
+        result = supabase.table("likes").select("*", count="exact").eq("post_id", post_id).execute()
+        return jsonify({"likes": result.count})
+    except Exception as e:
+        return jsonify({"error": str(e), "likes": 0})
+
+@app.route("/api/likes/bulk", methods=["POST"])
+def get_bulk_likes():
+    """여러 포스트의 좋아요 수 조회"""
+    if not supabase:
+        return jsonify({"likes": {}})
+
+    data = request.json
+    post_ids = data.get("post_ids", [])
+
+    if not post_ids:
+        return jsonify({"likes": {}})
+
+    try:
+        likes_dict = {}
+        for post_id in post_ids:
+            result = supabase.table("likes").select("*", count="exact").eq("post_id", post_id).execute()
+            likes_dict[post_id] = result.count
+        return jsonify({"likes": likes_dict})
+    except Exception as e:
+        return jsonify({"error": str(e), "likes": {}})
+
+# ============ 조회수 기능 ============
+
+@app.route("/api/view/<post_id>", methods=["POST"])
+def add_view(post_id):
+    """조회수 추가"""
+    if not supabase:
+        return jsonify({"error": "Database not configured"}), 500
+
+    try:
+        supabase.table("views").insert({"post_id": post_id}).execute()
+        result = supabase.table("views").select("*", count="exact").eq("post_id", post_id).execute()
+        return jsonify({"success": True, "views": result.count})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/views/<post_id>", methods=["GET"])
+def get_views(post_id):
+    """조회수 조회"""
+    if not supabase:
+        return jsonify({"views": 0})
+
+    try:
+        result = supabase.table("views").select("*", count="exact").eq("post_id", post_id).execute()
+        return jsonify({"views": result.count})
+    except Exception as e:
+        return jsonify({"error": str(e), "views": 0})
+
+@app.route("/api/stats/bulk", methods=["POST"])
+def get_bulk_stats():
+    """여러 포스트의 좋아요 + 조회수 한번에 조회"""
+    if not supabase:
+        return jsonify({"stats": {}})
+
+    data = request.json
+    post_ids = data.get("post_ids", [])
+
+    if not post_ids:
+        return jsonify({"stats": {}})
+
+    try:
+        stats_dict = {}
+        for post_id in post_ids:
+            likes_result = supabase.table("likes").select("*", count="exact").eq("post_id", post_id).execute()
+            views_result = supabase.table("views").select("*", count="exact").eq("post_id", post_id).execute()
+            stats_dict[post_id] = {
+                "likes": likes_result.count,
+                "views": views_result.count
+            }
+        return jsonify({"stats": stats_dict})
+    except Exception as e:
+        return jsonify({"error": str(e), "stats": {}})
+
+# ============ 방명록 기능 ============
+
+@app.route("/guestbook")
+def guestbook_page():
+    """방명록 페이지"""
+    lang = request.args.get("lang", "ko")
+    is_admin = session.get("admin_logged_in", False)
+    return render_template("guestbook.html", lang=lang, is_admin=is_admin, ga_id=GA_ID)
+
+@app.route("/api/guestbook", methods=["GET"])
+def get_guestbook():
+    """방명록 목록 조회"""
+    if not supabase:
+        return jsonify({"entries": []})
+
+    try:
+        result = supabase.table("guestbook").select("*").order("created_at", desc=True).limit(50).execute()
+        entries = []
+        for entry in result.data:
+            entries.append({
+                "id": entry["id"],
+                "nickname": entry["nickname"],
+                "message": entry["message"],
+                "reply": entry.get("reply"),
+                "created_at": entry["created_at"]
+            })
+        return jsonify({"entries": entries})
+    except Exception as e:
+        return jsonify({"error": str(e), "entries": []})
+
+# 스팸 방지용 레이트 리미팅 (메모리 기반)
+_guestbook_rate_limit = {}
+
+@app.route("/api/guestbook", methods=["POST"])
+def add_guestbook():
+    """방명록 글 작성 (스팸 방지 포함)"""
+    if not supabase:
+        return jsonify({"error": "Database not configured"}), 500
+
+    data = request.json
+    nickname = data.get("nickname", "").strip()
+    message = data.get("message", "").strip()
+    honeypot = data.get("website", "")  # 허니팟 필드 (봇 탐지용)
+
+    # 허니팟 체크 - 봇이 이 필드를 채우면 차단
+    if honeypot:
+        return jsonify({"success": True})  # 봇에게는 성공한 것처럼 보이게
+
+    if not nickname or not message:
+        return jsonify({"error": "Nickname and message required"}), 400
+
+    if len(nickname) > 20:
+        return jsonify({"error": "Nickname too long (max 20)"}), 400
+
+    if len(message) > 500:
+        return jsonify({"error": "Message too long (max 500)"}), 400
+
+    # 레이트 리미팅 (IP 기반, 60초에 1회)
+    client_ip = request.headers.get('X-Forwarded-For', request.remote_addr)
+    if client_ip:
+        client_ip = client_ip.split(',')[0].strip()
+
+    now = time.time()
+    last_post_time = _guestbook_rate_limit.get(client_ip, 0)
+
+    if now - last_post_time < 60:  # 60초 제한
+        remaining = int(60 - (now - last_post_time))
+        return jsonify({"error": f"Please wait {remaining} seconds"}), 429
+
+    _guestbook_rate_limit[client_ip] = now
+
+    # 오래된 레이트 리밋 기록 정리 (5분 이상)
+    _guestbook_rate_limit.update({
+        ip: t for ip, t in _guestbook_rate_limit.items()
+        if now - t < 300
+    })
+
+    try:
+        supabase.table("guestbook").insert({
+            "nickname": nickname,
+            "message": message
+        }).execute()
+        return jsonify({"success": True})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/guestbook/<int:entry_id>/reply", methods=["POST"])
+def reply_guestbook(entry_id):
+    """방명록 댓글 (Admin 전용)"""
+    if not session.get("admin_logged_in"):
+        return jsonify({"error": "Unauthorized"}), 401
+
+    if not supabase:
+        return jsonify({"error": "Database not configured"}), 500
+
+    data = request.json
+    reply = data.get("reply", "").strip()
+
+    if not reply:
+        return jsonify({"error": "Reply required"}), 400
+
+    if len(reply) > 500:
+        return jsonify({"error": "Reply too long (max 500)"}), 400
+
+    try:
+        supabase.table("guestbook").update({"reply": reply}).eq("id", entry_id).execute()
+        return jsonify({"success": True})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/guestbook/<int:entry_id>", methods=["DELETE"])
+def delete_guestbook(entry_id):
+    """방명록 삭제 (Admin 전용)"""
+    if not session.get("admin_logged_in"):
+        return jsonify({"error": "Unauthorized"}), 401
+
+    if not supabase:
+        return jsonify({"error": "Database not configured"}), 500
+
+    try:
+        supabase.table("guestbook").delete().eq("id", entry_id).execute()
+        return jsonify({"success": True})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 # ============ Admin 기능 ============
 

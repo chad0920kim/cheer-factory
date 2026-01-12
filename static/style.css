@@ -559,7 +559,40 @@ footer .admin-link:hover {
     margin-top: 12px;
     padding-top: 12px;
     border-top: 1px solid #f0f0f0;
-    text-align: right;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.like-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    background: #f5f5f5;
+    border: none;
+    border-radius: 16px;
+    cursor: pointer;
+    font-size: 13px;
+    color: #666;
+    transition: all 0.2s;
+}
+
+.like-btn:hover {
+    background: #eee;
+}
+
+.like-btn.liked {
+    background: #fff0f0;
+    color: #e74c3c;
+}
+
+.like-btn .like-icon {
+    font-size: 14px;
+}
+
+.like-btn .like-count {
+    font-size: 12px;
 }
 
 .edit-link {
