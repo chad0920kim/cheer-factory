@@ -1,6 +1,24 @@
 {
   "posts": [
     {
+      "id": "2026-01-12-002-ko",
+      "title": "바이브 코딩, 이 맛에 하는 거였어?",
+      "date": "2026-01-12",
+      "content": "솔직히 바이브 코딩이라고 놀림 좀 받았지. 10년 넘게 인사만 하던 아재가 갑자기 코딩이라니. 쯧쯧. \n\n근데 있잖아, 이거 묘하게 재밌더라. 뭐 대단한 건 아니어도, 엑셀 자동화 스크립트 짜고, 간단한 웹 페이지 만들고. \n\n전에는 상상도 못했던 일들이 눈앞에서 펼쳐지는데, 신세계가 따로 없어. 이제 퇴직해도 굶어 죽진 않겠…지? 뭐라도 만들어서 팔아볼까나. 허허.",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1768234658/cheer-factory/rooad3ikpoutyehj9iro.jpg",
+      "lang": "ko"
+    },
+    {
+      "id": "2026-01-12-002-en",
+      "title": "So, This Is Why People Do Vibe Coding?",
+      "date": "2026-01-12",
+      "content": "To be honest, I got teased a bit for doing \"vibe coding.\" An old guy who's been just saying hi for over 10 years suddenly coding? Tsk tsk. \n\nBut you know what? It's surprisingly fun. Nothing too fancy, but I'm writing scripts to automate Excel stuff and making simple web pages.\n\nThings I never even imagined before are happening right in front of me. It's like a whole new world. Now I won't starve even after I retire... right? Maybe I'll make something and sell it. Hehe.",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1768234658/cheer-factory/rooad3ikpoutyehj9iro.jpg",
+      "lang": "en"
+    },
+    {
       "id": "2026-01-12-001-ko",
       "title": "월요일, 살아남았다!",
       "date": "2026-01-12",
@@ -303,5 +321,5 @@
       "lang": "en"
     }
   ],
-  "updated": "2026-01-12T15:51:48.289939"
+  "updated": "2026-01-12T16:17:54.969130"
 }
