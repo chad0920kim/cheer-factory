@@ -23,17 +23,24 @@
         <main>
             <div class="admin-panel">
                 <div class="admin-section">
+                    <h2>Image Upload + Tags</h2>
+                    <input type="file" id="imageInput" accept="image/*" onchange="analyzeImage()">
+                    <div id="imagePreview" class="image-preview">
+                        {% if image_url %}
+                        <img src="{{ image_url }}" alt="Current image">
+                        {% endif %}
+                    </div>
+                    <div id="tagsResult" class="tags-result"></div>
+                    <div id="uploadedUrl" class="uploaded-url"></div>
+                    <button onclick="copyTags()" id="copyTagsBtn" style="display:none;">Copy Tags</button>
+                </div>
+
+                <div class="admin-section">
                     <h2>Edit Post</h2>
                     <input type="text" id="title" placeholder="Title" value="{{ title }}">
                     <textarea id="content" placeholder="Content..." rows="8">{{ content }}</textarea>
                     <input type="text" id="tags" placeholder="Tags (comma separated)" value="{{ tags }}">
                     <input type="text" id="imageUrl" placeholder="Image URL (from stock site)" value="{{ image_url }}">
-
-                    {% if image_url %}
-                    <div class="image-preview">
-                        <img src="{{ image_url }}" alt="Current image">
-                    </div>
-                    {% endif %}
 
                     <div class="button-group">
                         <button onclick="updatePost()" id="updateBtn" class="primary">Update</button>
@@ -48,6 +55,122 @@
 
     <script>
         const postId = "{{ post_id }}";
+        let generatedTags = [];
+        const MAX_IMAGE_SIZE = 1920;
+        const IMAGE_QUALITY = 0.85;
+
+        // Image resize
+        function resizeImage(file) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        let width = img.width;
+                        let height = img.height;
+
+                        if (width <= MAX_IMAGE_SIZE && height <= MAX_IMAGE_SIZE) {
+                            resolve(file);
+                            return;
+                        }
+
+                        if (width > height) {
+                            if (width > MAX_IMAGE_SIZE) {
+                                height = Math.round(height * MAX_IMAGE_SIZE / width);
+                                width = MAX_IMAGE_SIZE;
+                            }
+                        } else {
+                            if (height > MAX_IMAGE_SIZE) {
+                                width = Math.round(width * MAX_IMAGE_SIZE / height);
+                                height = MAX_IMAGE_SIZE;
+                            }
+                        }
+
+                        const canvas = document.createElement('canvas');
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        canvas.toBlob((blob) => {
+                            const resizedFile = new File([blob], file.name, {
+                                type: 'image/jpeg',
+                                lastModified: Date.now()
+                            });
+                            resolve(resizedFile);
+                        }, 'image/jpeg', IMAGE_QUALITY);
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        async function analyzeImage() {
+            const input = document.getElementById('imageInput');
+            const preview = document.getElementById('imagePreview');
+            const tagsResult = document.getElementById('tagsResult');
+            const copyBtn = document.getElementById('copyTagsBtn');
+            const status = document.getElementById('status');
+
+            if (!input.files || !input.files[0]) return;
+
+            let file = input.files[0];
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                preview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+            };
+            reader.readAsDataURL(file);
+
+            tagsResult.innerHTML = '<p>Resizing & Uploading...</p>';
+            status.textContent = '';
+            const uploadedUrl = document.getElementById('uploadedUrl');
+            uploadedUrl.innerHTML = '';
+
+            file = await resizeImage(file);
+            tagsResult.innerHTML = '<p>Analyzing...</p>';
+
+            const formData = new FormData();
+            formData.append('image', file);
+
+            try {
+                const res = await fetch('/admin/analyze-image', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await res.json();
+
+                if (data.error) {
+                    tagsResult.innerHTML = `<p class="error">Error: ${data.error}</p>`;
+                } else {
+                    generatedTags = data.tags || [];
+                    const tagsHtml = generatedTags.map(t => `<span class="tag">${t}</span>`).join('');
+                    tagsResult.innerHTML = `
+                        <p class="description">${data.description || ''}</p>
+                        <div class="tags-list">${tagsHtml}</div>
+                    `;
+                    copyBtn.style.display = 'block';
+                    document.getElementById('tags').value = generatedTags.join(',');
+
+                    if (data.image_url) {
+                        document.getElementById('imageUrl').value = data.image_url;
+                        uploadedUrl.innerHTML = `<p class="success">Image uploaded to Cloudinary!</p>`;
+                    }
+                }
+            } catch (e) {
+                tagsResult.innerHTML = `<p class="error">Error: ${e.message}</p>`;
+            }
+        }
+
+        function copyTags() {
+            const tagsText = generatedTags.join(',');
+            navigator.clipboard.writeText(tagsText).then(() => {
+                const btn = document.getElementById('copyTagsBtn');
+                btn.textContent = 'Copied!';
+                setTimeout(() => { btn.textContent = 'Copy Tags'; }, 2000);
+            });
+        }
 
         async function updatePost() {
             const title = document.getElementById('title').value;
