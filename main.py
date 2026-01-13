@@ -1238,7 +1238,7 @@ def admin_generate_image():
     try:
         # Gemini 2.5 Flash Image 모델 사용 (Nano Banana)
         response = client.models.generate_content(
-            model="gemini-2.5-flash-preview-image-generation",
+            model="gemini-2.5-flash-image",
             contents=[image_prompt],
         )
 
