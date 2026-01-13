@@ -8,7 +8,8 @@ import cloudinary
 import cloudinary.uploader
 from datetime import datetime
 from dotenv import load_dotenv
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 import time
 from supabase import create_client, Client
 
@@ -28,15 +29,11 @@ _posts_cache = {
     "ttl": 60  # 60초 캐시
 }
 
-# Gemini AI 설정
+# Gemini AI 설정 (google-genai 패키지 사용)
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
-model = None
-image_model = None
+client = None
 if GOOGLE_API_KEY:
-    genai.configure(api_key=GOOGLE_API_KEY)
-    model = genai.GenerativeModel("gemini-2.0-flash")
-    # 이미지 생성 모델 (Imagen 3 사용)
-    image_model = True  # 이미지 생성 기능 활성화 플래그
+    client = genai.Client(api_key=GOOGLE_API_KEY)
 
 # GitHub 설정
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
@@ -585,7 +582,7 @@ def delete_guestbook(entry_id):
 
 def generate_post_content(topic=None):
     """AI로 글 생성"""
-    if not model:
+    if not client:
         raise Exception("AI model not configured. Please set GOOGLE_API_KEY.")
 
     system_prompt = get_system_prompt()
@@ -596,7 +593,10 @@ def generate_post_content(topic=None):
 JSON 형식으로 응답해주세요:
 {{"title": "글 제목", "content": "글 본문"}}"""
 
-    response = model.generate_content(prompt)
+    response = client.models.generate_content(
+        model="gemini-2.0-flash",
+        contents=prompt
+    )
     text = response.text.strip()
 
     if text.startswith("```json"):
@@ -610,7 +610,7 @@ JSON 형식으로 응답해주세요:
 
 def translate_to_english(title, content):
     """한국어를 영어로 번역"""
-    if not model:
+    if not client:
         raise Exception("AI model not configured. Please set GOOGLE_API_KEY.")
 
     prompt = f"""다음 한국어 블로그 글을 영어로 번역해주세요.
@@ -628,7 +628,10 @@ def translate_to_english(title, content):
 JSON 형식으로 응답해주세요:
 {{"title": "영어 제목", "content": "영어 본문"}}"""
 
-    response = model.generate_content(prompt)
+    response = client.models.generate_content(
+        model="gemini-2.0-flash",
+        contents=prompt
+    )
     text = response.text.strip()
 
     if text.startswith("```json"):
@@ -917,7 +920,7 @@ def admin_analyze_image():
     if not session.get("admin_logged_in"):
         return jsonify({"error": "Unauthorized"}), 401
 
-    if not model:
+    if not client:
         return jsonify({"error": "AI model not configured"}), 500
 
     if "image" not in request.files:
@@ -929,11 +932,6 @@ def admin_analyze_image():
 
     try:
         # Gemini Vision으로 이미지 분석
-        image_part = {
-            "mime_type": image_file.content_type,
-            "data": image_base64
-        }
-
         prompt = """이 이미지를 분석해서 스톡 이미지 사이트에 업로드할 때 사용할 태그를 생성해주세요.
 
 태그 요구사항:
@@ -945,7 +943,18 @@ def admin_analyze_image():
 JSON 형식으로 응답:
 {"tags": ["tag1", "tag2", ...], "description": "이미지 설명 (한국어)"}"""
 
-        response = model.generate_content([prompt, image_part])
+        response = client.models.generate_content(
+            model="gemini-2.0-flash",
+            contents=[
+                types.Content(
+                    role="user",
+                    parts=[
+                        types.Part.from_text(text=prompt),
+                        types.Part.from_bytes(data=image_data, mime_type=image_file.content_type)
+                    ]
+                )
+            ]
+        )
         text = response.text.strip()
 
         if text.startswith("```json"):
@@ -1169,7 +1178,7 @@ def admin_delete():
 
 def translate_query_to_english(query):
     """한국어 검색어를 영어로 번역"""
-    if not model:
+    if not client:
         return query
 
     # 영어만 있으면 그대로 반환
@@ -1179,20 +1188,61 @@ def translate_query_to_english(query):
     try:
         prompt = f"""다음 검색어를 영어로 번역해주세요. 번역 결과만 출력하세요.
 검색어: {query}"""
-        response = model.generate_content(prompt)
+        response = client.models.generate_content(
+            model="gemini-2.0-flash",
+            contents=prompt
+        )
         return response.text.strip()
     except:
         return query
 
 @app.route("/admin/generate-image", methods=["POST"])
 def admin_generate_image():
-    """AI로 이미지 생성 - 현재 비활성화됨"""
+    """AI로 이미지 생성 (Imagen 3)"""
     if not session.get("admin_logged_in"):
         return jsonify({"error": "Unauthorized"}), 401
 
-    # google-generativeai 패키지가 deprecated되어 이미지 생성 기능 비활성화
-    # 추후 google-genai 패키지로 마이그레이션 필요
-    return jsonify({"error": "AI image generation is temporarily unavailable. Please use Stock Image Search instead."}), 503
+    if not client:
+        return jsonify({"error": "AI model not configured"}), 500
+
+    data = request.json
+    prompt = data.get("prompt", "")
+
+    if not prompt:
+        return jsonify({"error": "Prompt required"}), 400
+
+    try:
+        # Imagen 3로 이미지 생성
+        response = client.models.generate_images(
+            model="imagen-3.0-generate-002",
+            prompt=prompt,
+            config=types.GenerateImagesConfig(
+                number_of_images=1,
+                aspect_ratio="16:9",
+                safety_filter_level="BLOCK_MEDIUM_AND_ABOVE"
+            )
+        )
+
+        if not response.generated_images:
+            return jsonify({"error": "No image generated"}), 500
+
+        # 첫 번째 이미지의 바이트 데이터 가져오기
+        image = response.generated_images[0]
+        image_bytes = image.image.image_bytes
+
+        # Cloudinary에 업로드
+        image_base64 = base64.b64encode(image_bytes).decode("utf-8")
+        upload_result = cloudinary.uploader.upload(
+            f"data:image/png;base64,{image_base64}",
+            folder="cheer-factory"
+        )
+
+        return jsonify({
+            "success": True,
+            "image_url": upload_result.get("secure_url", "")
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route("/admin/search-images", methods=["POST"])
 def admin_search_images():
