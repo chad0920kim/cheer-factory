@@ -31,9 +31,11 @@ _posts_cache = {
 # Gemini AI 설정
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 model = None
+image_model = None
 if GOOGLE_API_KEY:
     genai.configure(api_key=GOOGLE_API_KEY)
     model = genai.GenerativeModel("gemini-2.0-flash")
+    image_model = genai.GenerativeModel("gemini-2.0-flash-exp-image-generation")
 
 # GitHub 설정
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
@@ -1179,6 +1181,66 @@ def translate_query_to_english(query):
         return response.text.strip()
     except:
         return query
+
+@app.route("/admin/generate-image", methods=["POST"])
+def admin_generate_image():
+    """AI로 이미지 생성 후 Cloudinary에 업로드"""
+    if not session.get("admin_logged_in"):
+        return jsonify({"error": "Unauthorized"}), 401
+
+    if not image_model:
+        return jsonify({"error": "Image generation model not configured"}), 500
+
+    data = request.json
+    title = data.get("title", "")
+    content = data.get("content", "")
+    tags = data.get("tags", "")
+
+    if not title and not content:
+        return jsonify({"error": "Title or content required"}), 400
+
+    try:
+        # 이미지 생성을 위한 프롬프트 생성
+        prompt_text = f"""Create a warm, encouraging illustration for a blog post.
+
+Title: {title}
+Content summary: {content[:200] if len(content) > 200 else content}
+Tags: {tags}
+
+Style requirements:
+- Warm and comforting color palette (soft oranges, warm yellows, gentle blues)
+- Simple, clean illustration style
+- Suitable for a motivational/encouraging blog
+- No text in the image
+- Horizontal landscape orientation (16:9 ratio)
+- Professional yet friendly aesthetic"""
+
+        # Gemini로 이미지 생성
+        response = image_model.generate_content(prompt_text)
+
+        # 이미지 데이터 추출
+        image_data = None
+        for part in response.candidates[0].content.parts:
+            if hasattr(part, 'inline_data') and part.inline_data.mime_type.startswith('image/'):
+                image_data = part.inline_data.data
+                break
+
+        if not image_data:
+            return jsonify({"error": "Failed to generate image"}), 500
+
+        # Cloudinary에 업로드
+        upload_result = cloudinary.uploader.upload(
+            f"data:image/png;base64,{base64.b64encode(image_data).decode('utf-8')}",
+            folder="cheer-factory/generated",
+            resource_type="image"
+        )
+
+        return jsonify({
+            "success": True,
+            "image_url": upload_result.get("secure_url", "")
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route("/admin/search-images", methods=["POST"])
 def admin_search_images():

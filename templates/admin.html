@@ -306,6 +306,15 @@
                     </div>
 
                     <div class="admin-section">
+                        <h2>AI Image Generation</h2>
+                        <p style="font-size: 12px; color: #888; margin-bottom: 12px;">
+                            포스트 내용을 기반으로 AI가 이미지를 생성합니다. 제목과 내용을 먼저 작성하세요.
+                        </p>
+                        <button onclick="generateAIImage()" id="generateImageBtn">Generate Image</button>
+                        <div id="generatedImagePreview" class="image-preview" style="margin-top: 12px;"></div>
+                    </div>
+
+                    <div class="admin-section">
                         <h2>Write Post</h2>
                         <input type="text" id="title" placeholder="Title">
                         <textarea id="content" placeholder="Content..." rows="8"></textarea>
@@ -551,6 +560,53 @@
                 if (e.key === 'Enter') searchImages();
             });
         });
+
+        // AI Image Generation
+        async function generateAIImage() {
+            const btn = document.getElementById('generateImageBtn');
+            const previewDiv = document.getElementById('generatedImagePreview');
+            const status = document.getElementById('status');
+            const title = document.getElementById('title').value;
+            const content = document.getElementById('content').value;
+            const tags = document.getElementById('tags').value;
+
+            if (!title && !content) {
+                status.textContent = 'Please write title or content first';
+                status.className = 'status error';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Generating...';
+            previewDiv.innerHTML = '<p style="color: #888; text-align: center;">AI is creating your image...</p>';
+
+            try {
+                const res = await fetch('/admin/generate-image', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title, content, tags })
+                });
+                const data = await res.json();
+
+                if (data.error) {
+                    status.textContent = 'Error: ' + data.error;
+                    status.className = 'status error';
+                    previewDiv.innerHTML = '';
+                } else {
+                    previewDiv.innerHTML = `<img src="${data.image_url}" alt="Generated Image" style="max-width: 100%; border-radius: 8px;">`;
+                    document.getElementById('imageUrl').value = data.image_url;
+                    status.textContent = 'Image generated and applied!';
+                    status.className = 'status success';
+                }
+            } catch (e) {
+                status.textContent = 'Error: ' + e.message;
+                status.className = 'status error';
+                previewDiv.innerHTML = '';
+            }
+
+            btn.disabled = false;
+            btn.textContent = 'Generate Image';
+        }
 
         // Tab switching
         function switchTab(tabName) {
