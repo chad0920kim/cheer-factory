@@ -35,7 +35,11 @@ image_model = None
 if GOOGLE_API_KEY:
     genai.configure(api_key=GOOGLE_API_KEY)
     model = genai.GenerativeModel("gemini-2.0-flash")
-    image_model = genai.GenerativeModel("gemini-2.0-flash-exp-image-generation")
+    # 이미지 생성 모델 설정 (response_modalities 필요)
+    image_model = genai.GenerativeModel(
+        "gemini-2.0-flash-exp-image-generation",
+        generation_config=genai.GenerationConfig(response_modalities=["IMAGE", "TEXT"])
+    )
 
 # GitHub 설정
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
