@@ -1236,23 +1236,24 @@ def admin_generate_image():
     image_prompt = f"Create a warm, cozy, inspiring illustration for a motivational blog post. Style: soft watercolor, pastel colors, minimalist, peaceful. Blog details: {details}. Do not include any text in the image."
 
     try:
-        # Imagen 3로 이미지 생성
-        response = client.models.generate_images(
-            model="imagen-3.0-generate-002",
-            prompt=image_prompt,
-            config=types.GenerateImagesConfig(
-                number_of_images=1,
-                aspect_ratio="16:9",
-                safety_filter_level="BLOCK_MEDIUM_AND_ABOVE"
+        # Gemini 2.0 Flash로 이미지 생성 (Imagen 3는 유료 전용)
+        response = client.models.generate_content(
+            model="gemini-2.0-flash-exp",
+            contents=image_prompt,
+            config=types.GenerateContentConfig(
+                response_modalities=["IMAGE"]
             )
         )
 
-        if not response.generated_images:
-            return jsonify({"error": "No image generated"}), 500
+        # 응답에서 이미지 찾기
+        image_bytes = None
+        for part in response.candidates[0].content.parts:
+            if part.inline_data is not None:
+                image_bytes = part.inline_data.data
+                break
 
-        # 첫 번째 이미지의 바이트 데이터 가져오기
-        image = response.generated_images[0]
-        image_bytes = image.image.image_bytes
+        if not image_bytes:
+            return jsonify({"error": "No image generated"}), 500
 
         # Cloudinary에 업로드
         image_base64 = base64.b64encode(image_bytes).decode("utf-8")
