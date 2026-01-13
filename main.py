@@ -1213,23 +1213,27 @@ def admin_generate_image():
     if not title and not content:
         return jsonify({"error": "Title or content required"}), 400
 
-    # 이미지 생성을 위한 프롬프트 생성
+    # 이미지 생성을 위한 프롬프트 생성 (제어 문자 제거)
+    def clean_text(text):
+        """제어 문자 제거"""
+        import re
+        return re.sub(r'[\x00-\x1f\x7f-\x9f]', ' ', text) if text else ""
+
+    clean_title = clean_text(title)
+    clean_content = clean_text(content[:200]) if content else ""
+    clean_tags = clean_text(tags)
+
     prompt_parts = []
-    if title:
-        prompt_parts.append(f"Title: {title}")
-    if content:
-        prompt_parts.append(f"Content: {content[:200]}")
-    if tags:
-        prompt_parts.append(f"Tags: {tags}")
+    if clean_title:
+        prompt_parts.append(f"Title: {clean_title}")
+    if clean_content:
+        prompt_parts.append(f"Content: {clean_content}")
+    if clean_tags:
+        prompt_parts.append(f"Tags: {clean_tags}")
 
-    image_prompt = f"""Create a warm, cozy, and inspiring illustration for a blog post about work-life and encouragement.
-The image should be soft, pastel-toned, and suitable for a motivational blog.
-Style: Soft watercolor or gentle digital illustration, warm colors, minimalist, peaceful.
+    details = " | ".join(prompt_parts)
 
-Blog post details:
-{chr(10).join(prompt_parts)}
-
-Do not include any text in the image."""
+    image_prompt = f"Create a warm, cozy, inspiring illustration for a motivational blog post. Style: soft watercolor, pastel colors, minimalist, peaceful. Blog details: {details}. Do not include any text in the image."
 
     try:
         # Imagen 3로 이미지 생성
