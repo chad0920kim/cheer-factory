@@ -50,7 +50,7 @@
             <div class="header-top">
                 <h1><a href="/">Cheer Factory</a></h1>
                 <div class="header-right">
-                    <a href="/admin" class="admin-link">Admin</a>
+                    <a href="/guestbook?lang={{ lang }}">{% if lang == 'ko' %}방명록{% else %}Guestbook{% endif %}</a>
                     <span class="divider">|</span>
                     <a href="?lang=ko{% if query %}&q={{ query }}{% endif %}" class="{% if lang == 'ko' %}active{% endif %}">KO</a>
                     <span class="divider">|</span>
@@ -124,7 +124,7 @@
 
             <footer>
                 <p>&copy; Cheer Factory</p>
-                <p style="margin-top: 8px;"><a href="/guestbook?lang={{ lang }}" style="color: #888; text-decoration: none;">{% if lang == 'ko' %}방명록{% else %}Guestbook{% endif %}</a></p>
+                <p style="margin-top: 8px;"><a href="/admin" style="color: #888; text-decoration: none;">Admin</a></p>
             </footer>
         </main>
     </div>
