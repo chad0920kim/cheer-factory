@@ -1,6 +1,24 @@
 {
   "posts": [
     {
+      "id": "2026-01-13-001-ko",
+      "title": "오늘도 야근, 칼퇴는 전설 속에...",
+      "date": "2026-01-13",
+      "content": "오늘도 퇴근이 늦어버렸네. \n칼퇴근은 대체 언제쯤 해보려나. \n퇴근 시간만 되면 묘하게 늘어나는 업무량, 다들 공감하잖아요? \n\n나만 그런 건 아니겠지, 다들 힘내시라구요. \n저녁은 꼭 챙겨 드시구요! ",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1768314271/cheer-factory/lh8pvaibqepnxxgwu2fn.png",
+      "lang": "ko"
+    },
+    {
+      "id": "2026-01-13-001-en",
+      "title": "Another Late Night at Work: Early Exit is a Myth...",
+      "date": "2026-01-13",
+      "content": "Another day, another late night leaving the office. \nWhen will I ever get to leave on time? \nIt's like the amount of work magically increases right before quitting time, right? You all know what I'm talking about!\n\nI'm not the only one dealing with this, am I? Hang in there, everyone! \nMake sure to eat dinner, okay?",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1768314271/cheer-factory/lh8pvaibqepnxxgwu2fn.png",
+      "lang": "en"
+    },
+    {
       "id": "2026-01-12-003-ko",
       "title": "이불 밖은 위험해, 알아도 출근",
       "date": "2026-01-12",
@@ -339,5 +357,5 @@
       "lang": "en"
     }
   ],
-  "updated": "2026-01-12T21:45:50.820936"
+  "updated": "2026-01-13T14:27:36.942483"
 }
