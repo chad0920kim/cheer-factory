@@ -246,6 +246,35 @@
             border-radius: 8px;
             font-size: 14px;
         }
+        /* Generated Image Preview */
+        .generated-image-preview {
+            position: relative;
+        }
+        .generated-image-preview img {
+            width: 100%;
+            max-width: 400px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .generated-image-preview img:hover {
+            transform: scale(1.02);
+        }
+        .generated-image-preview .click-hint {
+            font-size: 11px;
+            color: #888;
+            text-align: center;
+            margin-top: 4px;
+        }
+        .cancel-btn {
+            background: #f5f5f5;
+            color: #666;
+            border: 1px solid #ddd;
+        }
+        .cancel-btn:hover {
+            background: #eee;
+            color: #333;
+        }
     </style>
 </head>
 <body>
@@ -311,7 +340,10 @@
                             포스트 내용을 기반으로 AI가 이미지를 생성합니다. 제목과 내용을 먼저 작성하세요.
                         </p>
                         <button onclick="generateAIImage()" id="generateImageBtn">Generate Image</button>
-                        <div id="generatedImagePreview" class="image-preview" style="margin-top: 12px;"></div>
+                        <div id="generatedImagePreview" class="generated-image-preview" style="margin-top: 12px;"></div>
+                        <div id="generatedImageActions" style="display: none; margin-top: 8px; display: flex; gap: 8px;">
+                            <button onclick="cancelGeneratedImage()" class="cancel-btn" style="flex: 1;">Cancel</button>
+                        </div>
                     </div>
 
                     <div class="admin-section">
@@ -494,6 +526,8 @@
             if (event && event.target !== event.currentTarget && !event.target.classList.contains('modal-close')) return;
             document.getElementById('imageModal').classList.remove('active');
             modalImageData = null;
+            // Restore select button visibility for next use
+            document.querySelector('.modal-select').style.display = 'block';
         }
 
         function selectFromModal() {
@@ -562,9 +596,12 @@
         });
 
         // AI Image Generation
+        let generatedImageUrl = null;
+
         async function generateAIImage() {
             const btn = document.getElementById('generateImageBtn');
             const previewDiv = document.getElementById('generatedImagePreview');
+            const actionsDiv = document.getElementById('generatedImageActions');
             const status = document.getElementById('status');
             const title = document.getElementById('title').value;
             const content = document.getElementById('content').value;
@@ -579,6 +616,7 @@
             btn.disabled = true;
             btn.textContent = 'Generating...';
             previewDiv.innerHTML = '<p style="color: #888; text-align: center;">AI is creating your image...</p>';
+            actionsDiv.style.display = 'none';
 
             try {
                 const res = await fetch('/admin/generate-image', {
@@ -593,9 +631,14 @@
                     status.className = 'status error';
                     previewDiv.innerHTML = '';
                 } else {
-                    previewDiv.innerHTML = `<img src="${data.image_url}" alt="Generated Image" style="max-width: 100%; border-radius: 8px;">`;
+                    generatedImageUrl = data.image_url;
+                    previewDiv.innerHTML = `
+                        <img src="${data.image_url}" alt="Generated Image" onclick="previewGeneratedImage('${data.image_url}')">
+                        <p class="click-hint">Click image to view larger</p>
+                    `;
                     document.getElementById('imageUrl').value = data.image_url;
-                    status.textContent = 'Image generated and applied!';
+                    actionsDiv.style.display = 'flex';
+                    status.textContent = 'Image generated and applied! Click to preview or Cancel to remove.';
                     status.className = 'status success';
                 }
             } catch (e) {
@@ -606,6 +649,28 @@
 
             btn.disabled = false;
             btn.textContent = 'Generate Image';
+        }
+
+        function previewGeneratedImage(url) {
+            document.getElementById('modalImage').src = url;
+            document.getElementById('modalPhotographer').textContent = 'AI Generated Image';
+            document.getElementById('imageModal').classList.add('active');
+            // Hide select button for AI generated images (already applied)
+            document.querySelector('.modal-select').style.display = 'none';
+        }
+
+        function cancelGeneratedImage() {
+            const previewDiv = document.getElementById('generatedImagePreview');
+            const actionsDiv = document.getElementById('generatedImageActions');
+            const status = document.getElementById('status');
+
+            previewDiv.innerHTML = '';
+            actionsDiv.style.display = 'none';
+            document.getElementById('imageUrl').value = '';
+            generatedImageUrl = null;
+
+            status.textContent = 'Generated image removed.';
+            status.className = 'status';
         }
 
         // Tab switching
