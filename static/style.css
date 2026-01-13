@@ -528,12 +528,39 @@ footer .admin-link:hover {
 .post-image {
     margin: 0 -20px 16px -20px;
     overflow: hidden;
+    position: relative;
 }
 
 .post-image img {
     width: 100%;
     height: auto;
     display: block;
+}
+
+.post-image .download-btn {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transition: all 0.2s;
+}
+
+.post-image .download-btn:hover {
+    background: #fff;
+    transform: scale(1.1);
+}
+
+.post-image .download-btn svg {
+    color: #333;
 }
 
 /* Post Tags */

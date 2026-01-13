@@ -292,7 +292,8 @@ def index():
         total_pages=total_pages,
         total_posts=total_posts,
         lang=lang,
-        ga_id=GA_ID
+        ga_id=GA_ID,
+        is_admin=session.get("admin_logged_in", False)
     )
 
 # ============ SEO 기능 ============

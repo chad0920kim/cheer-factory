@@ -79,6 +79,15 @@
                     {% if post.image_url %}
                     <div class="post-image">
                         <img src="{{ post.image_url }}" alt="{{ post.title }}">
+                        {% if is_admin %}
+                        <button class="download-btn" onclick="downloadImage('{{ post.image_url }}', '{{ post.title }}')" title="Download Image">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                        </button>
+                        {% endif %}
                     </div>
                     {% endif %}
                     <div class="content">{{ post.content }}</div>
@@ -206,6 +215,26 @@
         }
 
         document.addEventListener('DOMContentLoaded', loadLikes);
+
+        // 이미지 다운로드 함수
+        async function downloadImage(imageUrl, title) {
+            try {
+                const response = await fetch(imageUrl);
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${title.replace(/[^a-zA-Z0-9가-힣]/g, '_')}.jpg`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            } catch (e) {
+                console.error('Download failed:', e);
+                // 폴백: 새 탭에서 열기
+                window.open(imageUrl, '_blank');
+            }
+        }
     </script>
 </body>
 </html>
