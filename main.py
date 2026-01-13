@@ -1186,59 +1186,13 @@ def translate_query_to_english(query):
 
 @app.route("/admin/generate-image", methods=["POST"])
 def admin_generate_image():
-    """AI로 이미지 생성 후 Cloudinary에 업로드 (Imagen 3 사용)"""
+    """AI로 이미지 생성 - 현재 비활성화됨"""
     if not session.get("admin_logged_in"):
         return jsonify({"error": "Unauthorized"}), 401
 
-    if not image_model:
-        return jsonify({"error": "Image generation model not configured"}), 500
-
-    data = request.json
-    title = data.get("title", "")
-    content = data.get("content", "")
-    tags = data.get("tags", "")
-
-    if not title and not content:
-        return jsonify({"error": "Title or content required"}), 400
-
-    try:
-        # 이미지 생성을 위한 프롬프트 생성
-        prompt_text = f"""A warm, encouraging illustration for a blog post about: {title}. {content[:100] if content else ''}
-Style: warm color palette, soft oranges and yellows, clean illustration, no text, professional and friendly, horizontal landscape"""
-
-        # Imagen 3로 이미지 생성
-        imagen_model = genai.ImageGenerationModel("imagen-3.0-generate-002")
-        response = imagen_model.generate_images(
-            prompt=prompt_text,
-            number_of_images=1,
-            aspect_ratio="16:9"
-        )
-
-        if not response.images:
-            return jsonify({"error": "Failed to generate image"}), 500
-
-        # 이미지 데이터 가져오기
-        image_data = response.images[0]._pil_image
-
-        # PIL Image를 bytes로 변환
-        import io
-        img_byte_arr = io.BytesIO()
-        image_data.save(img_byte_arr, format='PNG')
-        img_byte_arr = img_byte_arr.getvalue()
-
-        # Cloudinary에 업로드
-        upload_result = cloudinary.uploader.upload(
-            f"data:image/png;base64,{base64.b64encode(img_byte_arr).decode('utf-8')}",
-            folder="cheer-factory/generated",
-            resource_type="image"
-        )
-
-        return jsonify({
-            "success": True,
-            "image_url": upload_result.get("secure_url", "")
-        })
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    # google-generativeai 패키지가 deprecated되어 이미지 생성 기능 비활성화
+    # 추후 google-genai 패키지로 마이그레이션 필요
+    return jsonify({"error": "AI image generation is temporarily unavailable. Please use Stock Image Search instead."}), 503
 
 @app.route("/admin/search-images", methods=["POST"])
 def admin_search_images():
