@@ -35,11 +35,8 @@ image_model = None
 if GOOGLE_API_KEY:
     genai.configure(api_key=GOOGLE_API_KEY)
     model = genai.GenerativeModel("gemini-2.0-flash")
-    # 이미지 생성 모델 설정 (response_modalities 필요)
-    image_model = genai.GenerativeModel(
-        "gemini-2.0-flash-exp-image-generation",
-        generation_config=genai.GenerationConfig(response_modalities=["IMAGE", "TEXT"])
-    )
+    # 이미지 생성 모델 (Imagen 3 사용)
+    image_model = True  # 이미지 생성 기능 활성화 플래그
 
 # GitHub 설정
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
@@ -1189,7 +1186,7 @@ def translate_query_to_english(query):
 
 @app.route("/admin/generate-image", methods=["POST"])
 def admin_generate_image():
-    """AI로 이미지 생성 후 Cloudinary에 업로드"""
+    """AI로 이미지 생성 후 Cloudinary에 업로드 (Imagen 3 사용)"""
     if not session.get("admin_logged_in"):
         return jsonify({"error": "Unauthorized"}), 401
 
@@ -1206,36 +1203,32 @@ def admin_generate_image():
 
     try:
         # 이미지 생성을 위한 프롬프트 생성
-        prompt_text = f"""Create a warm, encouraging illustration for a blog post.
+        prompt_text = f"""A warm, encouraging illustration for a blog post about: {title}. {content[:100] if content else ''}
+Style: warm color palette, soft oranges and yellows, clean illustration, no text, professional and friendly, horizontal landscape"""
 
-Title: {title}
-Content summary: {content[:200] if len(content) > 200 else content}
-Tags: {tags}
+        # Imagen 3로 이미지 생성
+        imagen_model = genai.ImageGenerationModel("imagen-3.0-generate-002")
+        response = imagen_model.generate_images(
+            prompt=prompt_text,
+            number_of_images=1,
+            aspect_ratio="16:9"
+        )
 
-Style requirements:
-- Warm and comforting color palette (soft oranges, warm yellows, gentle blues)
-- Simple, clean illustration style
-- Suitable for a motivational/encouraging blog
-- No text in the image
-- Horizontal landscape orientation (16:9 ratio)
-- Professional yet friendly aesthetic"""
-
-        # Gemini로 이미지 생성
-        response = image_model.generate_content(prompt_text)
-
-        # 이미지 데이터 추출
-        image_data = None
-        for part in response.candidates[0].content.parts:
-            if hasattr(part, 'inline_data') and part.inline_data.mime_type.startswith('image/'):
-                image_data = part.inline_data.data
-                break
-
-        if not image_data:
+        if not response.images:
             return jsonify({"error": "Failed to generate image"}), 500
+
+        # 이미지 데이터 가져오기
+        image_data = response.images[0]._pil_image
+
+        # PIL Image를 bytes로 변환
+        import io
+        img_byte_arr = io.BytesIO()
+        image_data.save(img_byte_arr, format='PNG')
+        img_byte_arr = img_byte_arr.getvalue()
 
         # Cloudinary에 업로드
         upload_result = cloudinary.uploader.upload(
-            f"data:image/png;base64,{base64.b64encode(image_data).decode('utf-8')}",
+            f"data:image/png;base64,{base64.b64encode(img_byte_arr).decode('utf-8')}",
             folder="cheer-factory/generated",
             resource_type="image"
         )
