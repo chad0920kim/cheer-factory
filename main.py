@@ -1206,16 +1206,36 @@ def admin_generate_image():
         return jsonify({"error": "AI model not configured"}), 500
 
     data = request.json
-    prompt = data.get("prompt", "")
+    title = data.get("title", "")
+    content = data.get("content", "")
+    tags = data.get("tags", "")
 
-    if not prompt:
-        return jsonify({"error": "Prompt required"}), 400
+    if not title and not content:
+        return jsonify({"error": "Title or content required"}), 400
+
+    # 이미지 생성을 위한 프롬프트 생성
+    prompt_parts = []
+    if title:
+        prompt_parts.append(f"Title: {title}")
+    if content:
+        prompt_parts.append(f"Content: {content[:200]}")
+    if tags:
+        prompt_parts.append(f"Tags: {tags}")
+
+    image_prompt = f"""Create a warm, cozy, and inspiring illustration for a blog post about work-life and encouragement.
+The image should be soft, pastel-toned, and suitable for a motivational blog.
+Style: Soft watercolor or gentle digital illustration, warm colors, minimalist, peaceful.
+
+Blog post details:
+{chr(10).join(prompt_parts)}
+
+Do not include any text in the image."""
 
     try:
         # Imagen 3로 이미지 생성
         response = client.models.generate_images(
             model="imagen-3.0-generate-002",
-            prompt=prompt,
+            prompt=image_prompt,
             config=types.GenerateImagesConfig(
                 number_of_images=1,
                 aspect_ratio="16:9",
