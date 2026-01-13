@@ -1236,13 +1236,10 @@ def admin_generate_image():
     image_prompt = f"Create a warm, cozy, inspiring illustration for a motivational blog post. Style: soft watercolor, pastel colors, minimalist, peaceful. Blog details: {details}. Do not include any text in the image."
 
     try:
-        # Gemini 2.0 Flash 이미지 생성 모델 사용
+        # Gemini 2.5 Flash Image 모델 사용 (Nano Banana)
         response = client.models.generate_content(
-            model="gemini-2.0-flash-preview-image-generation",
-            contents=image_prompt,
-            config=types.GenerateContentConfig(
-                response_modalities=["TEXT", "IMAGE"]
-            )
+            model="gemini-2.5-flash-preview-image-generation",
+            contents=[image_prompt],
         )
 
         # 응답에서 이미지 찾기
