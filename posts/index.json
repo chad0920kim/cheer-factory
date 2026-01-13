@@ -1,6 +1,24 @@
 {
   "posts": [
     {
+      "id": "2026-01-13-002-ko",
+      "title": "오픈AI 몰락설? 슬슬 체감되는구먼.",
+      "date": "2026-01-13",
+      "content": "오픈AI, 한때 혁신의 아이콘이었는데 말이야. 요즘 챗GPT 쓰는 빈도가 확실히 줄었어.\n\n제미나이, 클로드 써보니 꽤 괜찮더라고. 특히 클로드, 글쓰기엔 확실히 강점이 있는 듯.\n\n기술 변화는 늘 예측불허라니까. 그래도 덕분에 새로운 도구 배우는 재미는 쏠쏠해.\n\n바이브코딩도 해야 하고, AI 도구도 익혀야 하고. 40대 후반, 아직 배울 게 많다 이겁니다. 껄껄.",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1768315650/cheer-factory/ywdqwzjmvkhkioxibaml.png",
+      "lang": "ko"
+    },
+    {
+      "id": "2026-01-13-002-en",
+      "title": "OpenAI's Downfall? I'm Starting to Feel It.",
+      "date": "2026-01-13",
+      "content": "OpenAI used to be like, the icon of innovation, right? But these days, I'm definitely using ChatGPT less often.\n\nI tried out Gemini and Claude, and they're pretty good. Especially Claude, it seems to have a real strength in writing.\n\nTech changes are always unpredictable, you know? But thanks to that, it's fun learning new tools.\n\nI gotta do Vibe Coding and learn AI tools too. Late 40s and still got a lot to learn, haha.",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1768315650/cheer-factory/ywdqwzjmvkhkioxibaml.png",
+      "lang": "en"
+    },
+    {
       "id": "2026-01-13-001-ko",
       "title": "오늘도 야근, 칼퇴는 전설 속에...",
       "date": "2026-01-13",
@@ -357,5 +375,5 @@
       "lang": "en"
     }
   ],
-  "updated": "2026-01-13T14:27:36.942483"
+  "updated": "2026-01-13T14:47:44.991031"
 }
