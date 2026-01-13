@@ -1233,7 +1233,23 @@ def admin_generate_image():
 
     details = " | ".join(prompt_parts)
 
-    image_prompt = f"Create a warm, cozy, inspiring illustration for a motivational blog post. Style: soft watercolor, pastel colors, minimalist, peaceful. Blog details: {details}. Do not include any text in the image."
+    # 다양한 스타일 중 랜덤 선택
+    import random
+    styles = [
+        "soft watercolor painting with gentle brushstrokes, pastel colors, dreamy atmosphere",
+        "warm oil painting style with rich textures, golden hour lighting, impressionistic",
+        "modern flat illustration with bold geometric shapes, vibrant yet harmonious colors",
+        "cozy digital art with soft gradients, warm tones, studio ghibli inspired",
+        "minimalist line art with subtle color accents, elegant and clean",
+        "vintage retro illustration style, muted earth tones, nostalgic feel",
+        "whimsical hand-drawn sketch style, playful and lighthearted",
+        "contemporary graphic design, bold colors, dynamic composition",
+        "serene Japanese watercolor style, zen-like simplicity, natural elements",
+        "cheerful cartoon illustration, bright colors, friendly and approachable"
+    ]
+    selected_style = random.choice(styles)
+
+    image_prompt = f"Create an inspiring illustration for a motivational blog post. Style: {selected_style}. Blog details: {details}. Do not include any text, letters, or words in the image."
 
     try:
         # Gemini 2.5 Flash Image 모델 사용 (Nano Banana)
