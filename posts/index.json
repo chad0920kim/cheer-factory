@@ -1,6 +1,24 @@
 {
   "posts": [
     {
+      "id": "2026-01-14-001-ko",
+      "title": "과연, 풀릴까요?",
+      "date": "2026-01-14",
+      "content": "오늘도 야근, 내일도 야근. 쳇바퀴 구르는 소리가 여기까지 들리네. \n\n문제는 산더미인데, 해결될 기미는 안 보이고. 과연 이 모든 게 풀릴 수 있을까, 가끔 그런 생각 하거든요.\n\n나만 그런 건 아니겠죠? 다들 비슷한 고민하며 살아가는 거겠죠, 뭐. \n\n에라, 일단 퇴근하고 맥주나 한 잔 해야겠다.",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1768402063/cheer-factory/wno4youdhppp8kp4rsw2.jpg",
+      "lang": "ko"
+    },
+    {
+      "id": "2026-01-14-001-en",
+      "title": "Will It Ever Get Better?",
+      "date": "2026-01-14",
+      "content": "Another overtime today, and another one tomorrow. I can almost hear the hamster wheel spinning! \n\nThe problems are piling up, but I don't see any signs of them getting solved. I sometimes wonder if all this will ever be sorted out. \n\nI can't be the only one feeling like this, right? Everyone's probably going through similar struggles, I guess. \n\nUgh, whatever. I'm just gonna go home and grab a beer.",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1768402063/cheer-factory/wno4youdhppp8kp4rsw2.jpg",
+      "lang": "en"
+    },
+    {
       "id": "2026-01-13-002-ko",
       "title": "오픈AI 몰락설? 슬슬 체감되는구먼.",
       "date": "2026-01-13",
@@ -375,5 +393,5 @@
       "lang": "en"
     }
   ],
-  "updated": "2026-01-13T14:47:44.991031"
+  "updated": "2026-01-14T14:47:58.652854"
 }
