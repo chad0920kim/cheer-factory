@@ -1,6 +1,24 @@
 {
   "posts": [
     {
+      "id": "2026-01-15-001-ko",
+      "title": "스모어? 그게 뭔데요, 먹는 건가?",
+      "date": "2026-01-15",
+      "content": "오늘 처음 스모어라는 걸 알았네. \n미국 캠핑 디저트라는데, AI가 알려주더라. \n\n마시멜로 구워서 초콜릿이랑 크래커 사이에 끼워 먹는 거라나. \n별거 아닌데, 왠지 모르게 캠핑 가서 구워 먹으면 꿀맛일 것 같고. \n\n새로운 거 알아가는 재미, 이게 또 소소한 행복이거든요.",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1768451921/cheer-factory/ymrtxogdl8enbdjwq28b.jpg",
+      "lang": "ko"
+    },
+    {
+      "id": "2026-01-15-001-en",
+      "title": "S'more? What's That, Food?",
+      "date": "2026-01-15",
+      "content": "I just learned about something called a s'more today. Apparently, it's an American camping dessert. AI told me about it.\n\nSo, you roast a marshmallow and sandwich it between chocolate and crackers. It doesn't seem like much, but I bet it would taste amazing if you ate it while camping.\n\nFinding out about new things is fun, and that's another small joy in life.",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1768451921/cheer-factory/ymrtxogdl8enbdjwq28b.jpg",
+      "lang": "en"
+    },
+    {
       "id": "2026-01-14-001-ko",
       "title": "과연, 풀릴까요?",
       "date": "2026-01-14",
@@ -393,5 +411,5 @@
       "lang": "en"
     }
   ],
-  "updated": "2026-01-14T14:47:58.652854"
+  "updated": "2026-01-15T04:38:50.043120"
 }
