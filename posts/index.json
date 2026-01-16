@@ -1,6 +1,24 @@
 {
   "posts": [
     {
+      "id": "2026-01-16-001-ko",
+      "title": "결국 하루 휴가를 내어버림...과로사 하면 안되지",
+      "date": "2026-01-16",
+      "content": "결국 하루 휴가를 냈다. \n몸이 신호를 보내는데, 무시할 수가 없더라고. \n이러다 진짜 훅 가는 건 아닌가 싶기도 하고. \n과로사 뉴스 볼 때마다 남 일 같지 않았거든. \n숨 좀 쉬고 돌아올게요. 다들 건강 챙기면서 일하자고요.",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1768549662/cheer-factory/lc08crsybaoslhy5ssjm.png",
+      "lang": "ko"
+    },
+    {
+      "id": "2026-01-16-001-en",
+      "title": "I Finally Took a Day Off...Gotta Avoid Overwork Death",
+      "date": "2026-01-16",
+      "content": "I ended up taking a day off. My body was sending me signals, and I couldn't ignore them. I was starting to think I might really collapse from overwork. Every time I saw news about people dying from overwork, it didn't feel like someone else's problem. I'll be back after catching my breath. Everyone, let's take care of our health while working!",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1768549662/cheer-factory/lc08crsybaoslhy5ssjm.png",
+      "lang": "en"
+    },
+    {
       "id": "2026-01-15-002-ko",
       "title": "배터리 방전, 나만 그런 거 아니죠?",
       "date": "2026-01-15",
@@ -429,5 +447,5 @@
       "lang": "en"
     }
   ],
-  "updated": "2026-01-15T16:10:34.791236"
+  "updated": "2026-01-16T07:47:55.522756"
 }
