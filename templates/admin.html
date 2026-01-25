@@ -275,6 +275,48 @@
             background: #eee;
             color: #333;
         }
+        /* Naver Queue Status Badges */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        .status-pending {
+            background: #fff3e0;
+            color: #e65100;
+        }
+        .status-processing {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+        .status-published {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        .status-failed {
+            background: #ffebee;
+            color: #c62828;
+        }
+        .naver-queue-table {
+            width: 100%;
+            font-size: 13px;
+            border-collapse: collapse;
+        }
+        .naver-queue-table th {
+            padding: 8px;
+            text-align: left;
+            background: #f5f5f5;
+            font-weight: 500;
+        }
+        .naver-queue-table td {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+        }
+        .naver-queue-table tr:last-child td {
+            border-bottom: none;
+        }
     </style>
 </head>
 <body>
@@ -295,6 +337,7 @@
                     <button class="tab-btn active" onclick="switchTab('write')">Write</button>
                     <button class="tab-btn" onclick="switchTab('prompt')">Prompt</button>
                     <button class="tab-btn" onclick="switchTab('stats')">Stats</button>
+                    <button class="tab-btn" onclick="switchTab('naver')">Naver</button>
                 </div>
 
                 <!-- Write Tab -->
@@ -402,6 +445,41 @@
                         <div id="seoStatus" class="seo-status">
                             <p style="color: #888;">Loading SEO status...</p>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Naver Tab -->
+                <div id="tab-naver" class="tab-content">
+                    <div class="admin-section">
+                        <h2>Naver Blog Publishing Queue</h2>
+                        <p style="font-size: 13px; color: #666; margin-bottom: 12px;">
+                            Cheer Factory 포스트를 네이버 블로그에 발행합니다. 로컬 Worker가 실행 중이어야 합니다.
+                        </p>
+                        <button onclick="refreshNaverQueue()" id="refreshQueueBtn">Refresh Queue</button>
+
+                        <div id="naverQueueStatus" style="margin-top: 16px;">
+                            <p style="color: #888;">Click refresh to load queue status...</p>
+                        </div>
+                    </div>
+
+                    <div class="admin-section">
+                        <h2>Quick Publish to Naver</h2>
+                        <p style="font-size: 13px; color: #666; margin-bottom: 12px;">
+                            최근 포스트를 선택하여 네이버 블로그에 발행합니다.
+                        </p>
+                        <select id="postSelector" style="width: 100%; padding: 10px; margin-bottom: 12px; border: 1px solid #ddd; border-radius: 8px;">
+                            <option value="">Select a post...</option>
+                        </select>
+                        <button onclick="queueForNaver()" id="queueNaverBtn" class="primary">Queue for Naver</button>
+                    </div>
+
+                    <div class="admin-section">
+                        <h2>Worker Setup</h2>
+                        <p style="font-size: 13px; color: #666; margin-bottom: 12px;">
+                            로컬 PC에서 Worker를 실행하세요:
+                        </p>
+                        <pre style="background: #f5f5f5; padding: 12px; border-radius: 8px; font-size: 12px; overflow-x: auto;">cd mrt_blog_generator
+python -m naver.cheer_factory_worker</pre>
                     </div>
                 </div>
 
@@ -689,6 +767,128 @@
             if (tabName === 'stats') {
                 loadStats();
             }
+            // Load naver tab data
+            if (tabName === 'naver') {
+                loadNaverTab();
+            }
+        }
+
+        // Naver Publishing functions
+        async function loadNaverTab() {
+            await Promise.all([
+                loadPostSelector(),
+                refreshNaverQueue()
+            ]);
+        }
+
+        async function loadPostSelector() {
+            const selector = document.getElementById('postSelector');
+
+            try {
+                const res = await fetch('/admin/stats');
+                const data = await res.json();
+
+                if (data.recent_posts && data.recent_posts.length > 0) {
+                    selector.innerHTML = '<option value="">Select a post...</option>' +
+                        data.recent_posts.map(p =>
+                            `<option value="${p.id}">${p.title.substring(0, 40)}${p.title.length > 40 ? '...' : ''} (${p.date})</option>`
+                        ).join('');
+                }
+            } catch (e) {
+                console.error('Failed to load posts:', e);
+            }
+        }
+
+        async function refreshNaverQueue() {
+            const btn = document.getElementById('refreshQueueBtn');
+            const statusDiv = document.getElementById('naverQueueStatus');
+
+            btn.disabled = true;
+            btn.textContent = 'Loading...';
+
+            try {
+                const res = await fetch('/admin/naver-status');
+                const data = await res.json();
+
+                if (data.error) {
+                    statusDiv.innerHTML = `<p class="error">Error: ${data.error}</p>`;
+                } else if (data.queue && data.queue.length > 0) {
+                    statusDiv.innerHTML = `
+                        <table class="naver-queue-table">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th style="text-align: center;">Status</th>
+                                    <th>Result</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${data.queue.map(item => `
+                                    <tr>
+                                        <td>${item.title.substring(0, 30)}${item.title.length > 30 ? '...' : ''}</td>
+                                        <td style="text-align: center;">
+                                            <span class="status-badge status-${item.status}">${item.status}</span>
+                                        </td>
+                                        <td>
+                                            ${item.naver_url ? `<a href="${item.naver_url}" target="_blank" style="color: #2196F3;">View</a>` :
+                                              item.error_message ? `<span style="color: #c62828;" title="${item.error_message}">${item.error_message.substring(0, 20)}...</span>` : '-'}
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    `;
+                } else {
+                    statusDiv.innerHTML = '<p style="color: #888;">No items in queue</p>';
+                }
+            } catch (e) {
+                statusDiv.innerHTML = `<p class="error">Error: ${e.message}</p>`;
+            }
+
+            btn.disabled = false;
+            btn.textContent = 'Refresh Queue';
+        }
+
+        async function queueForNaver() {
+            const selector = document.getElementById('postSelector');
+            const btn = document.getElementById('queueNaverBtn');
+            const status = document.getElementById('status');
+
+            const postId = selector.value;
+
+            if (!postId) {
+                status.textContent = 'Please select a post';
+                status.className = 'status error';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Queuing...';
+
+            try {
+                const res = await fetch('/admin/naver-publish', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ post_id: postId })
+                });
+                const data = await res.json();
+
+                if (data.error) {
+                    status.textContent = 'Error: ' + data.error;
+                    status.className = 'status error';
+                } else {
+                    status.textContent = 'Post queued for Naver publishing!';
+                    status.className = 'status success';
+                    selector.value = '';
+                    refreshNaverQueue();
+                }
+            } catch (e) {
+                status.textContent = 'Error: ' + e.message;
+                status.className = 'status error';
+            }
+
+            btn.disabled = false;
+            btn.textContent = 'Queue for Naver';
         }
 
         // Stats functions

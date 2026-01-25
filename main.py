@@ -58,6 +58,9 @@ GA_ID = os.getenv("GA_ID")
 # 사이트 URL
 SITE_URL = os.getenv("SITE_URL", "https://cheer-factory.onrender.com")
 
+# Naver Worker API Key (로컬 워커 인증용)
+NAVER_WORKER_KEY = os.getenv("NAVER_WORKER_KEY")
+
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", secrets.token_hex(16))
 
@@ -1364,6 +1367,212 @@ def admin_download_image():
         })
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+# ============ Naver Blog Cross-Posting ============
+
+@app.route("/admin/naver-publish", methods=["POST"])
+def admin_naver_publish():
+    """네이버 블로그 발행 큐에 추가"""
+    if not session.get("admin_logged_in"):
+        return jsonify({"error": "Unauthorized"}), 401
+
+    if not supabase:
+        return jsonify({"error": "Database not configured"}), 500
+
+    data = request.json
+    post_id = data.get("post_id", "")
+
+    if not post_id:
+        return jsonify({"error": "Post ID required"}), 400
+
+    # 포스트 데이터 가져오기
+    posts = load_posts()
+    post = next((p for p in posts if p.get("id") == post_id), None)
+
+    if not post:
+        return jsonify({"error": "Post not found"}), 404
+
+    # 이미 큐에 있는지 확인
+    try:
+        existing = supabase.table("naver_publish_queue").select("id, status").eq("post_id", post_id).execute()
+        if existing.data:
+            existing_status = existing.data[0].get("status")
+            if existing_status in ["pending", "processing"]:
+                return jsonify({"error": f"이미 큐에 있습니다 (상태: {existing_status})"}), 400
+    except Exception:
+        pass
+
+    # 큐에 추가
+    try:
+        queue_data = {
+            "post_id": post_id,
+            "title": post.get("title", ""),
+            "content": post.get("content", ""),
+            "tags": post.get("tags", []),
+            "image_url": post.get("image_url", ""),
+            "category": "Cheer Factory",
+            "status": "pending"
+        }
+
+        result = supabase.table("naver_publish_queue").insert(queue_data).execute()
+
+        return jsonify({
+            "success": True,
+            "message": "네이버 발행 큐에 추가되었습니다",
+            "queue_id": result.data[0]["id"] if result.data else None
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/admin/naver-status", methods=["GET"])
+def admin_naver_status():
+    """네이버 발행 큐 상태 조회"""
+    if not session.get("admin_logged_in"):
+        return jsonify({"error": "Unauthorized"}), 401
+
+    if not supabase:
+        return jsonify({"error": "Database not configured"}), 500
+
+    try:
+        result = supabase.table("naver_publish_queue")\
+            .select("*")\
+            .order("created_at", desc=True)\
+            .limit(20)\
+            .execute()
+
+        return jsonify({"queue": result.data})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/admin/naver-status/<post_id>", methods=["GET"])
+def admin_naver_post_status(post_id):
+    """특정 포스트의 네이버 발행 상태 조회"""
+    if not session.get("admin_logged_in"):
+        return jsonify({"error": "Unauthorized"}), 401
+
+    if not supabase:
+        return jsonify({"error": "Database not configured"}), 500
+
+    try:
+        result = supabase.table("naver_publish_queue")\
+            .select("*")\
+            .eq("post_id", post_id)\
+            .order("created_at", desc=True)\
+            .limit(1)\
+            .execute()
+
+        if result.data:
+            return jsonify({"status": result.data[0]})
+        else:
+            return jsonify({"status": None})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+# ============ Worker API Endpoints ============
+
+@app.route("/api/worker/poll", methods=["GET"])
+def worker_poll():
+    """Worker가 대기 작업을 가져감"""
+    worker_key = request.headers.get("X-Worker-Key")
+    if not NAVER_WORKER_KEY or worker_key != NAVER_WORKER_KEY:
+        return jsonify({"error": "Unauthorized"}), 401
+
+    if not supabase:
+        return jsonify({"error": "Database not configured"}), 500
+
+    try:
+        # 가장 오래된 pending 항목 가져오기
+        result = supabase.table("naver_publish_queue")\
+            .select("*")\
+            .eq("status", "pending")\
+            .order("created_at")\
+            .limit(1)\
+            .execute()
+
+        if not result.data:
+            return jsonify({"task": None})
+
+        task = result.data[0]
+
+        # processing으로 상태 변경
+        supabase.table("naver_publish_queue")\
+            .update({"status": "processing", "worker_key": worker_key})\
+            .eq("id", task["id"])\
+            .execute()
+
+        return jsonify({"task": task})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/worker/complete", methods=["POST"])
+def worker_complete():
+    """Worker가 작업 완료 보고"""
+    worker_key = request.headers.get("X-Worker-Key")
+    if not NAVER_WORKER_KEY or worker_key != NAVER_WORKER_KEY:
+        return jsonify({"error": "Unauthorized"}), 401
+
+    if not supabase:
+        return jsonify({"error": "Database not configured"}), 500
+
+    data = request.json
+    task_id = data.get("task_id")
+    success = data.get("success", False)
+    naver_url = data.get("naver_url", "")
+    error_message = data.get("error_message", "")
+
+    if not task_id:
+        return jsonify({"error": "Task ID required"}), 400
+
+    try:
+        if success:
+            update_data = {
+                "status": "published",
+                "naver_url": naver_url,
+                "published_at": datetime.now().isoformat()
+            }
+        else:
+            # 현재 재시도 횟수 확인
+            current = supabase.table("naver_publish_queue")\
+                .select("retry_count, max_retries")\
+                .eq("id", task_id)\
+                .execute()
+
+            if current.data:
+                retry_count = current.data[0].get("retry_count", 0) + 1
+                max_retries = current.data[0].get("max_retries", 3)
+
+                if retry_count >= max_retries:
+                    update_data = {
+                        "status": "failed",
+                        "error_message": error_message,
+                        "retry_count": retry_count
+                    }
+                else:
+                    # 재시도 허용
+                    update_data = {
+                        "status": "pending",
+                        "error_message": error_message,
+                        "retry_count": retry_count
+                    }
+            else:
+                update_data = {
+                    "status": "failed",
+                    "error_message": error_message
+                }
+
+        supabase.table("naver_publish_queue")\
+            .update(update_data)\
+            .eq("id", task_id)\
+            .execute()
+
+        return jsonify({"success": True})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5000)
