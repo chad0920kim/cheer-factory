@@ -1,6 +1,56 @@
 {
   "posts": [
     {
+      "id": "2026-01-25-002-ko",
+      "title": "일요일 밤, 치맥만이 나의 유일한 낙이더라",
+      "date": "2026-01-25",
+      "content": "주말은 왜 이리 빨리 지나가는 걸까요. \n월요일 생각하면 벌써부터 현기증이... 저만 그런 거 아니죠? \n\n그래도 어쩌겠어요, 치킨에 맥주 한 잔 들이켜야죠. \n이 맛에 또 한 주 버티는 거거든요. \n\n내일 출근하는 모든 분들, 우리 모두 힘내봐요! \n적어도 오늘은 행복하게 마무리하자구요.",
+      "tags": [
+        "Korean Fried Chicken",
+        "Yangnyeom Chicken",
+        "Beer",
+        "Korean Cuisine",
+        "Fried Chicken Wings",
+        "Chicken",
+        "Food",
+        "Dish",
+        "Restaurant",
+        "Dinner",
+        "Lunch",
+        "Asian Food",
+        "Pickled Radish",
+        "Table",
+        "Glass"
+      ],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1769331053/cheer-factory/u62bdgdtddicvpcsri5w.jpg",
+      "lang": "ko"
+    },
+    {
+      "id": "2026-01-25-002-en",
+      "title": "Sunday Night, Chimaek is My Only Joy",
+      "date": "2026-01-25",
+      "content": "Why does the weekend go by so fast? \nJust thinking about Monday is already making me dizzy... I'm not the only one, right? \n\nBut what can we do? Gotta have some chicken and beer. \nThat's what keeps me going for another week. \n\nTo everyone going to work tomorrow, let's all hang in there! \nLet's at least finish today happily.",
+      "tags": [
+        "Korean Fried Chicken",
+        "Yangnyeom Chicken",
+        "Beer",
+        "Korean Cuisine",
+        "Fried Chicken Wings",
+        "Chicken",
+        "Food",
+        "Dish",
+        "Restaurant",
+        "Dinner",
+        "Lunch",
+        "Asian Food",
+        "Pickled Radish",
+        "Table",
+        "Glass"
+      ],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1769331053/cheer-factory/u62bdgdtddicvpcsri5w.jpg",
+      "lang": "en"
+    },
+    {
       "id": "2026-01-25-001-ko",
       "title": "드디어, 글쓰기 자동화 시대?",
       "date": "2026-01-25",
@@ -483,5 +533,5 @@
       "lang": "en"
     }
   ],
-  "updated": "2026-01-25T07:58:29.818851"
+  "updated": "2026-01-25T08:51:35.909138"
 }
