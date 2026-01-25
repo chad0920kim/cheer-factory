@@ -1,6 +1,24 @@
 {
   "posts": [
     {
+      "id": "2026-01-25-001-ko",
+      "title": "드디어, 글쓰기 자동화 시대?",
+      "date": "2026-01-25",
+      "content": "세상이 참 좋아졌어, 그죠? \n\n인사팀 짬밥 10년 넘게 먹은 아재가 이제 코딩에 AI까지 넘보는 시대라니. \n\n바이브 코딩으로 삽질하던 날들이 주마등처럼 스쳐 지나가네. \n\n이제 블로그에 넋두리 좀 편하게 풀어볼까나. 퇴근하고 맥주 한 잔 하면서 말이야. \n\n이거 완전 신세계거든요.",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1769327894/cheer-factory/xdnhac7akrvqbz0ro7p7.png",
+      "lang": "ko"
+    },
+    {
+      "id": "2026-01-25-001-en",
+      "title": "Finally, the Era of Automated Writing?",
+      "date": "2026-01-25",
+      "content": "The world has become so much better, right? \n\nA guy like me, who's been in HR for over 10 years, is now even eyeing coding and AI. \n\nThe days I struggled with \"vibe coding\" are flashing before my eyes. \n\nGuess I can now vent a bit more comfortably on my blog. Maybe with a beer after work. \n\nThis is totally a new world.",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1769327894/cheer-factory/xdnhac7akrvqbz0ro7p7.png",
+      "lang": "en"
+    },
+    {
       "id": "2026-01-19-001-ko",
       "title": "게시글 도배, 얄짤 없는 알고리즘",
       "date": "2026-01-19",
@@ -465,5 +483,5 @@
       "lang": "en"
     }
   ],
-  "updated": "2026-01-19T20:52:02.267670"
+  "updated": "2026-01-25T07:58:29.818851"
 }
