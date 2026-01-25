@@ -1,6 +1,56 @@
 {
   "posts": [
     {
+      "id": "2026-01-25-003-ko",
+      "title": "에이핑크, 시간이 멈춘 그 곳에서",
+      "date": "2026-01-25",
+      "content": "에이핑크가 아직도 활동한다고? 놀랠 노자네. \n\n지금 열린 음악회에 나오고 있는 걸 보니 진짜더라. \n\n나도 모르게 옛날 생각에 잠기는 걸 보니, 나이를 먹긴 먹었나 보다. \n\n시간은 쏜살같이 흐르는데, 누군가는 그 시절 모습 그대로 남아있는 게 신기하기도 하고 고맙기도 하고. \n\n덕분에 잠시나마 추억 여행 잘 했네. 오늘도 열심히 살아봐야지.",
+      "tags": [
+        "K-pop",
+        "music show",
+        "performance",
+        "girl group",
+        "stage",
+        "singing",
+        "live music",
+        "Korean music",
+        "entertainment",
+        "idol group",
+        "costumes",
+        "purple lighting",
+        "winter theme",
+        "KBS",
+        "Love me more"
+      ],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1769334546/cheer-factory/ogxklsllbrjpwjf4whzy.jpg",
+      "lang": "ko"
+    },
+    {
+      "id": "2026-01-25-003-en",
+      "title": "Apink, Still There Like Time Stopped",
+      "date": "2026-01-25",
+      "content": "Apink is still performing? Wow, that's surprising! \n\nSeeing them on Open Concert right now, it's really them. \n\nI started reminiscing about the old days without even realizing it... guess I'm getting old. \n\nTime flies so fast, but it's amazing and even makes me feel thankful that someone is still the same as they were back then. \n\nThanks to them, I had a nice trip down memory lane. Gotta live my life to the fullest today too!",
+      "tags": [
+        "K-pop",
+        "music show",
+        "performance",
+        "girl group",
+        "stage",
+        "singing",
+        "live music",
+        "Korean music",
+        "entertainment",
+        "idol group",
+        "costumes",
+        "purple lighting",
+        "winter theme",
+        "KBS",
+        "Love me more"
+      ],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1769334546/cheer-factory/ogxklsllbrjpwjf4whzy.jpg",
+      "lang": "en"
+    },
+    {
       "id": "2026-01-25-002-ko",
       "title": "일요일 밤, 치맥만이 나의 유일한 낙이더라",
       "date": "2026-01-25",
@@ -533,5 +583,5 @@
       "lang": "en"
     }
   ],
-  "updated": "2026-01-25T08:51:35.909138"
+  "updated": "2026-01-25T09:49:50.757381"
 }
