@@ -470,6 +470,11 @@
                         <select id="postSelector" style="width: 100%; padding: 10px; margin-bottom: 12px; border: 1px solid #ddd; border-radius: 8px;">
                             <option value="">Select a post...</option>
                         </select>
+                        <select id="naverCategorySelector" style="width: 100%; padding: 10px; margin-bottom: 12px; border: 1px solid #ddd; border-radius: 8px;">
+                            <option value="그림일기">그림일기</option>
+                            <option value="서울명동 로컬">서울명동 로컬</option>
+                            <option value="점심이야기">점심이야기</option>
+                        </select>
                         <button onclick="queueForNaver()" id="queueNaverBtn" class="primary">Queue for Naver</button>
                     </div>
 
@@ -869,7 +874,7 @@ python -m naver.cheer_factory_worker</pre>
                 const res = await fetch('/admin/naver-publish', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ post_id: postId })
+                    body: JSON.stringify({ post_id: postId, category: document.getElementById('naverCategorySelector').value })
                 });
                 const data = await res.json();
 

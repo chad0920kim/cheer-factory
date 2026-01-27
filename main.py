@@ -1449,7 +1449,7 @@ def admin_naver_publish():
             "tags": post.get("tags", []),
             "image_url": images[0] if images else "",  # 첫 번째 이미지 (하위 호환)
             "images": images,  # 전체 이미지 리스트
-            "category": "Cheer Factory",
+            "category": data.get("category", "그림일기"),
             "status": "pending"
         }
 
