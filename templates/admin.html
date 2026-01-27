@@ -36,6 +36,43 @@
         .tab-content.active {
             display: block;
         }
+        .category-content {
+            display: none;
+        }
+        .category-content.active {
+            display: block;
+        }
+        .sub-tab-btn.active {
+            background: #333 !important;
+            color: white !important;
+            border-color: #333 !important;
+        }
+        .lunch-image-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            background: #f9f9f9;
+        }
+        .lunch-image-item img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        .lunch-image-item .image-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .lunch-image-item textarea {
+            flex: 1;
+            resize: vertical;
+            min-height: 60px;
+        }
         /* Image Search Grid */
         .image-search-section {
             margin-bottom: 12px;
@@ -342,13 +379,21 @@
 
                 <!-- Write Tab -->
                 <div id="tab-write" class="tab-content active">
-                    <div class="admin-section">
-                        <h2>AI Generate</h2>
-                        <div class="input-group">
-                            <input type="text" id="topic" placeholder="Topic (optional)">
-                            <button onclick="generatePost()" id="generateBtn">Generate</button>
-                        </div>
+                    <!-- Category Sub-tabs -->
+                    <div class="sub-tabs" style="display: flex; gap: 8px; margin-bottom: 20px;">
+                        <button class="sub-tab-btn active" onclick="switchCategory('diary')" style="flex: 1; padding: 10px; background: #f5f5f5; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 500;">그림일기</button>
+                        <button class="sub-tab-btn" onclick="switchCategory('lunch')" style="flex: 1; padding: 10px; background: #f5f5f5; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 500;">서울명동 로컬, 점심이야기</button>
                     </div>
+
+                    <!-- 그림일기 Category -->
+                    <div id="category-diary" class="category-content active">
+                        <div class="admin-section">
+                            <h2>AI Generate</h2>
+                            <div class="input-group">
+                                <input type="text" id="topic" placeholder="Topic (optional)">
+                                <button onclick="generatePost()" id="generateBtn">Generate</button>
+                            </div>
+                        </div>
 
                     <div class="admin-section">
                         <h2>Image Search (Pexels)</h2>
@@ -394,9 +439,68 @@
                         <input type="text" id="title" placeholder="Title">
                         <textarea id="content" placeholder="Content..." rows="8"></textarea>
                         <input type="text" id="tags" placeholder="Tags (comma separated)">
-                        <input type="text" id="imageUrl" placeholder="Image URL (from stock site)">
-                        <button onclick="publishPost()" id="publishBtn" class="primary">Publish</button>
+
+                        <div style="margin-bottom: 12px;">
+                            <label style="display: block; font-size: 13px; color: #666; margin-bottom: 8px;">Images (Multiple)</label>
+                            <div id="imagesList" style="display: flex; flex-direction: column; gap: 8px;">
+                                <!-- 이미지 목록이 여기 표시됩니다 -->
+                            </div>
+                            <button onclick="addImageField()" type="button" style="width: 100%; margin-top: 8px; background: #f5f5f5; color: #666;">+ Add Image URL</button>
+                        </div>
+
+                        <button onclick="publishPost('diary')" id="publishBtn" class="primary">Publish</button>
                     </div>
+                    </div>
+                    <!-- End 그림일기 Category -->
+
+                    <!-- 점심이야기 Category -->
+                    <div id="category-lunch" class="category-content" style="display: none;">
+                        <div class="admin-section">
+                            <h2>Upload Images with Descriptions</h2>
+                            <p style="font-size: 12px; color: #888; margin-bottom: 12px;">
+                                각 이미지에 대한 간단한 설명(1문장)을 작성하세요. 여러 이미지의 설명을 바탕으로 글이 생성됩니다.
+                            </p>
+                            <input type="file" id="lunchImageInput" accept="image/*" multiple onchange="uploadLunchImages()">
+                            <div id="lunchImagesPreview" style="margin-top: 12px;"></div>
+                        </div>
+
+                        <div class="admin-section">
+                            <h2>Generate Content</h2>
+                            <button onclick="generateLunchContent()" id="generateLunchBtn" class="primary">Generate Content from Images</button>
+                        </div>
+
+                        <div class="admin-section">
+                            <h2>Edit Post</h2>
+                            <textarea id="lunchContent" placeholder="Content will be generated..." rows="8"></textarea>
+                            <input type="text" id="lunchTags" placeholder="Tags (comma separated)">
+
+                            <div style="margin-bottom: 12px;">
+                                <label style="display: block; font-size: 13px; color: #666; margin-bottom: 8px;">Images</label>
+                                <div id="lunchImagesList"></div>
+                            </div>
+                        </div>
+
+                        <div class="admin-section">
+                            <h2>Generate Title</h2>
+                            <button onclick="generateLunchTitle()" id="generateTitleBtn">Generate Title from Content</button>
+                            <input type="text" id="lunchTitle" placeholder="Title will be generated..." style="margin-top: 12px;">
+                        </div>
+
+                        <div class="admin-section">
+                            <h2>Generate Thumbnail (Optional)</h2>
+                            <p style="font-size: 12px; color: #888; margin-bottom: 12px;">
+                                제목을 기반으로 썸네일 이미지를 생성합니다.
+                            </p>
+                            <button onclick="generateLunchThumbnail()" id="generateThumbnailBtn">Generate Thumbnail</button>
+                            <div id="lunchThumbnailPreview" style="margin-top: 12px;"></div>
+                            <button onclick="useThumbnailAsFirstImage()" id="useThumbnailBtn" style="display: none; margin-top: 8px;">Use as First Image</button>
+                        </div>
+
+                        <div class="admin-section">
+                            <button onclick="publishPost('lunch')" id="publishLunchBtn" class="primary">Publish</button>
+                        </div>
+                    </div>
+                    <!-- End 점심이야기 Category -->
                 </div>
 
                 <!-- Prompt Tab -->
@@ -404,8 +508,14 @@
                     <div class="admin-section">
                         <h2>AI Prompt Settings</h2>
                         <p style="font-size: 13px; color: #666; margin-bottom: 12px;">
-                            AI가 글을 생성할 때 사용하는 프롬프트입니다.
+                            AI가 글을 생성할 때 사용하는 프롬프트입니다. 카테고리별로 다른 프롬프트를 설정할 수 있습니다.
                         </p>
+
+                        <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+                            <button onclick="loadPromptType('diary')" id="promptDiaryBtn" class="prompt-type-btn active" style="flex: 1; padding: 8px; background: #333; color: white; border: none; border-radius: 4px; cursor: pointer;">그림일기 Prompt</button>
+                            <button onclick="loadPromptType('lunch')" id="promptLunchBtn" class="prompt-type-btn" style="flex: 1; padding: 8px; background: #f5f5f5; color: #666; border: none; border-radius: 4px; cursor: pointer;">점심이야기 Prompt</button>
+                        </div>
+
                         <textarea id="promptText" placeholder="Loading..." rows="15"></textarea>
                         <button onclick="savePrompt()" id="savePromptBtn" class="primary">Save Prompt</button>
                     </div>
@@ -509,9 +619,61 @@ python -m naver.cheer_factory_worker</pre>
         let currentQuery = '';
         let totalResults = 0;
         let modalImageData = null;
+        let selectedImages = []; // 선택된 이미지들 (Pexels에서)
+        let postImages = []; // 포스트에 추가될 이미지 배열
+        let lunchImages = []; // 점심이야기 이미지 배열 {url, description}
+        let lunchThumbnailUrl = null; // 생성된 썸네일
+        let currentCategory = 'diary'; // 현재 카테고리
         const MAX_IMAGE_SIZE = 1920;
         const IMAGE_QUALITY = 0.85;
         const PER_PAGE = 12;
+
+        // Category switching
+        function switchCategory(category) {
+            currentCategory = category;
+            document.querySelectorAll('.sub-tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.category-content').forEach(content => content.style.display = 'none');
+
+            event.target.classList.add('active');
+            document.getElementById(`category-${category}`).style.display = 'block';
+        }
+
+        // 이미지 목록 렌더링
+        function renderImagesList() {
+            const container = document.getElementById('imagesList');
+            if (postImages.length === 0) {
+                container.innerHTML = '<p style="color: #888; font-size: 13px;">No images added yet</p>';
+                return;
+            }
+            container.innerHTML = postImages.map((url, index) => `
+                <div style="display: flex; gap: 8px; align-items: center;">
+                    <input type="text" value="${url}" onchange="updateImageUrl(${index}, this.value)" style="flex: 1; margin: 0;">
+                    <button onclick="removeImage(${index})" type="button" style="padding: 8px 12px; background: #ffebee; color: #c62828; border: none; border-radius: 4px; cursor: pointer;">Remove</button>
+                </div>
+            `).join('');
+        }
+
+        // 이미지 URL 필드 추가
+        function addImageField(url = '') {
+            postImages.push(url);
+            renderImagesList();
+        }
+
+        // 이미지 URL 업데이트
+        function updateImageUrl(index, url) {
+            postImages[index] = url;
+        }
+
+        // 이미지 제거
+        function removeImage(index) {
+            postImages.splice(index, 1);
+            renderImagesList();
+        }
+
+        // 페이지 로드 시 기본 필드 하나 추가
+        document.addEventListener('DOMContentLoaded', () => {
+            renderImagesList();
+        });
 
         // Image Search functions
         async function searchImages(page = 1) {
@@ -561,7 +723,7 @@ python -m naver.cheer_factory_worker</pre>
 
                     if (data.images && data.images.length > 0) {
                         resultsDiv.innerHTML = data.images.map(img => `
-                            <div class="image-grid-item" onclick="previewImage('${img.regular}', '${img.photographer}')">
+                            <div class="image-grid-item" onclick="toggleImageSelection('${img.regular}', '${img.photographer}', event)">
                                 <img src="${img.thumb}" alt="Search result">
                                 <div class="photographer">${img.photographer}</div>
                             </div>
@@ -621,45 +783,77 @@ python -m naver.cheer_factory_worker</pre>
             document.getElementById('status').className = 'status success';
         }
 
-        function selectImage(element, url, photographer) {
-            document.querySelectorAll('.image-grid-item').forEach(el => el.classList.remove('selected'));
-            element.classList.add('selected');
-            selectedImage = { url, photographer };
-            document.getElementById('useImageBtn').style.display = 'block';
+        // 이미지 선택 토글 (다중 선택 가능)
+        function toggleImageSelection(url, photographer, event) {
+            const element = event.currentTarget;
+            const index = selectedImages.findIndex(img => img.url === url);
+
+            if (index > -1) {
+                // 이미 선택됨 - 선택 해제
+                selectedImages.splice(index, 1);
+                element.classList.remove('selected');
+            } else {
+                // 선택 추가
+                selectedImages.push({ url, photographer });
+                element.classList.add('selected');
+            }
+
+            // 버튼 표시/숨김
+            const useBtn = document.getElementById('useImageBtn');
+            if (selectedImages.length > 0) {
+                useBtn.style.display = 'block';
+                useBtn.textContent = `Use ${selectedImages.length} Image${selectedImages.length > 1 ? 's' : ''}`;
+            } else {
+                useBtn.style.display = 'none';
+            }
         }
 
         async function useSelectedImage() {
-            if (!selectedImage) return;
+            if (selectedImages.length === 0) return;
 
             const btn = document.getElementById('useImageBtn');
             const status = document.getElementById('status');
 
             btn.disabled = true;
-            btn.textContent = 'Uploading to Cloudinary...';
+            btn.textContent = `Uploading ${selectedImages.length} image(s)...`;
 
             try {
-                const res = await fetch('/admin/download-image', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        image_url: selectedImage.url
-                    })
-                });
-                const data = await res.json();
+                let uploadedCount = 0;
+                const photographers = [];
 
-                if (data.error) {
-                    status.textContent = 'Error: ' + data.error;
-                    status.className = 'status error';
-                } else {
-                    document.getElementById('imageUrl').value = data.image_url;
-                    status.textContent = `Image uploaded! Photo by ${selectedImage.photographer} on Pexels`;
+                for (const img of selectedImages) {
+                    const res = await fetch('/admin/download-image', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            image_url: img.url
+                        })
+                    });
+                    const data = await res.json();
+
+                    if (data.error) {
+                        status.textContent = `Error uploading image: ${data.error}`;
+                        status.className = 'status error';
+                        continue;
+                    }
+
+                    // 배열에 추가
+                    postImages.push(data.image_url);
+                    photographers.push(img.photographer);
+                    uploadedCount++;
+                }
+
+                if (uploadedCount > 0) {
+                    renderImagesList();
+                    status.textContent = `${uploadedCount} image(s) uploaded! Photos by ${photographers.join(', ')} on Pexels`;
                     status.className = 'status success';
 
                     // Clear search
                     document.getElementById('imageSearchResults').innerHTML = '';
                     document.getElementById('translatedQuery').textContent = '';
                     btn.style.display = 'none';
-                    selectedImage = null;
+                    selectedImages = [];
+                    document.querySelectorAll('.image-grid-item').forEach(el => el.classList.remove('selected'));
                 }
             } catch (e) {
                 status.textContent = 'Error: ' + e.message;
@@ -718,9 +912,11 @@ python -m naver.cheer_factory_worker</pre>
                         <img src="${data.image_url}" alt="Generated Image" onclick="previewGeneratedImage('${data.image_url}')">
                         <p class="click-hint">Click image to view larger</p>
                     `;
-                    document.getElementById('imageUrl').value = data.image_url;
+                    // 배열에 추가
+                    postImages.push(data.image_url);
+                    renderImagesList();
                     actionsDiv.style.display = 'flex';
-                    status.textContent = 'Image generated and applied! Click to preview or Cancel to remove.';
+                    status.textContent = 'Image generated and added to images list! Click to preview or Cancel to remove.';
                     status.className = 'status success';
                 }
             } catch (e) {
@@ -748,7 +944,13 @@ python -m naver.cheer_factory_worker</pre>
 
             previewDiv.innerHTML = '';
             actionsDiv.style.display = 'none';
-            document.getElementById('imageUrl').value = '';
+
+            // 배열에서 마지막 생성된 이미지 제거
+            if (generatedImageUrl && postImages.includes(generatedImageUrl)) {
+                const index = postImages.indexOf(generatedImageUrl);
+                postImages.splice(index, 1);
+                renderImagesList();
+            }
             generatedImageUrl = null;
 
             status.textContent = 'Generated image removed.';
@@ -985,12 +1187,28 @@ python -m naver.cheer_factory_worker</pre>
         }
 
         // Prompt functions
+        let currentPromptType = 'diary';
+
         async function loadPrompt() {
+            await loadPromptType('diary');
+        }
+
+        async function loadPromptType(type) {
+            currentPromptType = type;
             const textarea = document.getElementById('promptText');
             textarea.value = 'Loading...';
 
+            // Update button styles
+            document.querySelectorAll('.prompt-type-btn').forEach(btn => {
+                btn.style.background = '#f5f5f5';
+                btn.style.color = '#666';
+            });
+            const btn = type === 'diary' ? document.getElementById('promptDiaryBtn') : document.getElementById('promptLunchBtn');
+            btn.style.background = '#333';
+            btn.style.color = 'white';
+
             try {
-                const res = await fetch('/admin/prompt');
+                const res = await fetch(`/admin/prompt?type=${type}`);
                 const data = await res.json();
                 if (data.error) {
                     textarea.value = 'Error: ' + data.error;
@@ -1021,7 +1239,10 @@ python -m naver.cheer_factory_worker</pre>
                 const res = await fetch('/admin/prompt', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt })
+                    body: JSON.stringify({
+                        prompt: prompt,
+                        type: currentPromptType
+                    })
                 });
                 const data = await res.json();
 
@@ -1029,7 +1250,7 @@ python -m naver.cheer_factory_worker</pre>
                     status.textContent = 'Error: ' + data.error;
                     status.className = 'status error';
                 } else {
-                    status.textContent = 'Prompt saved!';
+                    status.textContent = `Prompt saved for ${currentPromptType === 'diary' ? '그림일기' : '점심이야기'}!`;
                     status.className = 'status success';
                 }
             } catch (e) {
@@ -1136,8 +1357,10 @@ python -m naver.cheer_factory_worker</pre>
                     document.getElementById('tags').value = generatedTags.join(',');
 
                     if (data.image_url) {
-                        document.getElementById('imageUrl').value = data.image_url;
-                        uploadedUrl.innerHTML = `<p class="success">Image uploaded to Cloudinary!</p>`;
+                        // 배열에 추가
+                        postImages.push(data.image_url);
+                        renderImagesList();
+                        uploadedUrl.innerHTML = `<p class="success">Image uploaded to Cloudinary and added to images list!</p>`;
                     }
                 }
             } catch (e) {
@@ -1189,33 +1412,122 @@ python -m naver.cheer_factory_worker</pre>
             btn.textContent = 'Generate';
         }
 
-        async function publishPost() {
-            const title = document.getElementById('title').value;
-            const content = document.getElementById('content').value;
-            const tags = document.getElementById('tags').value;
-            const imageUrl = document.getElementById('imageUrl').value;
-            const btn = document.getElementById('publishBtn');
+        // ===== 점심이야기 Functions =====
+        async function uploadLunchImages() {
+            const input = document.getElementById('lunchImageInput');
+            const preview = document.getElementById('lunchImagesPreview');
             const status = document.getElementById('status');
 
-            if (!title || !content) {
-                status.textContent = 'Title and content required';
+            if (!input.files || input.files.length === 0) return;
+
+            preview.innerHTML = '<p>Uploading and resizing images...</p>';
+            status.textContent = 'Uploading images...';
+            status.className = 'status';
+
+            try {
+                for (let file of input.files) {
+                    // Resize
+                    file = await resizeImage(file);
+
+                    // Upload to analyze-image endpoint
+                    const formData = new FormData();
+                    formData.append('image', file);
+
+                    const res = await fetch('/admin/analyze-image', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const data = await res.json();
+
+                    if (data.error) {
+                        status.textContent = `Error: ${data.error}`;
+                        status.className = 'status error';
+                        continue;
+                    }
+
+                    lunchImages.push({
+                        url: data.image_url,
+                        description: ''
+                    });
+                }
+
+                renderLunchImagesPreview();
+                status.textContent = `${lunchImages.length} image(s) uploaded!`;
+                status.className = 'status success';
+            } catch (e) {
+                status.textContent = 'Error: ' + e.message;
+                status.className = 'status error';
+            }
+        }
+
+        function renderLunchImagesPreview() {
+            const preview = document.getElementById('lunchImagesPreview');
+            const imagesList = document.getElementById('lunchImagesList');
+
+            if (lunchImages.length === 0) {
+                preview.innerHTML = '<p style="color: #888;">No images uploaded yet</p>';
+                imagesList.innerHTML = '<p style="color: #888; font-size: 13px;">No images</p>';
+                return;
+            }
+
+            preview.innerHTML = lunchImages.map((img, index) => `
+                <div class="lunch-image-item">
+                    <img src="${img.url}" alt="Image ${index + 1}">
+                    <div class="image-info">
+                        <label style="font-size: 13px; font-weight: 500;">Image ${index + 1} Description:</label>
+                        <textarea placeholder="이 이미지에 대한 간단한 설명 (1문장)..." onchange="updateLunchImageDescription(${index}, this.value)">${img.description}</textarea>
+                        <button onclick="removeLunchImage(${index})" type="button" style="align-self: flex-start; padding: 6px 12px; background: #ffebee; color: #c62828; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;">Remove</button>
+                    </div>
+                </div>
+            `).join('');
+
+            imagesList.innerHTML = lunchImages.map((img, index) => `
+                <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 8px;">
+                    <img src="${img.url}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;">
+                    <span style="flex: 1; font-size: 13px; color: #666;">Image ${index + 1}</span>
+                </div>
+            `).join('');
+        }
+
+        function updateLunchImageDescription(index, description) {
+            lunchImages[index].description = description;
+        }
+
+        function removeLunchImage(index) {
+            lunchImages.splice(index, 1);
+            renderLunchImagesPreview();
+        }
+
+        async function generateLunchContent() {
+            const btn = document.getElementById('generateLunchBtn');
+            const status = document.getElementById('status');
+            const contentArea = document.getElementById('lunchContent');
+
+            if (lunchImages.length === 0) {
+                status.textContent = 'Please upload images first';
+                status.className = 'status error';
+                return;
+            }
+
+            // Check if all images have descriptions
+            const missingDescriptions = lunchImages.filter(img => !img.description.trim());
+            if (missingDescriptions.length > 0) {
+                status.textContent = 'Please add descriptions to all images';
                 status.className = 'status error';
                 return;
             }
 
             btn.disabled = true;
-            btn.textContent = 'Publishing...';
-            status.textContent = '';
+            btn.textContent = 'Generating...';
+            status.textContent = 'Generating content...';
+            status.className = 'status';
 
             try {
-                const res = await fetch('/admin/publish', {
+                const res = await fetch('/admin/generate-lunch-content', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        title_ko: title,
-                        content_ko: content,
-                        tags: tags,
-                        image_url: imageUrl
+                        images: lunchImages
                     })
                 });
                 const data = await res.json();
@@ -1224,16 +1536,9 @@ python -m naver.cheer_factory_worker</pre>
                     status.textContent = 'Error: ' + data.error;
                     status.className = 'status error';
                 } else {
-                    status.textContent = 'Published! Auto-deploy will start.';
+                    contentArea.value = data.content;
+                    status.textContent = 'Content generated! Now generate a title.';
                     status.className = 'status success';
-                    document.getElementById('title').value = '';
-                    document.getElementById('content').value = '';
-                    document.getElementById('topic').value = '';
-                    document.getElementById('tags').value = '';
-                    document.getElementById('imageUrl').value = '';
-                    document.getElementById('imagePreview').innerHTML = '';
-                    document.getElementById('tagsResult').innerHTML = '';
-                    document.getElementById('copyTagsBtn').style.display = 'none';
                 }
             } catch (e) {
                 status.textContent = 'Error: ' + e.message;
@@ -1241,7 +1546,235 @@ python -m naver.cheer_factory_worker</pre>
             }
 
             btn.disabled = false;
-            btn.textContent = 'Publish';
+            btn.textContent = 'Generate Content from Images';
+        }
+
+        async function generateLunchTitle() {
+            const btn = document.getElementById('generateTitleBtn');
+            const status = document.getElementById('status');
+            const content = document.getElementById('lunchContent').value;
+            const titleInput = document.getElementById('lunchTitle');
+
+            if (!content.trim()) {
+                status.textContent = 'Please generate content first';
+                status.className = 'status error';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Generating...';
+            status.textContent = 'Generating title...';
+            status.className = 'status';
+
+            try {
+                const res = await fetch('/admin/generate-lunch-title', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        content: content,
+                        images: lunchImages
+                    })
+                });
+                const data = await res.json();
+
+                if (data.error) {
+                    status.textContent = 'Error: ' + data.error;
+                    status.className = 'status error';
+                } else {
+                    titleInput.value = data.title;
+                    status.textContent = 'Title generated! Optionally generate a thumbnail.';
+                    status.className = 'status success';
+                }
+            } catch (e) {
+                status.textContent = 'Error: ' + e.message;
+                status.className = 'status error';
+            }
+
+            btn.disabled = false;
+            btn.textContent = 'Generate Title from Content';
+        }
+
+        async function generateLunchThumbnail() {
+            const btn = document.getElementById('generateThumbnailBtn');
+            const status = document.getElementById('status');
+            const title = document.getElementById('lunchTitle').value;
+            const preview = document.getElementById('lunchThumbnailPreview');
+            const useBtn = document.getElementById('useThumbnailBtn');
+
+            if (!title.trim()) {
+                status.textContent = 'Please generate title first';
+                status.className = 'status error';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Generating...';
+            status.textContent = 'Generating thumbnail...';
+            status.className = 'status';
+            preview.innerHTML = '<p style="color: #888;">AI is creating thumbnail...</p>';
+
+            try {
+                const res = await fetch('/admin/generate-lunch-thumbnail', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title })
+                });
+                const data = await res.json();
+
+                if (data.error) {
+                    status.textContent = 'Error: ' + data.error;
+                    status.className = 'status error';
+                    preview.innerHTML = '';
+                } else {
+                    lunchThumbnailUrl = data.image_url;
+                    preview.innerHTML = `<img src="${data.image_url}" style="max-width: 300px; border-radius: 8px;">`;
+                    useBtn.style.display = 'block';
+                    status.textContent = 'Thumbnail generated! Click "Use as First Image" to add it.';
+                    status.className = 'status success';
+                }
+            } catch (e) {
+                status.textContent = 'Error: ' + e.message;
+                status.className = 'status error';
+                preview.innerHTML = '';
+            }
+
+            btn.disabled = false;
+            btn.textContent = 'Generate Thumbnail';
+        }
+
+        function useThumbnailAsFirstImage() {
+            if (!lunchThumbnailUrl) return;
+
+            // 썸네일을 맨 앞에 추가
+            lunchImages.unshift({
+                url: lunchThumbnailUrl,
+                description: 'Thumbnail'
+            });
+
+            renderLunchImagesPreview();
+            document.getElementById('status').textContent = 'Thumbnail added as first image!';
+            document.getElementById('status').className = 'status success';
+            document.getElementById('useThumbnailBtn').style.display = 'none';
+        }
+
+        // ===== End 점심이야기 Functions =====
+
+        async function publishPost(category) {
+            if (category === 'diary') {
+                // 그림일기 발행
+                const title = document.getElementById('title').value;
+                const content = document.getElementById('content').value;
+                const tags = document.getElementById('tags').value;
+                const btn = document.getElementById('publishBtn');
+                const status = document.getElementById('status');
+
+                if (!title || !content) {
+                    status.textContent = 'Title and content required';
+                    status.className = 'status error';
+                    return;
+                }
+
+                btn.disabled = true;
+                btn.textContent = 'Publishing...';
+                status.textContent = '';
+
+                try {
+                    const res = await fetch('/admin/publish', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            title_ko: title,
+                            content_ko: content,
+                            tags: tags,
+                            images: postImages
+                        })
+                    });
+                    const data = await res.json();
+
+                    if (data.error) {
+                        status.textContent = 'Error: ' + data.error;
+                        status.className = 'status error';
+                    } else {
+                        status.textContent = 'Published! Auto-deploy will start.';
+                        status.className = 'status success';
+                        document.getElementById('title').value = '';
+                        document.getElementById('content').value = '';
+                        document.getElementById('topic').value = '';
+                        document.getElementById('tags').value = '';
+                        document.getElementById('imagePreview').innerHTML = '';
+                        document.getElementById('tagsResult').innerHTML = '';
+                        document.getElementById('copyTagsBtn').style.display = 'none';
+                        postImages = [];
+                        renderImagesList();
+                    }
+                } catch (e) {
+                    status.textContent = 'Error: ' + e.message;
+                    status.className = 'status error';
+                }
+
+                btn.disabled = false;
+                btn.textContent = 'Publish';
+            } else if (category === 'lunch') {
+                // 점심이야기 발행
+                const title = document.getElementById('lunchTitle').value;
+                const content = document.getElementById('lunchContent').value;
+                const tags = document.getElementById('lunchTags').value;
+                const btn = document.getElementById('publishLunchBtn');
+                const status = document.getElementById('status');
+
+                if (!title || !content) {
+                    status.textContent = 'Title and content required';
+                    status.className = 'status error';
+                    return;
+                }
+
+                if (lunchImages.length === 0) {
+                    status.textContent = 'At least one image required';
+                    status.className = 'status error';
+                    return;
+                }
+
+                btn.disabled = true;
+                btn.textContent = 'Publishing...';
+                status.textContent = '';
+
+                try {
+                    const imageUrls = lunchImages.map(img => img.url);
+                    const res = await fetch('/admin/publish', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            title_ko: title,
+                            content_ko: content,
+                            tags: tags,
+                            images: imageUrls
+                        })
+                    });
+                    const data = await res.json();
+
+                    if (data.error) {
+                        status.textContent = 'Error: ' + data.error;
+                        status.className = 'status error';
+                    } else {
+                        status.textContent = 'Published! Auto-deploy will start.';
+                        status.className = 'status success';
+                        document.getElementById('lunchTitle').value = '';
+                        document.getElementById('lunchContent').value = '';
+                        document.getElementById('lunchTags').value = '';
+                        document.getElementById('lunchImagesPreview').innerHTML = '';
+                        document.getElementById('lunchThumbnailPreview').innerHTML = '';
+                        lunchImages = [];
+                        lunchThumbnailUrl = null;
+                        renderLunchImagesPreview();
+                    }
+                } catch (e) {
+                    status.textContent = 'Error: ' + e.message;
+                    status.className = 'status error';
+                }
+
+                btn.disabled = false;
+                btn.textContent = 'Publish';
+            }
         }
     </script>
 </body>

@@ -82,12 +82,32 @@ DEFAULT_PROMPT = """당신은 'Cheer Factory'라는 익명 블로그의 작가�
 ## 주제
 주어진 주제나 키워드를 바탕으로 직장인들의 일상, 고민, 작은 행복에 대해 씁니다."""
 
-def get_system_prompt():
+# 점심이야기 프롬프트
+DEFAULT_LUNCH_PROMPT = """당신은 서울 명동에 사무실을 둔 직장인입니다.
+
+## 페르소나
+- 명동 오피스에서 근무하는 30대 직장인
+- 점심시간마다 새로운 로컬 맛집을 찾아다니는 것이 취미
+- 맛집 탐방을 통해 직장생활의 작은 행복을 찾음
+- 솔직하고 친근한 리뷰 스타일
+
+## 글 스타일
+- 일상적이고 친근한 말투
+- 음식과 식당에 대한 솔직한 평가
+- 가격, 위치, 분위기 등 실용적인 정보 포함
+- 3-5문장의 짧은 단락으로 구성
+- "~했어요", "~더라고요" 같은 구어체 사용
+
+## 주제
+명동 근처의 점심 맛집을 소개하고, 메뉴와 식당의 특징을 사람들에게 추천합니다."""
+
+def get_system_prompt(prompt_type="diary"):
     """GitHub에서 프롬프트 로드, 없으면 기본값 사용"""
     if not GITHUB_TOKEN or not GITHUB_REPO:
-        return DEFAULT_PROMPT
+        return DEFAULT_PROMPT if prompt_type == "diary" else DEFAULT_LUNCH_PROMPT
 
-    url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/config/prompt.txt"
+    filename = "prompt_diary.txt" if prompt_type == "diary" else "prompt_lunch.txt"
+    url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/config/{filename}"
     headers = {"Authorization": f"token {GITHUB_TOKEN}"}
 
     try:
@@ -99,7 +119,7 @@ def get_system_prompt():
     except:
         pass
 
-    return DEFAULT_PROMPT
+    return DEFAULT_PROMPT if prompt_type == "diary" else DEFAULT_LUNCH_PROMPT
 
 def parse_post_content(text):
     """포스트 텍스트를 파싱하여 메타데이터와 본문 분리"""
@@ -592,12 +612,12 @@ def delete_guestbook(entry_id):
 
 # ============ Admin 기능 ============
 
-def generate_post_content(topic=None):
+def generate_post_content(topic=None, prompt_type="diary"):
     """AI로 글 생성"""
     if not client:
         raise Exception("AI model not configured. Please set GOOGLE_API_KEY.")
 
-    system_prompt = get_system_prompt()
+    system_prompt = get_system_prompt(prompt_type)
     prompt = f"""{system_prompt}
 
 다음 주제로 블로그 글을 작성해주세요: {topic if topic else '자유 주제'}
@@ -845,7 +865,8 @@ def admin_get_prompt():
     if not session.get("admin_logged_in"):
         return jsonify({"error": "Unauthorized"}), 401
 
-    prompt = get_system_prompt()
+    prompt_type = request.args.get("type", "diary")
+    prompt = get_system_prompt(prompt_type)
     return jsonify({"prompt": prompt})
 
 @app.route("/admin/prompt", methods=["POST"])
@@ -856,6 +877,7 @@ def admin_save_prompt():
 
     data = request.json
     prompt = data.get("prompt", "")
+    prompt_type = data.get("type", "diary")
 
     if not prompt.strip():
         return jsonify({"error": "Prompt cannot be empty"}), 400
@@ -865,7 +887,8 @@ def admin_save_prompt():
         "Accept": "application/vnd.github.v3+json"
     }
 
-    url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/config/prompt.txt"
+    filename = "prompt_diary.txt" if prompt_type == "diary" else "prompt_lunch.txt"
+    url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/config/{filename}"
 
     # 기존 파일 SHA 가져오기 (있으면)
     sha = None
@@ -876,7 +899,7 @@ def admin_save_prompt():
     # 파일 저장
     content_base64 = base64.b64encode(prompt.encode("utf-8")).decode("utf-8")
     payload = {
-        "message": "Update AI prompt",
+        "message": f"Update AI prompt ({prompt_type})",
         "content": content_base64,
         "branch": "master"
     }
@@ -903,6 +926,162 @@ def admin_generate():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route("/admin/generate-lunch-content", methods=["POST"])
+def admin_generate_lunch_content():
+    """이미지 설명들을 바탕으로 점심이야기 글 생성"""
+    if not session.get("admin_logged_in"):
+        return jsonify({"error": "Unauthorized"}), 401
+
+    if not client:
+        return jsonify({"error": "AI model not configured"}), 500
+
+    data = request.json
+    images = data.get("images", [])  # [{url, description}, ...]
+
+    if not images:
+        return jsonify({"error": "No images provided"}), 400
+
+    try:
+        system_prompt = get_system_prompt("lunch")
+
+        # 이미지 설명들을 정리
+        image_descriptions = "\n".join([f"이미지 {i+1}: {img['description']}" for i, img in enumerate(images)])
+
+        prompt = f"""{system_prompt}
+
+다음 이미지 설명들을 바탕으로 명동 맛집 블로그 글을 작성해주세요:
+
+{image_descriptions}
+
+요구사항:
+- 각 이미지에 대한 설명을 자연스럽게 통합
+- 식당 이름, 메뉴, 맛, 가격, 분위기 등을 포함
+- 친근하고 솔직한 리뷰 톤
+- 3-5개의 짧은 단락으로 구성
+
+JSON 형식으로 응답해주세요:
+{{"content": "글 본문"}}"""
+
+        response = client.models.generate_content(
+            model="gemini-2.0-flash",
+            contents=prompt
+        )
+        text = response.text.strip()
+
+        if text.startswith("```json"):
+            text = text[7:]
+        if text.startswith("```"):
+            text = text[3:]
+        if text.endswith("```"):
+            text = text[:-3]
+
+        result = json.loads(text.strip())
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/admin/generate-lunch-title", methods=["POST"])
+def admin_generate_lunch_title():
+    """글 내용과 이미지를 바탕으로 제목 생성"""
+    if not session.get("admin_logged_in"):
+        return jsonify({"error": "Unauthorized"}), 401
+
+    if not client:
+        return jsonify({"error": "AI model not configured"}), 500
+
+    data = request.json
+    content = data.get("content", "")
+    images = data.get("images", [])
+
+    if not content:
+        return jsonify({"error": "No content provided"}), 400
+
+    try:
+        prompt = f"""다음 맛집 블로그 글을 읽고, 매력적인 제목을 생성해주세요:
+
+글 내용:
+{content}
+
+요구사항:
+- 20자 이내의 짧고 임팩트 있는 제목
+- 식당 이름이나 메뉴를 포함
+- 클릭하고 싶게 만드는 제목
+- 과장되지 않은 솔직한 톤
+
+JSON 형식으로 응답해주세요:
+{{"title": "제목"}}"""
+
+        response = client.models.generate_content(
+            model="gemini-2.0-flash",
+            contents=prompt
+        )
+        text = response.text.strip()
+
+        if text.startswith("```json"):
+            text = text[7:]
+        if text.startswith("```"):
+            text = text[3:]
+        if text.endswith("```"):
+            text = text[:-3]
+
+        result = json.loads(text.strip())
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/admin/generate-lunch-thumbnail", methods=["POST"])
+def admin_generate_lunch_thumbnail():
+    """제목을 바탕으로 썸네일 이미지 생성"""
+    if not session.get("admin_logged_in"):
+        return jsonify({"error": "Unauthorized"}), 401
+
+    if not client:
+        return jsonify({"error": "AI model not configured"}), 500
+
+    data = request.json
+    title = data.get("title", "")
+
+    if not title:
+        return jsonify({"error": "No title provided"}), 400
+
+    try:
+        # 제목을 기반으로 음식 썸네일 생성
+        import re
+        clean_title = re.sub(r'[\x00-\x1f\x7f-\x9f]', ' ', title)
+
+        image_prompt = f"""Create an appetizing food photography thumbnail for a Korean restaurant blog post titled: "{clean_title}".
+Style: Professional food photography, bright and clean, top-down view or 45-degree angle, warm natural lighting, restaurant setting,
+focus on the dish, appetizing presentation. Do not include any text or letters in the image."""
+
+        response = client.models.generate_content(
+            model="gemini-2.5-flash-image",
+            contents=[image_prompt],
+        )
+
+        # 응답에서 이미지 찾기
+        image_bytes = None
+        for part in response.candidates[0].content.parts:
+            if part.inline_data is not None:
+                image_bytes = part.inline_data.data
+                break
+
+        if not image_bytes:
+            return jsonify({"error": "No image generated"}), 500
+
+        # Cloudinary에 업로드
+        image_base64 = base64.b64encode(image_bytes).decode("utf-8")
+        upload_result = cloudinary.uploader.upload(
+            f"data:image/png;base64,{image_base64}",
+            folder="cheer-factory"
+        )
+
+        return jsonify({
+            "success": True,
+            "image_url": upload_result.get("secure_url", "")
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 @app.route("/admin/publish", methods=["POST"])
 def admin_publish():
     if not session.get("admin_logged_in"):
@@ -916,7 +1095,12 @@ def admin_publish():
         return jsonify({"error": "Title and content required"}), 400
 
     tags = data.get("tags", "")
-    image_url = data.get("image_url", "")
+    images = data.get("images", [])  # 복수 이미지 배열
+    image_url = data.get("image_url", "")  # 하위 호환성
+
+    # 하위 호환성: image_url이 있고 images가 없으면 images에 추가
+    if image_url and not images:
+        images = [image_url]
 
     try:
         # 영어 번역
@@ -926,7 +1110,7 @@ def admin_publish():
         success = publish_to_github(
             title_ko, content_ko,
             translated["title"], translated["content"],
-            tags, image_url
+            tags, image_url="", images=images  # images 배열 전달
         )
 
         if success:
@@ -1040,10 +1224,10 @@ def admin_update():
     title = data.get("title", "")
     content = data.get("content", "")
     tags = data.get("tags", "")
-    image_url = data.get("image_url", "")
-    images = data.get("images", [])
+    images = data.get("images", [])  # 복수 이미지 배열
+    image_url = data.get("image_url", "")  # 하위 호환성
 
-    # images가 없으면 image_url로 생성
+    # 하위 호환성: image_url이 있고 images가 없으면 images에 추가
     if not images and image_url:
         images = [image_url]
 
