@@ -61,6 +61,10 @@ SITE_URL = os.getenv("SITE_URL", "https://cheer-factory.onrender.com")
 # Naver Worker API Key (로컬 워커 인증용)
 NAVER_WORKER_KEY = os.getenv("NAVER_WORKER_KEY")
 
+# Naver Search API (Place 검색용)
+NAVER_CLIENT_ID = os.getenv("NAVER_CLIENT_ID")
+NAVER_CLIENT_SECRET = os.getenv("NAVER_CLIENT_SECRET")
+
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", secrets.token_hex(16))
 
@@ -726,7 +730,7 @@ def remove_post_from_index(post_id):
     save_posts_index(index_data)
     invalidate_cache()
 
-def publish_to_github(title_ko, content_ko, title_en, content_en, tags="", image_url="", images=None):
+def publish_to_github(title_ko, content_ko, title_en, content_en, tags="", image_url="", images=None, category="diary", restaurant_id=None, restaurant_data=None):
     """GitHub에 포스트 배포"""
     today = datetime.now().strftime("%Y-%m-%d")
     post_num = get_existing_posts_count(today) + 1
@@ -749,6 +753,13 @@ def publish_to_github(title_ko, content_ko, title_en, content_en, tags="", image
             meta_lines += f"IMAGE: {images[0]}\n"
         else:
             meta_lines += f"IMAGES: {','.join(images)}\n"
+    if category:
+        meta_lines += f"CATEGORY: {category}\n"
+    if restaurant_data:
+        meta_lines += f"RESTAURANT: {restaurant_data.get('name', '')}\n"
+        meta_lines += f"RESTAURANT_ADDRESS: {restaurant_data.get('address', '')}\n"
+        meta_lines += f"RESTAURANT_PLACE_ID: {restaurant_data.get('naver_place_id', '')}\n"
+        meta_lines += f"VISIT_COUNT: {restaurant_data.get('visit_count', 1)}\n"
 
     # 한국어 파일
     filename_ko = f"{today}-{post_num:03d}-ko.txt"
@@ -793,6 +804,7 @@ def publish_to_github(title_ko, content_ko, title_en, content_en, tags="", image
         "tags": tags_list,
         "image_url": first_image,  # 하위 호환성
         "images": images,
+        "category": category,
         "lang": "ko"
     }
     post_data_en = {
@@ -803,8 +815,22 @@ def publish_to_github(title_ko, content_ko, title_en, content_en, tags="", image
         "tags": tags_list,
         "image_url": first_image,  # 하위 호환성
         "images": images,
+        "category": category,
         "lang": "en"
     }
+
+    # 점심이야기 카테고리인 경우 restaurant 정보 추가
+    if category == "lunch" and restaurant_data:
+        restaurant_info = {
+            "restaurant_id": restaurant_id,
+            "name": restaurant_data.get("name", ""),
+            "address": restaurant_data.get("address", ""),
+            "naver_place_id": restaurant_data.get("naver_place_id", ""),
+            "visit_count": restaurant_data.get("visit_count", 1)
+        }
+        post_data_ko["restaurant"] = restaurant_info
+        post_data_en["restaurant"] = restaurant_info
+
     add_post_to_index(post_data_ko, post_data_en)
 
     return True
@@ -1097,10 +1123,48 @@ def admin_publish():
     tags = data.get("tags", "")
     images = data.get("images", [])  # 복수 이미지 배열
     image_url = data.get("image_url", "")  # 하위 호환성
+    category = data.get("category", "diary")  # 카테고리 (diary or lunch)
+    restaurant_data = data.get("restaurant", None)  # 식당 정보 (점심이야기 전용)
 
     # 하위 호환성: image_url이 있고 images가 없으면 images에 추가
     if image_url and not images:
         images = [image_url]
+
+    # 점심이야기 카테고리이고 식당 정보가 있으면 Supabase에 저장
+    restaurant_id = None
+    if category == "lunch" and restaurant_data and supabase:
+        try:
+            naver_place_id = restaurant_data.get("naver_place_id", "")
+            name = restaurant_data.get("name", "")
+            address = restaurant_data.get("address", "")
+            visit_count = restaurant_data.get("visit_count", 1)
+
+            # 기존 식당 조회
+            existing = supabase.table("restaurants")\
+                .select("id, visit_count")\
+                .eq("naver_place_id", naver_place_id)\
+                .limit(1)\
+                .execute()
+
+            if existing.data:
+                # 기존 식당 업데이트 (방문 횟수 증가)
+                restaurant_id = existing.data[0]["id"]
+                supabase.table("restaurants")\
+                    .update({"visit_count": visit_count})\
+                    .eq("id", restaurant_id)\
+                    .execute()
+            else:
+                # 새 식당 추가
+                result = supabase.table("restaurants").insert({
+                    "name": name,
+                    "address": address,
+                    "naver_place_id": naver_place_id,
+                    "visit_count": visit_count
+                }).execute()
+                if result.data:
+                    restaurant_id = result.data[0]["id"]
+        except Exception as e:
+            print(f"Failed to save restaurant: {e}")
 
     try:
         # 영어 번역
@@ -1110,7 +1174,10 @@ def admin_publish():
         success = publish_to_github(
             title_ko, content_ko,
             translated["title"], translated["content"],
-            tags, image_url="", images=images  # images 배열 전달
+            tags, image_url="", images=images,  # images 배열 전달
+            category=category,
+            restaurant_id=restaurant_id,
+            restaurant_data=restaurant_data
         )
 
         if success:
@@ -1586,6 +1653,82 @@ def admin_download_image():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route("/admin/search-naver-place", methods=["POST"])
+def admin_search_naver_place():
+    """네이버 지도 API로 식당 검색"""
+    if not session.get("admin_logged_in"):
+        return jsonify({"error": "Unauthorized"}), 401
+
+    if not NAVER_CLIENT_ID or not NAVER_CLIENT_SECRET:
+        return jsonify({"error": "Naver API credentials not configured. Please set NAVER_CLIENT_ID and NAVER_CLIENT_SECRET in .env"}), 500
+
+    data = request.json
+    name = data.get("name", "").strip()
+    address = data.get("address", "").strip()
+
+    if not name:
+        return jsonify({"error": "Restaurant name required"}), 400
+
+    try:
+        # 네이버 검색 API - 지역 검색 (Local)
+        query = f"{name} {address}" if address else name
+        url = "https://openapi.naver.com/v1/search/local.json"
+        params = {
+            "query": query,
+            "display": 5,
+            "start": 1,
+            "sort": "random"
+        }
+        headers = {
+            "X-Naver-Client-Id": NAVER_CLIENT_ID,
+            "X-Naver-Client-Secret": NAVER_CLIENT_SECRET
+        }
+
+        response = requests.get(url, params=params, headers=headers)
+
+        if response.status_code != 200:
+            return jsonify({"error": f"Naver API error: {response.status_code}"}), 500
+
+        result = response.json()
+        places = []
+
+        for item in result.get("items", []):
+            # HTML 태그 제거
+            import re
+            clean_title = re.sub(r'<[^>]+>', '', item.get("title", ""))
+            clean_address = item.get("address", "")
+            clean_category = item.get("category", "")
+
+            # Naver Place ID 추출 (link에서)
+            place_id = item.get("link", "").split("/")[-1] if item.get("link") else ""
+
+            places.append({
+                "id": place_id,
+                "name": clean_title,
+                "address": clean_address,
+                "category": clean_category,
+                "link": item.get("link", ""),
+                "visit_count": 0  # 기본값, DB에서 조회 필요
+            })
+
+        # Supabase에서 기존 방문 횟수 조회
+        if supabase and places:
+            for place in places:
+                try:
+                    result = supabase.table("restaurants")\
+                        .select("visit_count")\
+                        .eq("naver_place_id", place["id"])\
+                        .limit(1)\
+                        .execute()
+                    if result.data:
+                        place["visit_count"] = result.data[0].get("visit_count", 0)
+                except:
+                    pass
+
+        return jsonify({"places": places})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 # ============ Naver Blog Cross-Posting ============
 
 @app.route("/admin/naver-publish", methods=["POST"])
@@ -1626,6 +1769,7 @@ def admin_naver_publish():
         if not images and post.get("image_url"):
             images = [post.get("image_url")]
 
+        category = post.get("category", "diary")
         queue_data = {
             "post_id": post_id,
             "title": post.get("title", ""),
@@ -1633,9 +1777,17 @@ def admin_naver_publish():
             "tags": post.get("tags", []),
             "image_url": images[0] if images else "",  # 첫 번째 이미지 (하위 호환)
             "images": images,  # 전체 이미지 리스트
-            "category": data.get("category", "그림일기"),
+            "category": "점심이야기" if category == "lunch" else "그림일기",
             "status": "pending"
         }
+
+        # 점심이야기 카테고리이고 restaurant 정보가 있으면 추가
+        if category == "lunch" and post.get("restaurant"):
+            restaurant = post.get("restaurant")
+            queue_data["restaurant_name"] = restaurant.get("name", "")
+            queue_data["restaurant_address"] = restaurant.get("address", "")
+            queue_data["naver_place_id"] = restaurant.get("naver_place_id", "")
+            queue_data["visit_count"] = restaurant.get("visit_count", 1)
 
         result = supabase.table("naver_publish_queue").insert(queue_data).execute()
 

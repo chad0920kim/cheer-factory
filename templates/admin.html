@@ -456,6 +456,33 @@
                     <!-- 점심이야기 Category -->
                     <div id="category-lunch" class="category-content" style="display: none;">
                         <div class="admin-section">
+                            <h2>Restaurant Information</h2>
+                            <p style="font-size: 12px; color: #888; margin-bottom: 12px;">
+                                식당 정보를 입력하세요. 네이버 지도와 방문 횟수가 포함됩니다.
+                            </p>
+                            <input type="text" id="restaurantName" placeholder="식당 이름 (예: 명동교자)">
+                            <input type="text" id="restaurantAddress" placeholder="식당 주소 (예: 서울 중구 명동10길 29)">
+                            <button onclick="searchNaverPlace()" id="searchPlaceBtn" style="margin-top: 8px;">Search Naver Place</button>
+                            <div id="placeSearchResults" style="margin-top: 12px;"></div>
+
+                            <div style="margin-top: 12px; padding: 12px; background: #f9f9f9; border-radius: 8px; display: none;" id="selectedPlaceInfo">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                    <span style="font-weight: 500;">선택된 식당:</span>
+                                    <span id="selectedPlaceName" style="color: #333;"></span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                    <span style="font-weight: 500;">현재 방문 횟수:</span>
+                                    <div style="display: flex; gap: 8px; align-items: center;">
+                                        <button onclick="decrementVisitCount()" style="padding: 4px 12px; background: #f5f5f5; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">-</button>
+                                        <input type="number" id="visitCount" value="1" min="1" style="width: 60px; text-align: center; margin: 0;">
+                                        <button onclick="incrementVisitCount()" style="padding: 4px 12px; background: #f5f5f5; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">+</button>
+                                    </div>
+                                </div>
+                                <p style="font-size: 11px; color: #666; margin: 0;">* 이전에 방문한 적이 있다면 방문 횟수를 조정하세요</p>
+                            </div>
+                        </div>
+
+                        <div class="admin-section">
                             <h2>Upload Images with Descriptions</h2>
                             <p style="font-size: 12px; color: #888; margin-bottom: 12px;">
                                 각 이미지에 대한 간단한 설명(1문장)을 작성하세요. 여러 이미지의 설명을 바탕으로 글이 생성됩니다.
@@ -624,6 +651,7 @@ python -m naver.cheer_factory_worker</pre>
         let lunchImages = []; // 점심이야기 이미지 배열 {url, description}
         let lunchThumbnailUrl = null; // 생성된 썸네일
         let currentCategory = 'diary'; // 현재 카테고리
+        let selectedRestaurant = null; // 선택된 식당 정보 {id, name, address, naver_place_id, visit_count}
         const MAX_IMAGE_SIZE = 1920;
         const IMAGE_QUALITY = 0.85;
         const PER_PAGE = 12;
@@ -1412,6 +1440,91 @@ python -m naver.cheer_factory_worker</pre>
             btn.textContent = 'Generate';
         }
 
+        // ===== Restaurant Functions =====
+        async function searchNaverPlace() {
+            const name = document.getElementById('restaurantName').value.trim();
+            const address = document.getElementById('restaurantAddress').value.trim();
+            const btn = document.getElementById('searchPlaceBtn');
+            const resultsDiv = document.getElementById('placeSearchResults');
+            const status = document.getElementById('status');
+
+            if (!name) {
+                status.textContent = '식당 이름을 입력하세요';
+                status.className = 'status error';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Searching...';
+            resultsDiv.innerHTML = '<p style="color: #888;">Searching Naver Places...</p>';
+            status.textContent = '';
+
+            try {
+                const res = await fetch('/admin/search-naver-place', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, address })
+                });
+                const data = await res.json();
+
+                if (data.error) {
+                    resultsDiv.innerHTML = `<p class="error">Error: ${data.error}</p>`;
+                } else if (data.places && data.places.length > 0) {
+                    resultsDiv.innerHTML = `
+                        <div style="font-size: 13px; color: #666; margin-bottom: 8px;">검색 결과 (${data.places.length}개):</div>
+                        ${data.places.map((place, index) => `
+                            <div onclick="selectPlace(${index}, ${JSON.stringify(place).replace(/"/g, '&quot;')})" style="padding: 10px; margin-bottom: 8px; background: #fff; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background='#fff'">
+                                <div style="font-weight: 500; margin-bottom: 4px;">${place.name}</div>
+                                <div style="font-size: 12px; color: #666;">${place.address}</div>
+                                ${place.category ? `<div style="font-size: 11px; color: #999; margin-top: 4px;">${place.category}</div>` : ''}
+                            </div>
+                        `).join('')}
+                    `;
+                } else {
+                    resultsDiv.innerHTML = '<p style="color: #888;">검색 결과가 없습니다. 식당 이름이나 주소를 확인하세요.</p>';
+                }
+            } catch (e) {
+                resultsDiv.innerHTML = `<p class="error">Error: ${e.message}</p>`;
+            }
+
+            btn.disabled = false;
+            btn.textContent = 'Search Naver Place';
+        }
+
+        function selectPlace(index, place) {
+            selectedRestaurant = place;
+
+            // UI 업데이트
+            document.getElementById('selectedPlaceInfo').style.display = 'block';
+            document.getElementById('selectedPlaceName').textContent = place.name;
+
+            // 기존 방문 횟수 로드 또는 1로 설정
+            if (place.visit_count > 0) {
+                document.getElementById('visitCount').value = place.visit_count + 1;
+            } else {
+                document.getElementById('visitCount').value = 1;
+            }
+
+            // 검색 결과 숨기기
+            document.getElementById('placeSearchResults').innerHTML = '<p style="color: #4CAF50;">✓ 식당이 선택되었습니다</p>';
+
+            const status = document.getElementById('status');
+            status.textContent = `${place.name} 선택됨. 방문 횟수: ${document.getElementById('visitCount').value}회`;
+            status.className = 'status success';
+        }
+
+        function incrementVisitCount() {
+            const input = document.getElementById('visitCount');
+            input.value = parseInt(input.value) + 1;
+        }
+
+        function decrementVisitCount() {
+            const input = document.getElementById('visitCount');
+            if (parseInt(input.value) > 1) {
+                input.value = parseInt(input.value) - 1;
+            }
+        }
+
         // ===== 점심이야기 Functions =====
         async function uploadLunchImages() {
             const input = document.getElementById('lunchImageInput');
@@ -1734,12 +1847,20 @@ python -m naver.cheer_factory_worker</pre>
                     return;
                 }
 
+                if (!selectedRestaurant) {
+                    status.textContent = 'Please select a restaurant from Naver Place search';
+                    status.className = 'status error';
+                    return;
+                }
+
                 btn.disabled = true;
                 btn.textContent = 'Publishing...';
                 status.textContent = '';
 
                 try {
                     const imageUrls = lunchImages.map(img => img.url);
+                    const visitCount = parseInt(document.getElementById('visitCount').value) || 1;
+
                     const res = await fetch('/admin/publish', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -1747,7 +1868,14 @@ python -m naver.cheer_factory_worker</pre>
                             title_ko: title,
                             content_ko: content,
                             tags: tags,
-                            images: imageUrls
+                            images: imageUrls,
+                            category: 'lunch',
+                            restaurant: {
+                                name: selectedRestaurant.name,
+                                address: selectedRestaurant.address,
+                                naver_place_id: selectedRestaurant.id,
+                                visit_count: visitCount
+                            }
                         })
                     });
                     const data = await res.json();
@@ -1763,8 +1891,13 @@ python -m naver.cheer_factory_worker</pre>
                         document.getElementById('lunchTags').value = '';
                         document.getElementById('lunchImagesPreview').innerHTML = '';
                         document.getElementById('lunchThumbnailPreview').innerHTML = '';
+                        document.getElementById('restaurantName').value = '';
+                        document.getElementById('restaurantAddress').value = '';
+                        document.getElementById('placeSearchResults').innerHTML = '';
+                        document.getElementById('selectedPlaceInfo').style.display = 'none';
                         lunchImages = [];
                         lunchThumbnailUrl = null;
+                        selectedRestaurant = null;
                         renderLunchImagesPreview();
                     }
                 } catch (e) {
