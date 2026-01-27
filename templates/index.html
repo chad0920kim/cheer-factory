@@ -43,6 +43,66 @@
     {% endif %}
 
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        /* Image Slider - Instagram Style */
+        .image-slider {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            border-radius: 8px;
+            margin: 15px 0;
+            background: #000;
+        }
+        .slider-container {
+            display: flex;
+            transition: transform 0.3s ease-out;
+            touch-action: pan-y pinch-zoom;
+        }
+        .slide {
+            min-width: 100%;
+            display: none;
+        }
+        .slide.active {
+            display: block;
+        }
+        .slide img {
+            width: 100%;
+            height: auto;
+            max-height: 500px;
+            object-fit: contain;
+            display: block;
+        }
+        .slider-dots {
+            position: absolute;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 6px;
+            z-index: 10;
+        }
+        .slider-dots .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+        }
+        .slider-dots .dot.active {
+            background: #fff;
+            transform: scale(1.2);
+        }
+        .slider-dots .dot:hover {
+            background: rgba(255, 255, 255, 0.8);
+        }
+        .image-slider .download-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 10;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -76,7 +136,33 @@
                 <article class="post">
                     <h2>{{ post.title }}</h2>
                     <p class="date">{{ post.date }}</p>
-                    {% if post.image_url %}
+                    {% if post.images and post.images|length > 1 %}
+                    <!-- 복수 이미지: 슬라이더 -->
+                    <div class="image-slider" data-post-id="{{ post.id }}">
+                        <div class="slider-container">
+                            {% for img in post.images %}
+                            <div class="slide {% if loop.first %}active{% endif %}">
+                                <img src="{{ img }}" alt="{{ post.title }} - {{ loop.index }}">
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class="slider-dots">
+                            {% for img in post.images %}
+                            <span class="dot {% if loop.first %}active{% endif %}" data-index="{{ loop.index0 }}"></span>
+                            {% endfor %}
+                        </div>
+                        {% if is_admin %}
+                        <button class="download-btn" onclick="downloadImage('{{ post.images[0] }}', '{{ post.title }}')" title="Download Image">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                        </button>
+                        {% endif %}
+                    </div>
+                    {% elif post.image_url %}
+                    <!-- 단일 이미지 -->
                     <div class="post-image">
                         <img src="{{ post.image_url }}" alt="{{ post.title }}">
                         {% if is_admin %}
@@ -235,6 +321,82 @@
                 window.open(imageUrl, '_blank');
             }
         }
+
+        // 이미지 슬라이더 초기화
+        function initSliders() {
+            const sliders = document.querySelectorAll('.image-slider');
+
+            sliders.forEach(slider => {
+                const slides = slider.querySelectorAll('.slide');
+                const dots = slider.querySelectorAll('.dot');
+                let currentIndex = 0;
+                let touchStartX = 0;
+                let touchEndX = 0;
+
+                // 슬라이드 변경 함수
+                function goToSlide(index) {
+                    if (index < 0) index = slides.length - 1;
+                    if (index >= slides.length) index = 0;
+
+                    slides.forEach((slide, i) => {
+                        slide.classList.toggle('active', i === index);
+                    });
+                    dots.forEach((dot, i) => {
+                        dot.classList.toggle('active', i === index);
+                    });
+                    currentIndex = index;
+                }
+
+                // 점 클릭 이벤트
+                dots.forEach((dot, index) => {
+                    dot.addEventListener('click', () => goToSlide(index));
+                });
+
+                // 터치 이벤트 (스와이프)
+                slider.addEventListener('touchstart', (e) => {
+                    touchStartX = e.changedTouches[0].screenX;
+                }, { passive: true });
+
+                slider.addEventListener('touchend', (e) => {
+                    touchEndX = e.changedTouches[0].screenX;
+                    handleSwipe();
+                }, { passive: true });
+
+                // 마우스 드래그 (데스크탑)
+                let mouseDown = false;
+                slider.addEventListener('mousedown', (e) => {
+                    mouseDown = true;
+                    touchStartX = e.screenX;
+                });
+
+                slider.addEventListener('mouseup', (e) => {
+                    if (mouseDown) {
+                        touchEndX = e.screenX;
+                        handleSwipe();
+                    }
+                    mouseDown = false;
+                });
+
+                slider.addEventListener('mouseleave', () => {
+                    mouseDown = false;
+                });
+
+                function handleSwipe() {
+                    const diff = touchStartX - touchEndX;
+                    const threshold = 50;
+
+                    if (diff > threshold) {
+                        // 왼쪽으로 스와이프 -> 다음
+                        goToSlide(currentIndex + 1);
+                    } else if (diff < -threshold) {
+                        // 오른쪽으로 스와이프 -> 이전
+                        goToSlide(currentIndex - 1);
+                    }
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', initSliders);
     </script>
 </body>
 </html>

@@ -107,20 +107,28 @@ def parse_post_content(text):
     title = lines[0] if lines else "Untitled"
 
     tags = []
-    image_url = ""
+    images = []  # 복수 이미지 지원
     content_lines = []
 
     for line in lines[1:]:
         line_stripped = line.strip()
         if line_stripped.startswith("TAGS:"):
             tags = [t.strip() for t in line_stripped[5:].split(",") if t.strip()]
+        elif line_stripped.startswith("IMAGES:"):
+            # 복수 이미지: IMAGES: url1,url2,url3
+            images = [u.strip() for u in line_stripped[7:].split(",") if u.strip()]
         elif line_stripped.startswith("IMAGE:"):
-            image_url = line_stripped[6:].strip()
+            # 단일 이미지 (하위 호환성)
+            single_image = line_stripped[6:].strip()
+            if single_image:
+                images = [single_image]
         else:
             content_lines.append(line)
 
     content = "\n".join(content_lines).strip()
-    return title, content, tags, image_url
+    # 하위 호환성: image_url도 함께 반환 (첫 번째 이미지)
+    image_url = images[0] if images else ""
+    return title, content, tags, image_url, images
 
 def get_posts_index():
     """GitHub에서 posts/index.json 가져오기"""
@@ -240,7 +248,7 @@ def load_posts_legacy():
             if file_response.status_code == 200:
                 file_data = file_response.json()
                 file_content = base64.b64decode(file_data["content"]).decode("utf-8")
-                title, content, tags, image_url = parse_post_content(file_content)
+                title, content, tags, image_url, images = parse_post_content(file_content)
 
                 # 파일명에서 날짜 추출
                 date = "-".join(filename.split("-")[:3]) if "-" in filename else filename
@@ -251,7 +259,8 @@ def load_posts_legacy():
                     "date": date,
                     "content": content,
                     "tags": tags,
-                    "image_url": image_url,
+                    "image_url": image_url,  # 하위 호환성
+                    "images": images,  # 복수 이미지
                     "lang": file_lang
                 })
     except:
@@ -697,7 +706,7 @@ def remove_post_from_index(post_id):
     save_posts_index(index_data)
     invalidate_cache()
 
-def publish_to_github(title_ko, content_ko, title_en, content_en, tags="", image_url=""):
+def publish_to_github(title_ko, content_ko, title_en, content_en, tags="", image_url="", images=None):
     """GitHub에 포스트 배포"""
     today = datetime.now().strftime("%Y-%m-%d")
     post_num = get_existing_posts_count(today) + 1
@@ -707,12 +716,19 @@ def publish_to_github(title_ko, content_ko, title_en, content_en, tags="", image
         "Accept": "application/vnd.github.v3+json"
     }
 
+    # 이미지 리스트 정리 (images가 없으면 image_url 사용)
+    if images is None:
+        images = [image_url] if image_url else []
+
     # 메타데이터 추가
     meta_lines = ""
     if tags:
         meta_lines += f"TAGS: {tags}\n"
-    if image_url:
-        meta_lines += f"IMAGE: {image_url}\n"
+    if images:
+        if len(images) == 1:
+            meta_lines += f"IMAGE: {images[0]}\n"
+        else:
+            meta_lines += f"IMAGES: {','.join(images)}\n"
 
     # 한국어 파일
     filename_ko = f"{today}-{post_num:03d}-ko.txt"
@@ -748,13 +764,15 @@ def publish_to_github(title_ko, content_ko, title_en, content_en, tags="", image
 
     # index.json 업데이트
     tags_list = [t.strip() for t in tags.split(",") if t.strip()] if tags else []
+    first_image = images[0] if images else ""
     post_data_ko = {
         "id": filename_ko[:-4],
         "title": title_ko,
         "date": today,
         "content": content_ko,
         "tags": tags_list,
-        "image_url": image_url,
+        "image_url": first_image,  # 하위 호환성
+        "images": images,
         "lang": "ko"
     }
     post_data_en = {
@@ -763,7 +781,8 @@ def publish_to_github(title_ko, content_ko, title_en, content_en, tags="", image
         "date": today,
         "content": content_en,
         "tags": tags_list,
-        "image_url": image_url,
+        "image_url": first_image,  # 하위 호환성
+        "images": images,
         "lang": "en"
     }
     add_post_to_index(post_data_ko, post_data_en)
@@ -1000,14 +1019,15 @@ def admin_edit(post_id):
     if content_response.status_code != 200:
         return redirect(url_for("admin"))
 
-    title, content, tags, image_url = parse_post_content(content_response.text)
+    title, content, tags, image_url, images = parse_post_content(content_response.text)
 
     return render_template("admin_edit.html",
                            post_id=post_id,
                            title=title,
                            content=content,
                            tags=",".join(tags),
-                           image_url=image_url)
+                           image_url=image_url,
+                           images=images)
 
 @app.route("/admin/update", methods=["POST"])
 def admin_update():
@@ -1021,6 +1041,11 @@ def admin_update():
     content = data.get("content", "")
     tags = data.get("tags", "")
     image_url = data.get("image_url", "")
+    images = data.get("images", [])
+
+    # images가 없으면 image_url로 생성
+    if not images and image_url:
+        images = [image_url]
 
     if not post_id or not title:
         return jsonify({"error": "Post ID and title required"}), 400
@@ -1048,8 +1073,11 @@ def admin_update():
     file_content_ko = f"{title}\n"
     if tags:
         file_content_ko += f"TAGS: {tags}\n"
-    if image_url:
-        file_content_ko += f"IMAGE: {image_url}\n"
+    if images:
+        if len(images) == 1:
+            file_content_ko += f"IMAGE: {images[0]}\n"
+        else:
+            file_content_ko += f"IMAGES: {','.join(images)}\n"
     file_content_ko += f"\n{content}"
 
     url_ko = f"https://api.github.com/repos/{GITHUB_REPO}/contents/posts/{base_id}-ko.txt"
@@ -1075,8 +1103,11 @@ def admin_update():
     file_content_en = f"{title_en}\n"
     if tags:
         file_content_en += f"TAGS: {tags}\n"
-    if image_url:
-        file_content_en += f"IMAGE: {image_url}\n"
+    if images:
+        if len(images) == 1:
+            file_content_en += f"IMAGE: {images[0]}\n"
+        else:
+            file_content_en += f"IMAGES: {','.join(images)}\n"
     file_content_en += f"\n{content_en}"
 
     url_en = f"https://api.github.com/repos/{GITHUB_REPO}/contents/posts/{base_id}-en.txt"
@@ -1104,19 +1135,22 @@ def admin_update():
     # index.json 업데이트
     tags_list = [t.strip() for t in tags.split(",") if t.strip()] if tags else []
     date = "-".join(base_id.split("-")[:3]) if "-" in base_id else base_id
+    first_image = images[0] if images else ""
 
     update_post_in_index(f"{base_id}-ko", {
         "title": title,
         "content": content,
         "tags": tags_list,
-        "image_url": image_url,
+        "image_url": first_image,
+        "images": images,
         "date": date
     })
     update_post_in_index(f"{base_id}-en", {
         "title": title_en,
         "content": content_en,
         "tags": tags_list,
-        "image_url": image_url,
+        "image_url": first_image,
+        "images": images,
         "date": date
     })
 
@@ -1404,12 +1438,17 @@ def admin_naver_publish():
 
     # 큐에 추가
     try:
+        images = post.get("images", [])
+        if not images and post.get("image_url"):
+            images = [post.get("image_url")]
+
         queue_data = {
             "post_id": post_id,
             "title": post.get("title", ""),
             "content": post.get("content", ""),
             "tags": post.get("tags", []),
-            "image_url": post.get("image_url", ""),
+            "image_url": images[0] if images else "",  # 첫 번째 이미지 (하위 호환)
+            "images": images,  # 전체 이미지 리스트
             "category": "Cheer Factory",
             "status": "pending"
         }
