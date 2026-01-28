@@ -132,6 +132,7 @@ def parse_post_content(text):
 
     tags = []
     images = []  # 복수 이미지 지원
+    restaurant = None  # 식당 정보
     content_lines = []
 
     for line in lines[1:]:
@@ -146,13 +147,23 @@ def parse_post_content(text):
             single_image = line_stripped[6:].strip()
             if single_image:
                 images = [single_image]
+        elif line_stripped.startswith("RESTAURANT:"):
+            # 식당 정보: RESTAURANT: name|address|naver_place_id|visit_count
+            parts = [p.strip() for p in line_stripped[11:].split("|")]
+            if len(parts) >= 1:
+                restaurant = {
+                    "name": parts[0] if len(parts) > 0 else "",
+                    "address": parts[1] if len(parts) > 1 else "",
+                    "naver_place_id": parts[2] if len(parts) > 2 else "",
+                    "visit_count": int(parts[3]) if len(parts) > 3 and parts[3].isdigit() else 1
+                }
         else:
             content_lines.append(line)
 
     content = "\n".join(content_lines).strip()
     # 하위 호환성: image_url도 함께 반환 (첫 번째 이미지)
     image_url = images[0] if images else ""
-    return title, content, tags, image_url, images
+    return title, content, tags, image_url, images, restaurant
 
 def get_posts_index():
     """GitHub에서 posts/index.json 가져오기"""
@@ -272,12 +283,12 @@ def load_posts_legacy():
             if file_response.status_code == 200:
                 file_data = file_response.json()
                 file_content = base64.b64decode(file_data["content"]).decode("utf-8")
-                title, content, tags, image_url, images = parse_post_content(file_content)
+                title, content, tags, image_url, images, restaurant = parse_post_content(file_content)
 
                 # 파일명에서 날짜 추출
                 date = "-".join(filename.split("-")[:3]) if "-" in filename else filename
 
-                posts.append({
+                post_data = {
                     "id": filename,
                     "title": title,
                     "date": date,
@@ -286,7 +297,15 @@ def load_posts_legacy():
                     "image_url": image_url,  # 하위 호환성
                     "images": images,  # 복수 이미지
                     "lang": file_lang
-                })
+                }
+
+                # 식당 정보가 있으면 추가
+                if restaurant:
+                    post_data["restaurant"] = restaurant
+                    post_data["restaurant_name"] = restaurant.get("name", "")
+                    post_data["visit_count"] = restaurant.get("visit_count", 1)
+
+                posts.append(post_data)
     except:
         pass
 
@@ -756,10 +775,8 @@ def publish_to_github(title_ko, content_ko, title_en, content_en, tags="", image
     if category:
         meta_lines += f"CATEGORY: {category}\n"
     if restaurant_data:
-        meta_lines += f"RESTAURANT: {restaurant_data.get('name', '')}\n"
-        meta_lines += f"RESTAURANT_ADDRESS: {restaurant_data.get('address', '')}\n"
-        meta_lines += f"RESTAURANT_PLACE_ID: {restaurant_data.get('naver_place_id', '')}\n"
-        meta_lines += f"VISIT_COUNT: {restaurant_data.get('visit_count', 1)}\n"
+        # RESTAURANT: name|address|naver_place_id|visit_count
+        meta_lines += f"RESTAURANT: {restaurant_data.get('name', '')}|{restaurant_data.get('address', '')}|{restaurant_data.get('naver_place_id', '')}|{restaurant_data.get('visit_count', 1)}\n"
 
     # 한국어 파일
     filename_ko = f"{today}-{post_num:03d}-ko.txt"
@@ -829,7 +846,11 @@ def publish_to_github(title_ko, content_ko, title_en, content_en, tags="", image
             "visit_count": restaurant_data.get("visit_count", 1)
         }
         post_data_ko["restaurant"] = restaurant_info
+        post_data_ko["restaurant_name"] = restaurant_info["name"]
+        post_data_ko["visit_count"] = restaurant_info["visit_count"]
         post_data_en["restaurant"] = restaurant_info
+        post_data_en["restaurant_name"] = restaurant_info["name"]
+        post_data_en["visit_count"] = restaurant_info["visit_count"]
 
     add_post_to_index(post_data_ko, post_data_en)
 
@@ -1270,7 +1291,7 @@ def admin_edit(post_id):
     if content_response.status_code != 200:
         return redirect(url_for("admin"))
 
-    title, content, tags, image_url, images = parse_post_content(content_response.text)
+    title, content, tags, image_url, images, restaurant = parse_post_content(content_response.text)
 
     return render_template("admin_edit.html",
                            post_id=post_id,
@@ -1278,7 +1299,8 @@ def admin_edit(post_id):
                            content=content,
                            tags=",".join(tags),
                            image_url=image_url,
-                           images=images)
+                           images=images,
+                           restaurant=restaurant)
 
 @app.route("/admin/update", methods=["POST"])
 def admin_update():
@@ -1293,6 +1315,7 @@ def admin_update():
     tags = data.get("tags", "")
     images = data.get("images", [])  # 복수 이미지 배열
     image_url = data.get("image_url", "")  # 하위 호환성
+    restaurant = data.get("restaurant")  # 식당 정보
 
     # 하위 호환성: image_url이 있고 images가 없으면 images에 추가
     if not images and image_url:
@@ -1329,6 +1352,9 @@ def admin_update():
             file_content_ko += f"IMAGE: {images[0]}\n"
         else:
             file_content_ko += f"IMAGES: {','.join(images)}\n"
+    if restaurant:
+        # RESTAURANT: name|address|naver_place_id|visit_count
+        file_content_ko += f"RESTAURANT: {restaurant.get('name', '')}|{restaurant.get('address', '')}|{restaurant.get('naver_place_id', '')}|{restaurant.get('visit_count', 1)}\n"
     file_content_ko += f"\n{content}"
 
     url_ko = f"https://api.github.com/repos/{GITHUB_REPO}/contents/posts/{base_id}-ko.txt"
@@ -1359,6 +1385,9 @@ def admin_update():
             file_content_en += f"IMAGE: {images[0]}\n"
         else:
             file_content_en += f"IMAGES: {','.join(images)}\n"
+    if restaurant:
+        # RESTAURANT: name|address|naver_place_id|visit_count
+        file_content_en += f"RESTAURANT: {restaurant.get('name', '')}|{restaurant.get('address', '')}|{restaurant.get('naver_place_id', '')}|{restaurant.get('visit_count', 1)}\n"
     file_content_en += f"\n{content_en}"
 
     url_en = f"https://api.github.com/repos/{GITHUB_REPO}/contents/posts/{base_id}-en.txt"
