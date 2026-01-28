@@ -862,6 +862,15 @@ def admin():
         return redirect(url_for("admin_login"))
     return render_template("admin.html")
 
+@app.route("/admin/invalidate-cache", methods=["POST"])
+def admin_invalidate_cache():
+    """캐시 무효화"""
+    if not session.get("admin_logged_in"):
+        return jsonify({"error": "Unauthorized"}), 401
+
+    invalidate_cache()
+    return jsonify({"success": True, "message": "Cache invalidated successfully"})
+
 @app.route("/admin/stats")
 def admin_stats():
     """사이트 통계 조회"""

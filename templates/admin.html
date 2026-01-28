@@ -551,6 +551,14 @@
                 <!-- Stats Tab -->
                 <div id="tab-stats" class="tab-content">
                     <div class="admin-section">
+                        <h2>Cache Management</h2>
+                        <p style="font-size: 13px; color: #666; margin-bottom: 12px;">
+                            포스트 데이터는 5분간 캐시됩니다. 새 포스트가 보이지 않으면 캐시를 무효화하세요.
+                        </p>
+                        <button onclick="invalidateCache()" id="invalidateCacheBtn" class="primary">Invalidate Cache</button>
+                    </div>
+
+                    <div class="admin-section">
                         <h2>Site Statistics</h2>
                         <div id="statsContent" class="stats-content">
                             <p style="color: #888;">Loading statistics...</p>
@@ -1212,6 +1220,42 @@ python -m naver.cheer_factory_worker</pre>
             } catch (e) {
                 statsContent.innerHTML = `<p class="error">Error: ${e.message}</p>`;
             }
+        }
+
+        // Cache invalidation
+        async function invalidateCache() {
+            const btn = document.getElementById('invalidateCacheBtn');
+            const status = document.getElementById('status');
+
+            btn.disabled = true;
+            btn.textContent = 'Invalidating...';
+            status.textContent = '';
+
+            try {
+                const res = await fetch('/admin/invalidate-cache', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const data = await res.json();
+
+                if (data.error) {
+                    status.textContent = 'Error: ' + data.error;
+                    status.className = 'status error';
+                } else {
+                    status.textContent = 'Cache invalidated successfully! Refreshing stats...';
+                    status.className = 'status success';
+                    // Reload stats to reflect changes
+                    setTimeout(() => {
+                        loadStats();
+                    }, 1000);
+                }
+            } catch (e) {
+                status.textContent = 'Error: ' + e.message;
+                status.className = 'status error';
+            }
+
+            btn.disabled = false;
+            btn.textContent = 'Invalidate Cache';
         }
 
         // Prompt functions
