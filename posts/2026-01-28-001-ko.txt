@@ -1,5 +1,6 @@
 명동 딤딤섬: 10% 할인! 완탕탕면 후기
 IMAGES: https://res.cloudinary.com/df0kpimbc/image/upload/v1769560453/cheer-factory/ckzj7nigawv3lgyesojp.png,https://res.cloudinary.com/df0kpimbc/image/upload/v1769559937/cheer-factory/uvli8djxlzlshzcndtba.jpg,https://res.cloudinary.com/df0kpimbc/image/upload/v1769560130/cheer-factory/venhurttbklahgjvawpv.jpg,https://res.cloudinary.com/df0kpimbc/image/upload/v1769560258/cheer-factory/wkijmjzlqz1oqplp5mqm.jpg,https://res.cloudinary.com/df0kpimbc/image/upload/v1769560265/cheer-factory/eoounda6uv5msh8euxno.jpg
+
 CATEGORY: lunch
 RESTAURANT: 딤딤섬 명동점
 RESTAURANT_ADDRESS: 서울특별시 중구 명동2가 83-5 Noon Square 지하1층
@@ -13,3 +14,5 @@ VISIT_COUNT: 1
 제가 시킨 메뉴는 완탕탕면이랑 새우부추교자! 완탕탕면은 국물이 진짜 시원하고 면도 쫄깃해서 후루룩 마시듯이 먹었어요. 새우부추교자는 겉은 바삭하고 속은 촉촉한 게 완전 꿀맛! 근데 갓 나온 교자는 엄청 뜨거우니 조심해야 해요. 🔥 입천장 다 데일 뻔… 😅
 
 가격대는 좀 있는 편이지만, 10% 할인받으니 훨씬 부담이 덜했어요. 명동에서 딤섬 먹고 싶을 때 딤딤섬 추천합니다! 특히 할인쿠폰 있을 때 꼭 가보세요. 🤩 명동역 근처라 위치도 아주 굿이에요! 점심시간에 맛있는 딤섬으로 행복 충전 완료! 다음 맛집 탐방도 기대해주세요~ 😊
+
+꿀팁 : 멤버십 가입하면 매달 10% 쿠폰을 줘요.
