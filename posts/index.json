@@ -1,6 +1,54 @@
 {
   "posts": [
     {
+      "id": "2026-01-28-001-ko",
+      "title": "명동 딤딤섬: 10% 할인! 완탕탕면 후기",
+      "date": "2026-01-28",
+      "content": "점심시간 땡! 하면 어디 갈지 고민하는 40대 직장인, 나야 나! 오늘은 명동에서 딤섬으로 유명한 '딤딤섬'에 다녀왔어요. 글쎄, 10% 할인쿠폰이 생겼지 뭐예요! 이런 기회 놓칠 수 없죠. 잽싸게 달려갔습니다. 😎\n\n쿠폰 덕분에 평소에 좀 부담스러웠던 메뉴들도 맘껏 시켜봤어요. 이게 바로 소소한 플렉스 아니겠어요? 😆 딤딤섬은 홍콩에서 먹었던 딤섬 맛이랑 거의 똑같아서 가끔 홍콩앓이 할 때 오기 딱 좋더라고요. 분위기도 깔끔하고 넓어서 점심시간에 편하게 식사할 수 있어요.\n\n제가 시킨 메뉴는 완탕탕면이랑 새우부추교자! 완탕탕면은 국물이 진짜 시원하고 면도 쫄깃해서 후루룩 마시듯이 먹었어요. 새우부추교자는 겉은 바삭하고 속은 촉촉한 게 완전 꿀맛! 근데 갓 나온 교자는 엄청 뜨거우니 조심해야 해요. 🔥 입천장 다 데일 뻔… 😅\n\n가격대는 좀 있는 편이지만, 10% 할인받으니 훨씬 부담이 덜했어요. 명동에서 딤섬 먹고 싶을 때 딤딤섬 추천합니다! 특히 할인쿠폰 있을 때 꼭 가보세요. 🤩 명동역 근처라 위치도 아주 굿이에요! 점심시간에 맛있는 딤섬으로 행복 충전 완료! 다음 맛집 탐방도 기대해주세요~ 😊",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1769560453/cheer-factory/ckzj7nigawv3lgyesojp.png",
+      "images": [
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1769560453/cheer-factory/ckzj7nigawv3lgyesojp.png",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1769559937/cheer-factory/uvli8djxlzlshzcndtba.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1769560130/cheer-factory/venhurttbklahgjvawpv.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1769560258/cheer-factory/wkijmjzlqz1oqplp5mqm.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1769560265/cheer-factory/eoounda6uv5msh8euxno.jpg"
+      ],
+      "category": "lunch",
+      "lang": "ko",
+      "restaurant": {
+        "restaurant_id": "19b0e8ab-c3f0-4d0d-bf0a-7616076ed049",
+        "name": "딤딤섬 명동점",
+        "address": "서울특별시 중구 명동2가 83-5 Noon Square 지하1층",
+        "naver_place_id": "dimdimsum",
+        "visit_count": 1
+      }
+    },
+    {
+      "id": "2026-01-28-001-en",
+      "title": "Dimdimsum in Myeongdong: 10% Off! Wonton Noodle Soup Review",
+      "date": "2026-01-28",
+      "content": "As a 40-something office worker always thinking about where to go for lunch as soon as it's noon, that's me! Today, I went to 'Dimdimsum' in Myeongdong, which is famous for its dim sum. Guess what? I got a 10% discount coupon! I couldn't miss this opportunity, so I rushed over there. 😎\n\nThanks to the coupon, I ordered dishes that I usually found a bit pricey. This is what you call a small flex, right? 😆 Dimdimsum tastes almost exactly like the dim sum I had in Hong Kong, so it's a great place to go when I'm missing Hong Kong. The atmosphere is also clean and spacious, so you can eat comfortably during lunchtime.\n\nI ordered Wonton Noodle Soup and Shrimp and Chives Dumplings! The broth in the Wonton Noodle Soup was so refreshing, and the noodles were chewy, so I slurped it all up. The Shrimp and Chives Dumplings were crispy on the outside and juicy on the inside – so delicious! But be careful because the freshly made dumplings are super hot. 🔥 I almost burned the roof of my mouth… 😅\n\nThe prices are a bit high, but with the 10% discount, it was much more affordable. I recommend Dimdimsum when you want to eat dim sum in Myeongdong! Especially go when you have a discount coupon. 🤩 It's located near Myeongdong Station, so the location is also great! I've recharged my happiness with delicious dim sum during lunchtime! Stay tuned for my next restaurant adventure~ 😊",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1769560453/cheer-factory/ckzj7nigawv3lgyesojp.png",
+      "images": [
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1769560453/cheer-factory/ckzj7nigawv3lgyesojp.png",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1769559937/cheer-factory/uvli8djxlzlshzcndtba.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1769560130/cheer-factory/venhurttbklahgjvawpv.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1769560258/cheer-factory/wkijmjzlqz1oqplp5mqm.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1769560265/cheer-factory/eoounda6uv5msh8euxno.jpg"
+      ],
+      "category": "lunch",
+      "lang": "en",
+      "restaurant": {
+        "restaurant_id": "19b0e8ab-c3f0-4d0d-bf0a-7616076ed049",
+        "name": "딤딤섬 명동점",
+        "address": "서울특별시 중구 명동2가 83-5 Noon Square 지하1층",
+        "naver_place_id": "dimdimsum",
+        "visit_count": 1
+      }
+    },
+    {
       "id": "2026-01-25-003-ko",
       "title": "에이핑크, 시간이 멈춘 그 곳에서",
       "date": "2026-01-25",
@@ -583,5 +631,5 @@
       "lang": "en"
     }
   ],
-  "updated": "2026-01-25T09:49:50.757381"
+  "updated": "2026-01-28T00:34:30.921499"
 }
