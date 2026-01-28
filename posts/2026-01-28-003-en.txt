@@ -1,0 +1,9 @@
+Myeongdong Lunch Automation, Finally Did It!
+IMAGE: https://res.cloudinary.com/df0kpimbc/image/upload/v1769598874/cheer-factory/hm5rjy4hovm2cnfvhxsa.jpg
+CATEGORY: diary
+
+I finally completed my automation pipeline for Myeongdong local lunch blog posts! Can you feel the power of vibe coding? Now, just a few pictures and a sentence or two, and bam! A post is done. 
+
+Before, I had to open map apps, take pictures of the menu, compare prices... just thinking about it makes me shiver. Trying to squeeze it in after work wasn't easy. Now, the AI does it for me, and it's so convenient. 
+
+Of course, there are probably still many things to improve. But isn't this why we code? (If you have a lunch appointment in Myeongdong... hit me up... gotta collect more data... cough cough)
