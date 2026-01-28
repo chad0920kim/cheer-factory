@@ -1,6 +1,52 @@
 {
   "posts": [
     {
+      "id": "2026-01-28-002-ko",
+      "title": "한전 밥 맛집?! 6천원의 행복 😋",
+      "date": "2026-01-28",
+      "content": "점심시간, 오늘은 어디를 가볼까나~🤔 매일 똑같은 밥은 질리잖아요? 그래서 오늘은 큰 맘 먹고 한전 구내식당에 도전! 🤭 사실 여기 밥 맛있다는 소문은 익히 들었거든요. 외부인도 된다는 정보 입수!😎\n\n한국전력공사 건물 지하 1층에 위치해있는데, 웬걸? 1층 로비에 옛날 서울 전경 모형이 뙇!😲 미니어처 구경하는 재미도 쏠쏠하더라고요. (근데 축척은 좀 안 맞는 듯...🤣) \n\n자, 드디어 식권 발매! 단돈 6,000원에 톳밥, 된장국, 파래김, 김치, 샐러드, 납작미트까지! 가성비 최고 아닙니까?!👍 톳밥은 꼬득꼬득 맛있고, 된장국도 구수하니 딱 좋았어요. 반찬들도 깔끔하니 합격!💯\n\n구내식당이라 솔직히 분위기는 기대 안 했는데, 생각보다 넓고 쾌적하더라고요. 혼밥하는 사람들도 많아서 부담 없이 즐길 수 있었어요. 😌 다만, 점심시간에는 사람이 엄청 많다는 거! 12시 전에 가는 걸 추천합니다! 🙏\n\n결론! 6천원에 이 정도 퀄리티면 완전 혜자! 앞으로 종종 애용할 것 같아요. 명동에서 가성비 좋은 점심 찾으시는 분들께 강추합니다! 🤗",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1769594794/cheer-factory/rs4bmvjawufhgrbxiqe5.png",
+      "images": [
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1769594794/cheer-factory/rs4bmvjawufhgrbxiqe5.png",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1769594396/cheer-factory/uk7wexuzazaintvjusvl.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1769594403/cheer-factory/gb67ogt3hdvntnb0tj2p.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1769594409/cheer-factory/gbrzm5wdmywoaekbdml4.jpg"
+      ],
+      "category": "lunch",
+      "lang": "ko",
+      "restaurant": {
+        "restaurant_id": "ee767160-7c62-4779-9f0c-e60c02ddfa43",
+        "name": "한국전력공사 서울본부 구내식당",
+        "address": "서울특별시 중구 을지로2가 199-4",
+        "naver_place_id": "",
+        "visit_count": 1
+      }
+    },
+    {
+      "id": "2026-01-28-002-en",
+      "title": "KEPCO Cafeteria: A Delicious Meal for Only 6,000 Won! 😋",
+      "date": "2026-01-28",
+      "content": "Lunchtime! Where should I go today? 🤔 I'm tired of eating the same food every day, so I decided to try the KEPCO cafeteria! 🤭 I've heard rumors that the food here is really good. And I found out that outsiders can eat here too! 😎\n\nIt's located on the first basement floor of the Korea Electric Power Corporation building. And guess what? There's a model of old Seoul in the lobby on the first floor! 😲 It was fun looking at the miniatures. (But the scale seems a little off... 🤣)\n\nOkay, finally got my meal ticket! Only 6,000 won for sea tangle rice, soybean paste soup, seaweed, kimchi, salad, and flat meat patty! Isn't that awesome?! 👍 The sea tangle rice was chewy and delicious, and the soybean paste soup was perfect. The side dishes were also neat and good!💯\n\nHonestly, I didn't expect much from a company cafeteria, but it was surprisingly spacious and clean. There were a lot of people eating alone, so I could enjoy my meal without feeling awkward. 😌 However, it gets super crowded during lunchtime! I recommend going before 12 o'clock! 🙏\n\nIn conclusion! This quality for 6,000 won is a total steal! I'll definitely come here often. I highly recommend it to anyone looking for an affordable lunch in Myeongdong! 🤗",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1769594794/cheer-factory/rs4bmvjawufhgrbxiqe5.png",
+      "images": [
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1769594794/cheer-factory/rs4bmvjawufhgrbxiqe5.png",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1769594396/cheer-factory/uk7wexuzazaintvjusvl.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1769594403/cheer-factory/gb67ogt3hdvntnb0tj2p.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1769594409/cheer-factory/gbrzm5wdmywoaekbdml4.jpg"
+      ],
+      "category": "lunch",
+      "lang": "en",
+      "restaurant": {
+        "restaurant_id": "ee767160-7c62-4779-9f0c-e60c02ddfa43",
+        "name": "한국전력공사 서울본부 구내식당",
+        "address": "서울특별시 중구 을지로2가 199-4",
+        "naver_place_id": "",
+        "visit_count": 1
+      }
+    },
+    {
       "id": "2026-01-28-001-ko",
       "title": "명동 딤딤섬: 10% 할인! 완탕면 후기",
       "date": "2026-01-28",
@@ -631,5 +677,5 @@
       "lang": "en"
     }
   ],
-  "updated": "2026-01-28T00:41:54.038869"
+  "updated": "2026-01-28T10:06:54.112898"
 }
