@@ -250,23 +250,45 @@
 
         // 좋아요 토글
         async function toggleLike(postId) {
+            console.log('toggleLike called with postId:', postId);
+
             if (isLiked(postId)) {
+                console.log('Already liked, returning');
+                alert('이미 좋아요를 누르셨습니다!');
                 return; // 이미 좋아요한 경우 무시
             }
 
             const btn = document.querySelector(`[data-post-id="${postId}"]`);
+            if (!btn) {
+                console.error('Button not found for postId:', postId);
+                return;
+            }
+
             btn.classList.add('liked');
             btn.querySelector('.like-icon').innerHTML = '&#9829;';
 
             try {
+                console.log('Sending POST to /api/like/' + postId);
                 const res = await fetch(`/api/like/${postId}`, { method: 'POST' });
+                console.log('Response status:', res.status);
+
                 const data = await res.json();
+                console.log('Response data:', data);
+
+                if (data.error) {
+                    console.error('API Error:', data.error);
+                    alert('좋아요 실패: ' + data.error);
+                    return;
+                }
+
                 if (data.likes !== undefined) {
                     document.getElementById(`likes-${postId}`).textContent = data.likes;
+                    setLikedPost(postId);
+                    console.log('Like count updated to:', data.likes);
                 }
-                setLikedPost(postId);
             } catch (e) {
                 console.error('Like failed:', e);
+                alert('좋아요 실패: ' + e.message);
             }
         }
 
