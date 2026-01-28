@@ -1,6 +1,32 @@
 {
   "posts": [
     {
+      "id": "2026-01-28-003-ko",
+      "title": "명동 점심 자동화, 드디어 해냈다!",
+      "date": "2026-01-28",
+      "content": "드디어 명동 로컬 점심 블로그 자동화 파이프라인 완성! 바이브코딩의 힘, 느껴지십니까? 이제 사진 몇 장이랑 1~2 문장이면 포스팅 하나 뚝딱이거든요. \n\n예전엔 지도 앱 켜고, 메뉴판 찍고, 가격 비교하고… 생각만 해도 끔찍하네. 퇴근 후 시간 쪼개서 하려니 쉽지 않았지. 이제 AI가 알아서 해주니 얼마나 편한지 몰라. \n\n물론 아직 부족한 점도 많겠지. 그래도 이 맛에 코딩하는 거 아니겠어? (명동 밥약 있으면 연락 줘요… 데이터 수집 좀… 쿨럭)",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1769598874/cheer-factory/hm5rjy4hovm2cnfvhxsa.jpg",
+      "images": [
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1769598874/cheer-factory/hm5rjy4hovm2cnfvhxsa.jpg"
+      ],
+      "category": "diary",
+      "lang": "ko"
+    },
+    {
+      "id": "2026-01-28-003-en",
+      "title": "Myeongdong Lunch Automation, Finally Did It!",
+      "date": "2026-01-28",
+      "content": "I finally completed my automation pipeline for Myeongdong local lunch blog posts! Can you feel the power of vibe coding? Now, just a few pictures and a sentence or two, and bam! A post is done. \n\nBefore, I had to open map apps, take pictures of the menu, compare prices... just thinking about it makes me shiver. Trying to squeeze it in after work wasn't easy. Now, the AI does it for me, and it's so convenient. \n\nOf course, there are probably still many things to improve. But isn't this why we code? (If you have a lunch appointment in Myeongdong... hit me up... gotta collect more data... cough cough)",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1769598874/cheer-factory/hm5rjy4hovm2cnfvhxsa.jpg",
+      "images": [
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1769598874/cheer-factory/hm5rjy4hovm2cnfvhxsa.jpg"
+      ],
+      "category": "diary",
+      "lang": "en"
+    },
+    {
       "id": "2026-01-28-002-ko",
       "title": "한전 밥 맛집?! 6천원의 행복 😋",
       "date": "2026-01-28",
@@ -677,5 +703,5 @@
       "lang": "en"
     }
   ],
-  "updated": "2026-01-28T10:06:54.112898"
+  "updated": "2026-01-28T11:14:54.577852"
 }
