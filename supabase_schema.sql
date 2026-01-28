@@ -1,6 +1,40 @@
 -- Supabase 테이블 스키마
 -- 점심이야기 식당 정보 및 네이버 발행 큐 테이블
 
+-- 0. likes 테이블 생성 (좋아요 기능)
+CREATE TABLE IF NOT EXISTS likes (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    post_id TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- 인덱스 추가
+CREATE INDEX IF NOT EXISTS idx_likes_post_id ON likes(post_id);
+CREATE INDEX IF NOT EXISTS idx_likes_created_at ON likes(created_at DESC);
+
+-- 0-1. views 테이블 생성 (조회수 기능)
+CREATE TABLE IF NOT EXISTS views (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    post_id TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- 인덱스 추가
+CREATE INDEX IF NOT EXISTS idx_views_post_id ON views(post_id);
+CREATE INDEX IF NOT EXISTS idx_views_created_at ON views(created_at DESC);
+
+-- 0-2. guestbook 테이블 생성 (방명록 기능)
+CREATE TABLE IF NOT EXISTS guestbook (
+    id SERIAL PRIMARY KEY,
+    nickname TEXT NOT NULL,
+    message TEXT NOT NULL,
+    reply TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- 인덱스 추가
+CREATE INDEX IF NOT EXISTS idx_guestbook_created_at ON guestbook(created_at DESC);
+
 -- 1. restaurants 테이블 생성
 CREATE TABLE IF NOT EXISTS restaurants (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -21,7 +55,11 @@ ALTER TABLE naver_publish_queue
 ADD COLUMN IF NOT EXISTS restaurant_name TEXT,
 ADD COLUMN IF NOT EXISTS restaurant_address TEXT,
 ADD COLUMN IF NOT EXISTS naver_place_id TEXT,
-ADD COLUMN IF NOT EXISTS visit_count INTEGER DEFAULT 1;
+ADD COLUMN IF NOT EXISTS visit_count INTEGER DEFAULT 1,
+ADD COLUMN IF NOT EXISTS retry_count INTEGER DEFAULT 0,
+ADD COLUMN IF NOT EXISTS max_retries INTEGER DEFAULT 3,
+ADD COLUMN IF NOT EXISTS worker_key TEXT,
+ADD COLUMN IF NOT EXISTS published_at TIMESTAMP WITH TIME ZONE;
 
 -- 만약 naver_publish_queue 테이블이 없다면 생성
 CREATE TABLE IF NOT EXISTS naver_publish_queue (
@@ -37,9 +75,13 @@ CREATE TABLE IF NOT EXISTS naver_publish_queue (
     restaurant_address TEXT,
     naver_place_id TEXT,
     visit_count INTEGER DEFAULT 1,
-    status TEXT DEFAULT 'pending', -- pending, processing, completed, failed
+    retry_count INTEGER DEFAULT 0,
+    max_retries INTEGER DEFAULT 3,
+    worker_key TEXT,
+    status TEXT DEFAULT 'pending', -- pending, processing, published, failed
     naver_url TEXT,
     error_message TEXT,
+    published_at TIMESTAMP WITH TIME ZONE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );

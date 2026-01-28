@@ -176,6 +176,12 @@
                         {% endif %}
                     </div>
                     {% endif %}
+                    {% if post.restaurant_name %}
+                    <div class="restaurant-info" style="margin: 15px 0; padding: 12px; background: #f8f9fa; border-left: 3px solid #28a745; border-radius: 4px;">
+                        <div style="font-weight: 600; margin-bottom: 5px;">📍 {{ post.restaurant_name }}</div>
+                        <div style="color: #666; font-size: 0.9em;">🔢 {{ post.visit_count or 1 }}번째 방문 (since 2026.1.27)</div>
+                    </div>
+                    {% endif %}
                     <div class="content">{{ post.content }}</div>
                     {% if post.tags %}
                     <div class="post-tags">
