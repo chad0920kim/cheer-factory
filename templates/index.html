@@ -311,26 +311,36 @@
             const likedPosts = getLikedPosts();
             postIds.forEach(postId => {
                 if (likedPosts.includes(postId)) {
-                    const btn = document.querySelector(`[data-post-id="${postId}"]`);
+                    const btn = document.querySelector(`button.like-btn[data-post-id="${postId}"]`);
                     if (btn) {
                         btn.classList.add('liked');
-                        btn.querySelector('.like-icon').innerHTML = '&#9829;';
+                        const likeIcon = btn.querySelector('.like-icon');
+                        if (likeIcon) {
+                            likeIcon.innerHTML = '&#9829;';
+                        }
                     }
                 }
             });
 
             // 서버에서 좋아요 수 가져오기
             try {
+                console.log('Loading likes for posts:', postIds);
                 const res = await fetch('/api/likes/bulk', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ post_ids: postIds })
                 });
                 const data = await res.json();
+                console.log('Likes data received:', data);
                 if (data.likes) {
                     for (const [postId, count] of Object.entries(data.likes)) {
                         const el = document.getElementById(`likes-${postId}`);
-                        if (el) el.textContent = count;
+                        if (el) {
+                            el.textContent = count;
+                            console.log(`Updated likes for ${postId}: ${count}`);
+                        } else {
+                            console.warn(`Element likes-${postId} not found`);
+                        }
                     }
                 }
             } catch (e) {
