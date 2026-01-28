@@ -1,6 +1,64 @@
 {
   "posts": [
     {
+      "id": "2026-01-28-004-ko",
+      "title": "칼스버그 득템! 덕질은 역시 소확행이더라",
+      "date": "2026-01-28",
+      "content": "퇴근길, 습관처럼 CU 앱을 켰는데... 칼스버그 리버풀 잔 패키지 예약구매! 보자마자 이건 사야겠다 싶었지. 10년 넘게 콥(KOP, 리버풀 팬)질했는데 이런 건 못 참거든요. \n\n인생 뭐 있나. 퇴근 후 맥주 한 잔에 좋아하는 팀 굿즈 보면서 힘내는 거지. 월급은 텅장이지만, 마음은 풍족해지는 마법! \n\n가끔은 이런 소소한 행복이 회사 다니는 낙이 되는 거 같아요. 덕질 만세! 칼스버그 만세! 리버풀 우승 가즈아!\n\n칼스버그 리버풀 잔패키지\n\nhttps://www.pocketcu.co.kr/deepLink/checkAppInstall?viewType=1&viewUrl=/product/detail/2025080053496",
+      "tags": [
+        "Carlsberg",
+        "Beer",
+        "Liverpool FC",
+        "LFC",
+        "The Miracle of 2005",
+        "Champions League",
+        "Football",
+        "Soccer",
+        "Beverage",
+        "Alcohol",
+        "Beer can",
+        "Beer glass",
+        "Denmark",
+        "Copenhagen",
+        "Sports"
+      ],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1769622027/cheer-factory/qqfsjz07brv7ujklvasu.jpg",
+      "images": [
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1769622027/cheer-factory/qqfsjz07brv7ujklvasu.jpg"
+      ],
+      "category": "diary",
+      "lang": "ko"
+    },
+    {
+      "id": "2026-01-28-004-en",
+      "title": "Scored a Carlsberg Liverpool Glass Set! Fangirling is the Best Small Happiness!",
+      "date": "2026-01-28",
+      "content": "On my way home from work, I habitually opened the CU app... and saw a pre-order for the Carlsberg Liverpool glass package! I knew I had to buy it right away. I've been a Kop (Liverpool fan) for over 10 years, and I just couldn't resist. \n\nWhat's life all about, right? Having a beer after work and looking at my favorite team's merchandise to cheer myself up. My paycheck might be empty, but my heart feels full of magic! \n\nSometimes, these little joys are what make working at the company worthwhile. Long live fangirling! Long live Carlsberg! Let's go Liverpool for the win!\n\nCarlsberg Liverpool Glass Package\n\nhttps://www.pocketcu.co.kr/deepLink/checkAppInstall?viewType=1&viewUrl=/product/detail/2025080053496",
+      "tags": [
+        "Carlsberg",
+        "Beer",
+        "Liverpool FC",
+        "LFC",
+        "The Miracle of 2005",
+        "Champions League",
+        "Football",
+        "Soccer",
+        "Beverage",
+        "Alcohol",
+        "Beer can",
+        "Beer glass",
+        "Denmark",
+        "Copenhagen",
+        "Sports"
+      ],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1769622027/cheer-factory/qqfsjz07brv7ujklvasu.jpg",
+      "images": [
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1769622027/cheer-factory/qqfsjz07brv7ujklvasu.jpg"
+      ],
+      "category": "diary",
+      "lang": "en"
+    },
+    {
       "id": "2026-01-28-003-ko",
       "title": "명동 점심 자동화, 드디어 해냈다!",
       "date": "2026-01-28",
@@ -703,5 +761,5 @@
       "lang": "en"
     }
   ],
-  "updated": "2026-01-28T11:14:54.577852"
+  "updated": "2026-01-28T17:42:52.417103"
 }
