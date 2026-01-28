@@ -258,7 +258,7 @@
                 return; // 이미 좋아요한 경우 무시
             }
 
-            const btn = document.querySelector(`[data-post-id="${postId}"]`);
+            const btn = document.querySelector(`button.like-btn[data-post-id="${postId}"]`);
             if (!btn) {
                 console.error('Button not found for postId:', postId);
                 return;
