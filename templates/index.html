@@ -264,8 +264,18 @@
                 return;
             }
 
+            console.log('Button found:', btn);
+
+            const likeIcon = btn.querySelector('.like-icon');
+            console.log('Like icon element:', likeIcon);
+
+            if (!likeIcon) {
+                console.error('Like icon not found inside button');
+                return;
+            }
+
             btn.classList.add('liked');
-            btn.querySelector('.like-icon').innerHTML = '&#9829;';
+            likeIcon.innerHTML = '&#9829;';
 
             try {
                 console.log('Sending POST to /api/like/' + postId);
