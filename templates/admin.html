@@ -354,6 +354,20 @@
         .naver-queue-table tr:last-child td {
             border-bottom: none;
         }
+        .delete-queue-btn {
+            background: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            width: 24px;
+            height: 24px;
+            font-size: 16px;
+            cursor: pointer;
+            line-height: 1;
+        }
+        .delete-queue-btn:hover {
+            background: #cc0000;
+        }
     </style>
 </head>
 <body>
@@ -1062,6 +1076,7 @@ python -m naver.cheer_factory_worker</pre>
                                     <th>Title</th>
                                     <th style="text-align: center;">Status</th>
                                     <th>Result</th>
+                                    <th style="text-align: center; width: 60px;">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -1074,6 +1089,10 @@ python -m naver.cheer_factory_worker</pre>
                                         <td>
                                             ${item.naver_url ? `<a href="${item.naver_url}" target="_blank" style="color: #2196F3;">View</a>` :
                                               item.error_message ? `<span style="color: #c62828;" title="${item.error_message}">${item.error_message.substring(0, 20)}...</span>` : '-'}
+                                        </td>
+                                        <td style="text-align: center;">
+                                            ${['pending', 'processing', 'failed'].includes(item.status) ?
+                                              `<button onclick="deleteQueueItem(${item.id})" class="delete-queue-btn" title="Delete">×</button>` : '-'}
                                         </td>
                                     </tr>
                                 `).join('')}
@@ -1089,6 +1108,27 @@ python -m naver.cheer_factory_worker</pre>
 
             btn.disabled = false;
             btn.textContent = 'Refresh Queue';
+        }
+
+        async function deleteQueueItem(queueId) {
+            if (!confirm('이 항목을 삭제하시겠습니까?')) {
+                return;
+            }
+
+            try {
+                const res = await fetch(`/admin/naver-queue/delete/${queueId}`, {
+                    method: 'POST'
+                });
+                const data = await res.json();
+
+                if (data.error) {
+                    alert('Error: ' + data.error);
+                } else {
+                    refreshNaverQueue();
+                }
+            } catch (e) {
+                alert('Error: ' + e.message);
+            }
         }
 
         async function queueForNaver() {

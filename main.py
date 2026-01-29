@@ -1884,6 +1884,42 @@ def admin_naver_post_status(post_id):
         return jsonify({"error": str(e)}), 500
 
 
+@app.route("/admin/naver-queue/delete/<int:queue_id>", methods=["POST"])
+def admin_naver_queue_delete(queue_id):
+    """네이버 발행 큐 항목 강제 삭제 (processing 포함)"""
+    if not session.get("admin_logged_in"):
+        return jsonify({"error": "Unauthorized"}), 401
+
+    if not supabase:
+        return jsonify({"error": "Database not configured"}), 500
+
+    try:
+        # 해당 항목 확인
+        existing = supabase.table("naver_publish_queue")\
+            .select("id, status, title")\
+            .eq("id", queue_id)\
+            .execute()
+
+        if not existing.data:
+            return jsonify({"error": "항목을 찾을 수 없습니다"}), 404
+
+        item = existing.data[0]
+
+        # 삭제 실행
+        supabase.table("naver_publish_queue")\
+            .delete()\
+            .eq("id", queue_id)\
+            .execute()
+
+        return jsonify({
+            "success": True,
+            "message": f"삭제됨: {item.get('title', 'Unknown')[:30]}",
+            "deleted_status": item.get("status")
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 # ============ Worker API Endpoints ============
 
 @app.route("/api/worker/poll", methods=["GET"])
