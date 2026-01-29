@@ -1,6 +1,62 @@
 {
   "posts": [
     {
+      "id": "2026-01-29-002-ko",
+      "title": "오늘도 한잔. 오늘은 다른 칼스버그",
+      "date": "2026-01-29",
+      "content": "퇴근길, 습관처럼 맥주 냉장고 앞에 섰어.\n\n늘 마시던 맥주 말고, 오늘은 왠지 다른 게 끌리더라.\n\n칼스버그? 덴마크 왕실 맥주라지. 괜히 있어 보이는 건 기분 탓인가.\n\n캔을 따는 순간, 쌉싸름하면서도 청량한 향이 코를 간지럽혀.\n\n오늘 하루, 고생 많았다. 나 자신에게 주는 작은 보상이랄까. 내일도 힘내자고!",
+      "tags": [
+        "Carlsberg",
+        "Luna",
+        "Unfiltered Lager",
+        "Dry-hopped Lager",
+        "Beer",
+        "Glass of beer",
+        "Beer can",
+        "Alcohol",
+        "Drink",
+        "Copenhagen",
+        "Denmark",
+        "Royal Danish Court",
+        "Beverage",
+        "Refreshing"
+      ],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1769695695/cheer-factory/tqulwzmaew0wyhlw0csm.jpg",
+      "images": [
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1769695695/cheer-factory/tqulwzmaew0wyhlw0csm.jpg"
+      ],
+      "category": "diary",
+      "lang": "ko"
+    },
+    {
+      "id": "2026-01-29-002-en",
+      "title": "Another Beer Today. Different Carlsberg This Time.",
+      "date": "2026-01-29",
+      "content": "On my way home from work, I found myself in front of the beer fridge, like always.\n\nInstead of my usual beer, I felt like trying something different today.\n\nCarlsberg? It's the Danish Royal beer, right? I guess it feels kinda fancy, or maybe that's just me.\n\nThe moment I opened the can, a slightly bitter yet refreshing scent tickled my nose.\n\nWell, I worked hard today. This is like a small reward for myself. Gotta keep going tomorrow!",
+      "tags": [
+        "Carlsberg",
+        "Luna",
+        "Unfiltered Lager",
+        "Dry-hopped Lager",
+        "Beer",
+        "Glass of beer",
+        "Beer can",
+        "Alcohol",
+        "Drink",
+        "Copenhagen",
+        "Denmark",
+        "Royal Danish Court",
+        "Beverage",
+        "Refreshing"
+      ],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1769695695/cheer-factory/tqulwzmaew0wyhlw0csm.jpg",
+      "images": [
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1769695695/cheer-factory/tqulwzmaew0wyhlw0csm.jpg"
+      ],
+      "category": "diary",
+      "lang": "en"
+    },
+    {
       "id": "2026-01-29-001-ko",
       "title": "명동 직장인 pick! 딤딤섬 이번주 두번째 방문 맛집",
       "date": "2026-01-29",
@@ -813,5 +869,5 @@
       "lang": "en"
     }
   ],
-  "updated": "2026-01-29T13:06:26.385439"
+  "updated": "2026-01-29T14:11:28.984264"
 }
