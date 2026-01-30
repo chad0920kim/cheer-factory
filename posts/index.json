@@ -1,6 +1,52 @@
 {
   "posts": [
     {
+      "id": "2026-01-30-002-ko",
+      "title": "명동 맥날, 코울슬로&아아 조합?!🍔",
+      "date": "2026-01-30",
+      "content": "점심시간, 오늘은 뭘 먹을까나~ 🤔\n\n오늘은 진짜 오랜만에 맥도날드에 왔어요! 🍔🍟 역시 만국 공통 음식이라 그런지 사람 진짜 많더라고요. 역시 맥날은 어딜 가나 인기 폭발인가 봐요.\n\n늘 먹던 콜라랑 감튀 대신 오늘은 좀 색다르게! 🥤 감자튀김 대신 코울슬로, 콜라 대신 아이스 아메리카노를 시켜봤어요. 왠지 건강해지는 느낌적인 느낌? 😎\n\n맥도날드는 뭐, 다들 아는 그 맛이죠! 👍 가끔 이렇게 익숙한 맛이 땡길 때가 있잖아요. 가격도 착하고, 혼밥하기도 편해서 자주 오게 되는 것 같아요. \n\n명동에서 간단하게 점심 해결하고 싶을 때, 맥도날드도 괜찮은 선택인 것 같아요. 특히 저처럼 코울슬로 & 아아 조합으로 한번 드셔보세요! 색다른 맥날을 경험하실 수 있을 거예요. 😉\n\n다음엔 또 다른 명동 맛집을 찾아 돌아올게요! 🙋‍♀️",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1769746261/cheer-factory/yaoiudaiemlskmm3lbc4.jpg",
+      "images": [
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1769746261/cheer-factory/yaoiudaiemlskmm3lbc4.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1769746266/cheer-factory/pt8qtrmlepieuivvrp5e.jpg"
+      ],
+      "category": "lunch",
+      "lang": "ko",
+      "restaurant": {
+        "restaurant_id": "ee767160-7c62-4779-9f0c-e60c02ddfa43",
+        "name": "맥도날드 명동점",
+        "address": "서울특별시 중구 명동1가 48-2",
+        "naver_place_id": "",
+        "visit_count": 1
+      },
+      "restaurant_name": "맥도날드 명동점",
+      "visit_count": 1
+    },
+    {
+      "id": "2026-01-30-002-en",
+      "title": "Myeongdong McDonald's: Coleslaw & Iced Americano?! 🍔",
+      "date": "2026-01-30",
+      "content": "Lunch time, what should I eat today~ 🤔\n\nI came to McDonald's after a really long time! 🍔🍟 It's so popular, maybe because it's a global food. McDonald's is always crowded everywhere, I guess.\n\nInstead of the usual Coke and fries, I tried something different today! 🥤 I got coleslaw instead of fries, and an iced Americano instead of Coke. I kind of feel healthier? 😎\n\nMcDonald's, well, it tastes like what everyone knows! 👍 Sometimes I crave that familiar taste. It's cheap and easy to eat alone, so I come here often.\n\nIf you want a quick lunch in Myeongdong, McDonald's is a good choice. Especially try the coleslaw & iced Americano combo like me! You can experience a different McDonald's. 😉\n\nI'll be back with another Myeongdong 맛집 (delicious restaurant) next time! 🙋‍♀️",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1769746261/cheer-factory/yaoiudaiemlskmm3lbc4.jpg",
+      "images": [
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1769746261/cheer-factory/yaoiudaiemlskmm3lbc4.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1769746266/cheer-factory/pt8qtrmlepieuivvrp5e.jpg"
+      ],
+      "category": "lunch",
+      "lang": "en",
+      "restaurant": {
+        "restaurant_id": "ee767160-7c62-4779-9f0c-e60c02ddfa43",
+        "name": "맥도날드 명동점",
+        "address": "서울특별시 중구 명동1가 48-2",
+        "naver_place_id": "",
+        "visit_count": 1
+      },
+      "restaurant_name": "맥도날드 명동점",
+      "visit_count": 1
+    },
+    {
       "id": "2026-01-30-001-ko",
       "title": "명동 맥날, 공짜 버거 꿀맛탱!😋",
       "date": "2026-01-30",
@@ -915,5 +961,5 @@
       "lang": "en"
     }
   ],
-  "updated": "2026-01-30T03:56:33.193427"
+  "updated": "2026-01-30T04:13:44.274445"
 }
