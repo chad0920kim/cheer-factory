@@ -1,6 +1,52 @@
 {
   "posts": [
     {
+      "id": "2026-01-30-001-ko",
+      "title": "명동 맥날, 공짜 버거 꿀맛탱!😋",
+      "date": "2026-01-30",
+      "content": "여러분, 안녕하세용! 명동 오피스 직장인입니다. 점심시간 꿀맛 탐방기, 또 들고 왔어요! 오늘은 진짜 특별한 곳(?) 다녀왔습니다.\n\n사진 딱 보시면 아시겠죠? 맥도날드입니다! 🤣 솔직히 전국에서 제일 잘 나가는 맥도날드 아닐까 싶어요. 명동 한복판에 있으니... 큼큼.\n\n오늘의 메뉴는 베이컨 토마토 디럭스 버거 세트!\n코울슬로 추가하고, 아이스 아메리카노까지 야무지게 시켰어요.\n\n버거는 내 입맛엔 달달하고, 코울슬로는 시큼하고, 아아는...양이 적고! ㅋㅋㅋ 그래도 공짜 버거라 그런지 꿀맛이었어요.\n\n솔직히 맥날 맛이야 다 아시겠지만, 명동에서 간단하게, 그리고 저렴하게 점심 해결하기엔 딱입니다! 명동 맥도날드, 가끔 들러줘야겠어요. 😉",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1769745156/cheer-factory/mcpwvomsbjae76iuqdzd.jpg",
+      "images": [
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1769745156/cheer-factory/mcpwvomsbjae76iuqdzd.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1769745162/cheer-factory/h65ortcghrz4j2ybfxgq.jpg"
+      ],
+      "category": "lunch",
+      "lang": "ko",
+      "restaurant": {
+        "restaurant_id": "ee767160-7c62-4779-9f0c-e60c02ddfa43",
+        "name": "맥도날드 명동점",
+        "address": "서울특별시 중구 명동1가 48-2",
+        "naver_place_id": "",
+        "visit_count": 1
+      },
+      "restaurant_name": "맥도날드 명동점",
+      "visit_count": 1
+    },
+    {
+      "id": "2026-01-30-001-en",
+      "title": "Free Burger at Myeongdong McDonald's - So Delicious!😋",
+      "date": "2026-01-30",
+      "content": "Hey everyone! Myeongdong office worker here. I'm back with another delicious lunch adventure! Today I went to a really special place(?).\n\nI bet you already know from the picture, right? It's McDonald's! 🤣 I think it might be the most popular McDonald's in the whole country. Since it's right in the middle of Myeongdong... ahem.\n\nToday's order was the Bacon Tomato Deluxe Burger set!\nI added coleslaw and also got an iced Americano.\n\nThe burger was sweet for my taste, the coleslaw was tangy, and the iced Americano... was a little small! LOL. But it tasted amazing because it was a free burger.\n\nHonestly, you all know what McDonald's tastes like, but it's perfect for a quick and cheap lunch in Myeongdong! I should visit Myeongdong McDonald's once in a while. 😉",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1769745156/cheer-factory/mcpwvomsbjae76iuqdzd.jpg",
+      "images": [
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1769745156/cheer-factory/mcpwvomsbjae76iuqdzd.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1769745162/cheer-factory/h65ortcghrz4j2ybfxgq.jpg"
+      ],
+      "category": "lunch",
+      "lang": "en",
+      "restaurant": {
+        "restaurant_id": "ee767160-7c62-4779-9f0c-e60c02ddfa43",
+        "name": "맥도날드 명동점",
+        "address": "서울특별시 중구 명동1가 48-2",
+        "naver_place_id": "",
+        "visit_count": 1
+      },
+      "restaurant_name": "맥도날드 명동점",
+      "visit_count": 1
+    },
+    {
       "id": "2026-01-29-002-ko",
       "title": "오늘도 한잔. 오늘은 다른 칼스버그",
       "date": "2026-01-29",
@@ -869,5 +915,5 @@
       "lang": "en"
     }
   ],
-  "updated": "2026-01-29T14:11:28.984264"
+  "updated": "2026-01-30T03:56:33.193427"
 }
