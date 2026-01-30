@@ -336,6 +336,12 @@
             background: #ffebee;
             color: #c62828;
         }
+        .naver-queue-container {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #eee;
+            border-radius: 8px;
+        }
         .naver-queue-table {
             width: 100%;
             font-size: 13px;
@@ -1070,34 +1076,36 @@ python -m naver.cheer_factory_worker</pre>
                     statusDiv.innerHTML = `<p class="error">Error: ${data.error}</p>`;
                 } else if (data.queue && data.queue.length > 0) {
                     statusDiv.innerHTML = `
-                        <table class="naver-queue-table">
-                            <thead>
-                                <tr>
-                                    <th>Title</th>
-                                    <th style="text-align: center;">Status</th>
-                                    <th>Result</th>
-                                    <th style="text-align: center; width: 60px;">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${data.queue.map(item => `
+                        <div class="naver-queue-container">
+                            <table class="naver-queue-table">
+                                <thead>
                                     <tr>
-                                        <td>${item.title.substring(0, 30)}${item.title.length > 30 ? '...' : ''}</td>
-                                        <td style="text-align: center;">
-                                            <span class="status-badge status-${item.status}">${item.status}</span>
-                                        </td>
-                                        <td>
-                                            ${item.naver_url ? `<a href="${item.naver_url}" target="_blank" style="color: #2196F3;">View</a>` :
-                                              item.error_message ? `<span style="color: #c62828;" title="${item.error_message}">${item.error_message.substring(0, 20)}...</span>` : '-'}
-                                        </td>
-                                        <td style="text-align: center;">
-                                            ${['pending', 'processing', 'failed'].includes(item.status) ?
-                                              `<button onclick="deleteQueueItem(${item.id})" class="delete-queue-btn" title="Delete">×</button>` : '-'}
-                                        </td>
+                                        <th>Title</th>
+                                        <th style="text-align: center;">Status</th>
+                                        <th>Result</th>
+                                        <th style="text-align: center; width: 60px;">Action</th>
                                     </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    ${data.queue.map(item => `
+                                        <tr>
+                                            <td>${item.title.substring(0, 30)}${item.title.length > 30 ? '...' : ''}</td>
+                                            <td style="text-align: center;">
+                                                <span class="status-badge status-${item.status}">${item.status}</span>
+                                            </td>
+                                            <td>
+                                                ${item.naver_url ? `<a href="${item.naver_url}" target="_blank" style="color: #2196F3;">View</a>` :
+                                                  item.error_message ? `<span style="color: #c62828;" title="${item.error_message}">${item.error_message.substring(0, 20)}...</span>` : '-'}
+                                            </td>
+                                            <td style="text-align: center;">
+                                                ${['pending', 'processing', 'failed'].includes(item.status) ?
+                                                  `<button onclick="deleteQueueItem(${item.id})" class="delete-queue-btn" title="Delete">×</button>` : '-'}
+                                            </td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
                     `;
                 } else {
                     statusDiv.innerHTML = '<p style="color: #888;">No items in queue</p>';

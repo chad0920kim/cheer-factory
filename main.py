@@ -1186,10 +1186,15 @@ def admin_publish():
             address = restaurant_data.get("address", "")
             visit_count = restaurant_data.get("visit_count", 1)
 
-            # 기존 식당 조회
+            # place_id가 없으면 이름 기반 고유 ID 생성
+            if not naver_place_id and name:
+                import hashlib
+                naver_place_id = "name_" + hashlib.md5(name.encode()).hexdigest()[:8]
+
+            # 기존 식당 조회 (이름으로 매칭)
             existing = supabase.table("restaurants")\
                 .select("id, visit_count")\
-                .eq("naver_place_id", naver_place_id)\
+                .eq("name", name)\
                 .limit(1)\
                 .execute()
 
@@ -1766,15 +1771,23 @@ def admin_search_naver_place():
                 "visit_count": 0  # 기본값, DB에서 조회 필요
             })
 
-        # Supabase에서 기존 방문 횟수 조회
+        # Supabase에서 기존 방문 횟수 조회 (이름으로 매칭)
         if supabase and places:
             for place in places:
                 try:
-                    result = supabase.table("restaurants")\
-                        .select("visit_count")\
-                        .eq("naver_place_id", place["id"])\
-                        .limit(1)\
-                        .execute()
+                    # place_id가 있으면 우선 사용, 없으면 이름으로 검색
+                    if place["id"]:
+                        result = supabase.table("restaurants")\
+                            .select("visit_count")\
+                            .eq("naver_place_id", place["id"])\
+                            .limit(1)\
+                            .execute()
+                    else:
+                        result = supabase.table("restaurants")\
+                            .select("visit_count")\
+                            .eq("name", place["name"])\
+                            .limit(1)\
+                            .execute()
                     if result.data:
                         place["visit_count"] = result.data[0].get("visit_count", 0)
                 except:
