@@ -35,6 +35,20 @@ client = None
 if GOOGLE_API_KEY:
     client = genai.Client(api_key=GOOGLE_API_KEY)
 
+
+def gemini_generate_with_retry(model, contents, max_retries=3, delay=2):
+    """Gemini API 호출 with 자동 재시도"""
+    last_error = None
+    for attempt in range(max_retries):
+        try:
+            response = client.models.generate_content(model=model, contents=contents)
+            return response
+        except Exception as e:
+            last_error = e
+            if attempt < max_retries - 1:
+                time.sleep(delay * (attempt + 1))  # 점진적 대기
+    raise last_error
+
 # GitHub 설정
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 GITHUB_REPO = os.getenv("GITHUB_REPO")
@@ -1018,9 +1032,10 @@ def admin_generate_lunch_content():
 JSON 형식으로 응답해주세요:
 {{"content": "글 본문"}}"""
 
-        response = client.models.generate_content(
+        response = gemini_generate_with_retry(
             model="gemini-2.0-flash",
-            contents=prompt
+            contents=prompt,
+            max_retries=3
         )
         text = response.text.strip()
 
@@ -1067,9 +1082,10 @@ def admin_generate_lunch_title():
 JSON 형식으로 응답해주세요:
 {{"title": "제목"}}"""
 
-        response = client.models.generate_content(
+        response = gemini_generate_with_retry(
             model="gemini-2.0-flash",
-            contents=prompt
+            contents=prompt,
+            max_retries=3
         )
         text = response.text.strip()
 
@@ -1109,9 +1125,10 @@ def admin_generate_lunch_thumbnail():
 Style: Professional food photography, bright and clean, top-down view or 45-degree angle, warm natural lighting, restaurant setting,
 focus on the dish, appetizing presentation. Do not include any text or letters in the image."""
 
-        response = client.models.generate_content(
+        response = gemini_generate_with_retry(
             model="gemini-2.5-flash-image",
             contents=[image_prompt],
+            max_retries=3
         )
 
         # 응답에서 이미지 찾기
@@ -1578,8 +1595,8 @@ def admin_generate_image():
     image_prompt = f"Create an inspiring illustration for a motivational blog post. Style: {selected_style}. Blog details: {details}. Do not include any text, letters, or words in the image."
 
     try:
-        # Gemini 2.5 Flash Image 모델 사용 (Nano Banana)
-        response = client.models.generate_content(
+        # Gemini 2.5 Flash Image 모델 사용 (with retry)
+        response = gemini_generate_with_retry(
             model="gemini-2.5-flash-image",
             contents=[image_prompt],
         )
