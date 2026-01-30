@@ -1,6 +1,50 @@
 {
   "posts": [
     {
+      "id": "2026-01-30-003-ko",
+      "title": "명동 갬성 폭발! 낮술러 유혹하는 라이브 카페",
+      "date": "2026-01-30",
+      "content": "오늘 제가 소개할 곳은 분위기 끝판왕, 라이브 카페 겸 술집이에요.\n불금인데 술은 못 마시고... 😭 (눈물)\n\n\"노알콜 불금\"이라니, 슬프지만 분위기로 힐링해야죠!\n갬성 제대로 터지는 인테리어가 아주 마음에 쏙 들었어요.\n\n라이브 공연을 한다는 점이 아주 매력적이에요.\n저녁에 술 한잔하면서 음악 들으면 스트레스 확 풀릴 것 같아요. (물론 저는 노알콜...)\n다음에는 꼭 저녁에 방문해서 술 한잔 기울여봐야겠어요! 🍻\n\n명동에서 분위기 좋은 곳 찾으신다면 여기 완전 추천합니다!\n점심, 저녁 모두 좋으니 한번 방문해보세요. 😉",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1769780329/cheer-factory/ujwsduup3cmxlccnddln.jpg",
+      "images": [
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1769780329/cheer-factory/ujwsduup3cmxlccnddln.jpg"
+      ],
+      "category": "lunch",
+      "lang": "ko",
+      "restaurant": {
+        "restaurant_id": "5af8e1ec-77bb-4b11-be16-c8dcc1d6c99f",
+        "name": "섬",
+        "address": "서울특별시 중구 남산동2가 29-1",
+        "naver_place_id": "",
+        "visit_count": 1
+      },
+      "restaurant_name": "섬",
+      "visit_count": 1
+    },
+    {
+      "id": "2026-01-30-003-en",
+      "title": "Myeongdong Vibes! Live Cafe Tempting Day Drinkers",
+      "date": "2026-01-30",
+      "content": "Okay, so today I'm gonna introduce you to a place with amazing vibes – it's a live cafe and bar! \nIt's Friday night, but I can't drink... 😭 (tears)\n\n\"No-alcohol Friday night\" is kinda sad, but I gotta heal with the atmosphere! The interior design is super artsy and I totally loved it.\n\nThe fact that they have live music performances is really attractive. Listening to music with a drink in the evening would be so stress-relieving! (But I'm not drinking...)\nI definitely wanna visit again at night and have a drink next time! 🍻\n\nIf you're looking for a place with a good vibe in Myeongdong, I totally recommend this place! \nIt's good for both lunch and dinner, so give it a try. 😉",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1769780329/cheer-factory/ujwsduup3cmxlccnddln.jpg",
+      "images": [
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1769780329/cheer-factory/ujwsduup3cmxlccnddln.jpg"
+      ],
+      "category": "lunch",
+      "lang": "en",
+      "restaurant": {
+        "restaurant_id": "5af8e1ec-77bb-4b11-be16-c8dcc1d6c99f",
+        "name": "섬",
+        "address": "서울특별시 중구 남산동2가 29-1",
+        "naver_place_id": "",
+        "visit_count": 1
+      },
+      "restaurant_name": "섬",
+      "visit_count": 1
+    },
+    {
       "id": "2026-01-30-002-ko",
       "title": "명동 맥날, 코울슬로&아아 조합?!🍔",
       "date": "2026-01-30",
@@ -961,5 +1005,5 @@
       "lang": "en"
     }
   ],
-  "updated": "2026-01-30T04:13:44.274445"
+  "updated": "2026-01-30T13:41:40.046218"
 }
