@@ -350,8 +350,29 @@
 
         document.addEventListener('DOMContentLoaded', loadLikes);
 
-        // 포스트 본문의 링크를 새 창에서 열기
+        // 포스트 본문의 URL을 자동으로 링크로 변환하고 새 창에서 열기
         document.addEventListener('DOMContentLoaded', function() {
+            // URL 패턴 정규식
+            const urlPattern = /(https?:\/\/[^\s<>"']+)/g;
+
+            // 각 .content 요소에서 URL을 링크로 변환
+            document.querySelectorAll('.content').forEach(function(contentDiv) {
+                const html = contentDiv.innerHTML;
+                // 이미 링크가 아닌 URL만 변환
+                const newHtml = html.replace(urlPattern, function(url) {
+                    // 이미 <a> 태그 안에 있는지 확인
+                    const beforeUrl = html.substring(0, html.indexOf(url));
+                    const lastOpenA = beforeUrl.lastIndexOf('<a');
+                    const lastCloseA = beforeUrl.lastIndexOf('</a>');
+                    if (lastOpenA > lastCloseA) {
+                        return url; // 이미 링크 안에 있으면 변환하지 않음
+                    }
+                    return '<a href="' + url + '">' + url + '</a>';
+                });
+                contentDiv.innerHTML = newHtml;
+            });
+
+            // 모든 링크를 새 창에서 열기
             document.querySelectorAll('.content a').forEach(function(link) {
                 link.setAttribute('target', '_blank');
                 link.setAttribute('rel', 'noopener noreferrer');
