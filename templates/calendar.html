@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>달력 - Cheer Factory</title>
+    <meta name="description" content="날짜별로 응원 메시지를 확인하세요.">
+    <link rel="canonical" href="https://cheer-factory.onrender.com/calendar">
+
+    {% if ga_id %}
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ ga_id }}"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '{{ ga_id }}');
+    </script>
+    {% endif %}
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .calendar-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 10px 0;
+        }
+        .calendar-nav button {
+            background: #333;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .calendar-nav button:hover {
+            background: #555;
+        }
+        .calendar-nav .current-month {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+            background: #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .calendar-header {
+            background: #333;
+            color: white;
+            padding: 10px 5px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        .calendar-day {
+            background: white;
+            min-height: 80px;
+            padding: 5px;
+            position: relative;
+        }
+        .calendar-day.empty {
+            background: #f5f5f5;
+        }
+        .calendar-day.today {
+            background: #fff9e6;
+        }
+        .calendar-day.has-post {
+            cursor: pointer;
+        }
+        .calendar-day.has-post:hover {
+            background: #f0f7ff;
+        }
+        .day-number {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        .calendar-day.sunday .day-number {
+            color: #e74c3c;
+        }
+        .calendar-day.saturday .day-number {
+            color: #3498db;
+        }
+        .post-dot {
+            width: 8px;
+            height: 8px;
+            background: #4CAF50;
+            border-radius: 50%;
+            display: inline-block;
+            margin: 1px;
+        }
+        .post-preview {
+            font-size: 0.75em;
+            color: #333;
+            margin-top: 5px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* 포스트 목록 모달 */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .modal-header h3 {
+            margin: 0;
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+        .modal-post {
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .modal-post:last-child {
+            border-bottom: none;
+        }
+        .modal-post a {
+            text-decoration: none;
+            color: #333;
+        }
+        .modal-post a:hover {
+            color: #4CAF50;
+        }
+        .modal-post-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        .modal-post-preview {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        /* 범례 */
+        .calendar-legend {
+            display: flex;
+            gap: 20px;
+            margin-top: 15px;
+            font-size: 0.9em;
+            color: #666;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        @media (max-width: 600px) {
+            .calendar-day {
+                min-height: 50px;
+                padding: 3px;
+            }
+            .day-number {
+                font-size: 0.8em;
+            }
+            .post-preview {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="compact-header">
+            <div class="header-top">
+                <h1><a href="/">Cheer Factory</a></h1>
+                <div class="header-right">
+                    <a href="/">목록</a>
+                    <span class="divider">|</span>
+                    <a href="/guestbook">방명록</a>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <div class="calendar-nav">
+                <button onclick="navigateMonth(-1)">&larr; 이전</button>
+                <span class="current-month" id="currentMonth">{{ year }}년 {{ month }}월</span>
+                <button onclick="navigateMonth(1)">다음 &rarr;</button>
+            </div>
+
+            <div class="calendar-grid" id="calendarGrid">
+                <div class="calendar-header">일</div>
+                <div class="calendar-header">월</div>
+                <div class="calendar-header">화</div>
+                <div class="calendar-header">수</div>
+                <div class="calendar-header">목</div>
+                <div class="calendar-header">금</div>
+                <div class="calendar-header">토</div>
+            </div>
+
+            <div class="calendar-legend">
+                <div class="legend-item">
+                    <span class="post-dot"></span>
+                    포스트가 있는 날
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; Cheer Factory</p>
+        </footer>
+    </div>
+
+    <!-- 포스트 모달 -->
+    <div class="modal-overlay" id="postModal" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3 id="modalDate"></h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div id="modalPosts"></div>
+        </div>
+    </div>
+
+    <script>
+        // 포스트 데이터 (서버에서 전달)
+        const postsByDate = {{ posts_by_date | tojson | safe }};
+        let currentYear = {{ year }};
+        let currentMonth = {{ month }};
+
+        function renderCalendar() {
+            const grid = document.getElementById('calendarGrid');
+            // 헤더 유지하고 날짜만 다시 렌더링
+            const headers = grid.querySelectorAll('.calendar-header');
+            grid.innerHTML = '';
+            headers.forEach(h => grid.appendChild(h.cloneNode(true)));
+
+            const firstDay = new Date(currentYear, currentMonth - 1, 1);
+            const lastDay = new Date(currentYear, currentMonth, 0);
+            const startDayOfWeek = firstDay.getDay();
+            const daysInMonth = lastDay.getDate();
+
+            const today = new Date();
+            const isCurrentMonth = today.getFullYear() === currentYear && today.getMonth() + 1 === currentMonth;
+
+            // 빈 칸 채우기
+            for (let i = 0; i < startDayOfWeek; i++) {
+                const emptyCell = document.createElement('div');
+                emptyCell.className = 'calendar-day empty';
+                grid.appendChild(emptyCell);
+            }
+
+            // 날짜 채우기
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateStr = `${currentYear}-${String(currentMonth).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const dayOfWeek = (startDayOfWeek + day - 1) % 7;
+                const posts = postsByDate[dateStr] || [];
+
+                const cell = document.createElement('div');
+                cell.className = 'calendar-day';
+
+                if (dayOfWeek === 0) cell.classList.add('sunday');
+                if (dayOfWeek === 6) cell.classList.add('saturday');
+                if (isCurrentMonth && day === today.getDate()) cell.classList.add('today');
+                if (posts.length > 0) {
+                    cell.classList.add('has-post');
+                    cell.onclick = () => showPosts(dateStr, posts);
+                }
+
+                let html = `<div class="day-number">${day}</div>`;
+                if (posts.length > 0) {
+                    html += `<div>${'<span class="post-dot"></span>'.repeat(Math.min(posts.length, 3))}</div>`;
+                    html += `<div class="post-preview">${posts[0].title}</div>`;
+                }
+                cell.innerHTML = html;
+                grid.appendChild(cell);
+            }
+
+            document.getElementById('currentMonth').textContent = `${currentYear}년 ${currentMonth}월`;
+        }
+
+        function navigateMonth(delta) {
+            currentMonth += delta;
+            if (currentMonth > 12) {
+                currentMonth = 1;
+                currentYear++;
+            } else if (currentMonth < 1) {
+                currentMonth = 12;
+                currentYear--;
+            }
+            // URL 업데이트
+            history.pushState({}, '', `/calendar?year=${currentYear}&month=${currentMonth}`);
+            renderCalendar();
+        }
+
+        function showPosts(dateStr, posts) {
+            document.getElementById('modalDate').textContent = dateStr;
+            const container = document.getElementById('modalPosts');
+            container.innerHTML = posts.map(post => `
+                <div class="modal-post">
+                    <a href="/post/${post.id}">
+                        <div class="modal-post-title">${post.title}</div>
+                        <div class="modal-post-preview">${post.content.substring(0, 100)}...</div>
+                    </a>
+                </div>
+            `).join('');
+            document.getElementById('postModal').classList.add('active');
+        }
+
+        function closeModal(event) {
+            if (!event || event.target === document.getElementById('postModal')) {
+                document.getElementById('postModal').classList.remove('active');
+            }
+        }
+
+        // ESC 키로 모달 닫기
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // 초기 렌더링
+        renderCalendar();
+    </script>
+</body>
+</html>

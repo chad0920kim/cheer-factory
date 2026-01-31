@@ -363,6 +363,45 @@ def index():
         is_admin=session.get("admin_logged_in", False)
     )
 
+@app.route("/post/<post_id>")
+def view_post(post_id):
+    """개별 포스트 페이지"""
+    posts = load_posts()
+    post = next((p for p in posts if p.get("id") == post_id), None)
+
+    if not post:
+        return render_template("404.html"), 404
+
+    return render_template(
+        "post.html",
+        post=post,
+        site_url=SITE_URL,
+        ga_id=GA_ID,
+        is_admin=session.get("admin_logged_in", False)
+    )
+
+@app.route("/calendar")
+def calendar_view():
+    """달력 뷰 - 날짜별 포스트 보기"""
+    posts = load_posts()
+    year = request.args.get("year", datetime.now().year, type=int)
+    month = request.args.get("month", datetime.now().month, type=int)
+
+    # 날짜별로 포스트 그룹화
+    posts_by_date = {}
+    for post in posts:
+        date_str = post.get("date", "")
+        if date_str:
+            posts_by_date.setdefault(date_str, []).append(post)
+
+    return render_template(
+        "calendar.html",
+        posts_by_date=posts_by_date,
+        year=year,
+        month=month,
+        ga_id=GA_ID
+    )
+
 # ============ SEO 기능 ============
 
 @app.route("/sitemap.xml")
@@ -386,19 +425,25 @@ def sitemap():
     xml_content += f'    <priority>1.0</priority>\n'
     xml_content += f'  </url>\n'
 
-    # 포스트별 URL (날짜 기반)
-    added_dates = set()
+    # 개별 포스트 URL
     for post in posts:
+        post_id = post.get("id", "")
         date = post.get("date", "")
-        lang = post.get("lang", "ko")
-        if date and f"{date}-{lang}" not in added_dates:
-            added_dates.add(f"{date}-{lang}")
+        if post_id:
             xml_content += f'  <url>\n'
-            xml_content += f'    <loc>{SITE_URL}/?lang={lang}</loc>\n'
-            xml_content += f'    <lastmod>{date}</lastmod>\n'
-            xml_content += f'    <changefreq>weekly</changefreq>\n'
+            xml_content += f'    <loc>{SITE_URL}/post/{post_id}</loc>\n'
+            if date:
+                xml_content += f'    <lastmod>{date}</lastmod>\n'
+            xml_content += f'    <changefreq>monthly</changefreq>\n'
             xml_content += f'    <priority>0.8</priority>\n'
             xml_content += f'  </url>\n'
+
+    # 달력 페이지
+    xml_content += f'  <url>\n'
+    xml_content += f'    <loc>{SITE_URL}/calendar</loc>\n'
+    xml_content += f'    <changefreq>daily</changefreq>\n'
+    xml_content += f'    <priority>0.7</priority>\n'
+    xml_content += f'  </url>\n'
 
     xml_content += '</urlset>'
 
@@ -521,6 +566,51 @@ def get_bulk_stats():
         return jsonify({"stats": stats_dict})
     except Exception as e:
         return jsonify({"error": str(e), "stats": {}})
+
+# ============ 이메일 구독 기능 ============
+
+@app.route("/api/subscribe", methods=["POST"])
+def subscribe_email():
+    """이메일 구독 신청"""
+    if not supabase:
+        return jsonify({"error": "Database not configured"}), 500
+
+    data = request.get_json()
+    email = data.get("email", "").strip().lower()
+
+    if not email or "@" not in email:
+        return jsonify({"error": "유효한 이메일 주소를 입력해주세요."}), 400
+
+    try:
+        # 이미 구독 중인지 확인
+        existing = supabase.table("subscribers").select("*").eq("email", email).execute()
+        if existing.data:
+            return jsonify({"error": "이미 구독 중인 이메일입니다."}), 400
+
+        # 구독 추가
+        supabase.table("subscribers").insert({
+            "email": email,
+            "subscribed_at": datetime.now().isoformat()
+        }).execute()
+
+        return jsonify({"success": True, "message": "구독 신청이 완료되었습니다!"})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/unsubscribe", methods=["POST"])
+def unsubscribe_email():
+    """이메일 구독 취소"""
+    if not supabase:
+        return jsonify({"error": "Database not configured"}), 500
+
+    data = request.get_json()
+    email = data.get("email", "").strip().lower()
+
+    try:
+        supabase.table("subscribers").delete().eq("email", email).execute()
+        return jsonify({"success": True, "message": "구독이 취소되었습니다."})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 # ============ 방명록 기능 ============
 

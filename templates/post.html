@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="{{ post.lang or 'ko' }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <!-- SEO Meta Tags -->
+    <title>{{ post.title }} - Cheer Factory</title>
+    <meta name="description" content="{{ post.content[:150] }}...">
+    <meta name="keywords" content="응원, 직장인, 힐링, 블로그, cheer, motivation, {{ post.tags|join(', ') if post.tags else '' }}">
+    <meta name="author" content="Cheer Factory">
+    <link rel="canonical" href="{{ site_url }}/post/{{ post.id }}">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="{{ site_url }}/post/{{ post.id }}">
+    <meta property="og:title" content="{{ post.title }}">
+    <meta property="og:description" content="{{ post.content[:150] }}...">
+    {% if post.image_url %}
+    <meta property="og:image" content="{{ post.image_url }}">
+    {% elif post.images %}
+    <meta property="og:image" content="{{ post.images[0] }}">
+    {% endif %}
+    <meta property="og:site_name" content="Cheer Factory">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ site_url }}/post/{{ post.id }}">
+    <meta property="twitter:title" content="{{ post.title }}">
+    <meta property="twitter:description" content="{{ post.content[:150] }}...">
+    {% if post.image_url %}
+    <meta property="twitter:image" content="{{ post.image_url }}">
+    {% elif post.images %}
+    <meta property="twitter:image" content="{{ post.images[0] }}">
+    {% endif %}
+
+    <!-- JSON-LD 구조화 데이터 -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "{{ post.title }}",
+        "description": "{{ post.content[:150]|replace('"', '\\"') }}...",
+        "datePublished": "{{ post.date }}",
+        "author": {
+            "@type": "Organization",
+            "name": "Cheer Factory"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "Cheer Factory",
+            "url": "{{ site_url }}"
+        },
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "{{ site_url }}/post/{{ post.id }}"
+        }
+        {% if post.image_url or post.images %},
+        "image": "{{ post.image_url or post.images[0] }}"
+        {% endif %}
+    }
+    </script>
+
+    <!-- Google Analytics -->
+    {% if ga_id %}
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ ga_id }}"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '{{ ga_id }}');
+    </script>
+    {% endif %}
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        /* Image Slider */
+        .image-slider {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            border-radius: 8px;
+            margin: 15px 0;
+            background: #000;
+        }
+        .slider-container {
+            display: flex;
+            transition: transform 0.3s ease-out;
+        }
+        .slide {
+            min-width: 100%;
+            display: none;
+        }
+        .slide.active {
+            display: block;
+        }
+        .slide img {
+            width: 100%;
+            height: auto;
+            max-height: 500px;
+            object-fit: contain;
+            display: block;
+        }
+        .slider-dots {
+            position: absolute;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 6px;
+            z-index: 10;
+        }
+        .slider-dots .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+        }
+        .slider-dots .dot.active {
+            background: #fff;
+        }
+
+        /* Social Share Buttons */
+        .share-buttons {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .share-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            color: white;
+            cursor: pointer;
+            border: none;
+            transition: opacity 0.2s;
+        }
+        .share-btn:hover {
+            opacity: 0.85;
+        }
+        .share-btn.kakao {
+            background: #FEE500;
+            color: #191919;
+        }
+        .share-btn.twitter {
+            background: #1DA1F2;
+        }
+        .share-btn.facebook {
+            background: #4267B2;
+        }
+        .share-btn.copy-link {
+            background: #6c757d;
+        }
+
+        /* Back button */
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #666;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="compact-header">
+            <div class="header-top">
+                <h1><a href="/">Cheer Factory</a></h1>
+                <div class="header-right">
+                    <a href="/guestbook">방명록</a>
+                    <span class="divider">|</span>
+                    <a href="/?lang=ko">KO</a>
+                    <span class="divider">|</span>
+                    <a href="/?lang=en">EN</a>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <a href="/" class="back-link">&larr; 목록으로</a>
+
+            <article class="post">
+                <h2>{{ post.title }}</h2>
+                <p class="date">{{ post.date }}</p>
+
+                {% if post.images and post.images|length > 1 %}
+                <!-- 복수 이미지: 슬라이더 -->
+                <div class="image-slider" data-post-id="{{ post.id }}">
+                    <div class="slider-container">
+                        {% for img in post.images %}
+                        <div class="slide {% if loop.first %}active{% endif %}">
+                            <img src="{{ img }}" alt="{{ post.title }} - {{ loop.index }}">
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="slider-dots">
+                        {% for img in post.images %}
+                        <span class="dot {% if loop.first %}active{% endif %}" data-index="{{ loop.index0 }}"></span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% elif post.image_url %}
+                <!-- 단일 이미지 -->
+                <div class="post-image">
+                    <img src="{{ post.image_url }}" alt="{{ post.title }}">
+                </div>
+                {% endif %}
+
+                {% if post.restaurant_name %}
+                <div class="restaurant-info" style="margin: 15px 0; padding: 12px; background: #f8f9fa; border-left: 3px solid #28a745; border-radius: 4px;">
+                    <div style="font-weight: 600; margin-bottom: 5px;">📍 {{ post.restaurant_name }}</div>
+                    <div style="color: #666; font-size: 0.9em;">🔢 {{ post.visit_count or 1 }}번째 방문 (since 2026.1.27)</div>
+                </div>
+                {% endif %}
+
+                <div class="content">{{ post.content }}</div>
+
+                {% if post.tags %}
+                <div class="post-tags">
+                    {% for tag in post.tags %}
+                    <span class="tag">{{ tag }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- 소셜 공유 버튼 -->
+                <div class="share-buttons">
+                    <button class="share-btn kakao" onclick="shareKakao()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 3C6.48 3 2 6.58 2 11c0 2.83 1.89 5.31 4.68 6.72l-.95 3.52c-.08.29.25.54.51.38l4.17-2.78c.52.05 1.05.08 1.59.08 5.52 0 10-3.58 10-8S17.52 3 12 3z"/>
+                        </svg>
+                        카카오톡
+                    </button>
+                    <a class="share-btn twitter" href="https://twitter.com/intent/tweet?text={{ post.title|urlencode }}&url={{ site_url }}/post/{{ post.id }}" target="_blank">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                        </svg>
+                        트위터
+                    </a>
+                    <a class="share-btn facebook" href="https://www.facebook.com/sharer/sharer.php?u={{ site_url }}/post/{{ post.id }}" target="_blank">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                        </svg>
+                        페이스북
+                    </a>
+                    <button class="share-btn copy-link" onclick="copyLink()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                        </svg>
+                        링크 복사
+                    </button>
+                </div>
+
+                <div class="post-footer">
+                    <button class="like-btn" data-post-id="{{ post.id }}" onclick="toggleLike('{{ post.id }}')">
+                        <span class="like-icon">&#9825;</span>
+                        <span class="like-count" id="likes-{{ post.id }}">0</span>
+                    </button>
+                    {% if is_admin %}
+                    <a href="/admin/edit/{{ post.id }}" class="edit-link">Edit</a>
+                    {% endif %}
+                </div>
+            </article>
+        </main>
+
+        <footer>
+            <p>&copy; Cheer Factory</p>
+        </footer>
+    </div>
+
+    <!-- Kakao SDK -->
+    <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.5.0/kakao.min.js"></script>
+    <script>
+        // Kakao SDK 초기화 (실제 앱 키 필요)
+        if (typeof Kakao !== 'undefined' && !Kakao.isInitialized()) {
+            // Kakao.init('YOUR_KAKAO_JAVASCRIPT_KEY');
+        }
+
+        function shareKakao() {
+            if (typeof Kakao !== 'undefined' && Kakao.isInitialized()) {
+                Kakao.Share.sendDefault({
+                    objectType: 'feed',
+                    content: {
+                        title: '{{ post.title|replace("'", "\\'") }}',
+                        description: '{{ post.content[:100]|replace("'", "\\'")|replace("\n", " ") }}...',
+                        imageUrl: '{{ post.image_url or (post.images[0] if post.images else "") }}',
+                        link: {
+                            mobileWebUrl: '{{ site_url }}/post/{{ post.id }}',
+                            webUrl: '{{ site_url }}/post/{{ post.id }}'
+                        }
+                    },
+                    buttons: [{
+                        title: '자세히 보기',
+                        link: {
+                            mobileWebUrl: '{{ site_url }}/post/{{ post.id }}',
+                            webUrl: '{{ site_url }}/post/{{ post.id }}'
+                        }
+                    }]
+                });
+            } else {
+                // Kakao SDK가 없으면 기본 공유 사용
+                const url = encodeURIComponent('{{ site_url }}/post/{{ post.id }}');
+                const text = encodeURIComponent('{{ post.title }}');
+                window.open(`https://story.kakao.com/share?url=${url}`, '_blank', 'width=600,height=400');
+            }
+        }
+
+        function copyLink() {
+            const url = '{{ site_url }}/post/{{ post.id }}';
+            navigator.clipboard.writeText(url).then(() => {
+                alert('링크가 복사되었습니다!');
+            }).catch(() => {
+                // fallback
+                const input = document.createElement('input');
+                input.value = url;
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                document.body.removeChild(input);
+                alert('링크가 복사되었습니다!');
+            });
+        }
+
+        // 좋아요 기능
+        async function toggleLike(postId) {
+            const likedPosts = JSON.parse(localStorage.getItem('likedPosts') || '[]');
+            if (likedPosts.includes(postId)) {
+                alert('이미 좋아요를 누르셨습니다!');
+                return;
+            }
+
+            try {
+                const res = await fetch(`/api/like/${postId}`, { method: 'POST' });
+                const data = await res.json();
+                if (data.success) {
+                    likedPosts.push(postId);
+                    localStorage.setItem('likedPosts', JSON.stringify(likedPosts));
+                    document.getElementById(`likes-${postId}`).textContent = data.likes;
+                    const btn = document.querySelector(`button.like-btn[data-post-id="${postId}"]`);
+                    if (btn) {
+                        const likeIcon = btn.querySelector('.like-icon');
+                        if (likeIcon) likeIcon.innerHTML = '&#9829;';
+                    }
+                }
+            } catch (e) {
+                console.error('Like failed:', e);
+            }
+        }
+
+        // 좋아요 수 로드
+        async function loadLikes() {
+            const postId = '{{ post.id }}';
+            try {
+                const res = await fetch(`/api/likes/${postId}`);
+                const data = await res.json();
+                document.getElementById(`likes-${postId}`).textContent = data.likes || 0;
+
+                const likedPosts = JSON.parse(localStorage.getItem('likedPosts') || '[]');
+                if (likedPosts.includes(postId)) {
+                    const btn = document.querySelector(`button.like-btn[data-post-id="${postId}"]`);
+                    if (btn) {
+                        const likeIcon = btn.querySelector('.like-icon');
+                        if (likeIcon) likeIcon.innerHTML = '&#9829;';
+                    }
+                }
+            } catch (e) {
+                console.error('Load likes failed:', e);
+            }
+        }
+
+        // URL 자동 링크 변환
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlPattern = /(https?:\/\/[^\s<>"']+)/g;
+            document.querySelectorAll('.content').forEach(function(contentDiv) {
+                const html = contentDiv.innerHTML;
+                const newHtml = html.replace(urlPattern, function(url) {
+                    const beforeUrl = html.substring(0, html.indexOf(url));
+                    const lastOpenA = beforeUrl.lastIndexOf('<a');
+                    const lastCloseA = beforeUrl.lastIndexOf('</a>');
+                    if (lastOpenA > lastCloseA) return url;
+                    return '<a href="' + url + '" target="_blank" rel="noopener noreferrer">' + url + '</a>';
+                });
+                contentDiv.innerHTML = newHtml;
+            });
+
+            loadLikes();
+        });
+
+        // 이미지 슬라이더
+        document.querySelectorAll('.image-slider').forEach(slider => {
+            const dots = slider.querySelectorAll('.dot');
+            const slides = slider.querySelectorAll('.slide');
+            let currentIndex = 0;
+
+            function showSlide(index) {
+                slides.forEach((s, i) => {
+                    s.classList.toggle('active', i === index);
+                });
+                dots.forEach((d, i) => {
+                    d.classList.toggle('active', i === index);
+                });
+                currentIndex = index;
+            }
+
+            dots.forEach((dot, i) => {
+                dot.addEventListener('click', () => showSlide(i));
+            });
+
+            // 터치 스와이프
+            let startX = 0;
+            slider.addEventListener('touchstart', e => { startX = e.touches[0].clientX; });
+            slider.addEventListener('touchend', e => {
+                const diff = startX - e.changedTouches[0].clientX;
+                if (Math.abs(diff) > 50) {
+                    if (diff > 0 && currentIndex < slides.length - 1) showSlide(currentIndex + 1);
+                    else if (diff < 0 && currentIndex > 0) showSlide(currentIndex - 1);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

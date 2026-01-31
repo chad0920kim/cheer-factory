@@ -110,6 +110,8 @@
             <div class="header-top">
                 <h1><a href="/">Cheer Factory</a></h1>
                 <div class="header-right">
+                    <a href="/calendar">{% if lang == 'ko' %}달력{% else %}Calendar{% endif %}</a>
+                    <span class="divider">|</span>
                     <a href="/guestbook?lang={{ lang }}">{% if lang == 'ko' %}방명록{% else %}Guestbook{% endif %}</a>
                     <span class="divider">|</span>
                     <a href="?lang=ko{% if query %}&q={{ query }}{% endif %}" class="{% if lang == 'ko' %}active{% endif %}">KO</a>
@@ -134,7 +136,7 @@
             {% if posts %}
                 {% for post in posts %}
                 <article class="post">
-                    <h2>{{ post.title }}</h2>
+                    <h2><a href="/post/{{ post.id }}" style="color: inherit; text-decoration: none;">{{ post.title }}</a></h2>
                     <p class="date">{{ post.date }}</p>
                     {% if post.images and post.images|length > 1 %}
                     <!-- 복수 이미지: 슬라이더 -->
@@ -222,6 +224,17 @@
                 {% endif %}
             </nav>
             {% endif %}
+
+            <!-- 이메일 구독 -->
+            <div class="subscribe-section" style="margin: 30px 0; padding: 20px; background: #f8f9fa; border-radius: 8px; text-align: center;">
+                <h3 style="margin: 0 0 10px 0; font-size: 1.1em;">{% if lang == 'ko' %}새 포스트 알림 받기{% else %}Get notified of new posts{% endif %}</h3>
+                <p style="color: #666; font-size: 0.9em; margin-bottom: 15px;">{% if lang == 'ko' %}이메일을 입력하면 새 글이 올라올 때 알림을 받을 수 있어요.{% else %}Enter your email to get notified when new posts are published.{% endif %}</p>
+                <form id="subscribeForm" style="display: flex; gap: 10px; max-width: 400px; margin: 0 auto;">
+                    <input type="email" id="subscribeEmail" placeholder="{% if lang == 'ko' %}이메일 주소{% else %}Email address{% endif %}" required style="flex: 1; padding: 10px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;">
+                    <button type="submit" style="padding: 10px 20px; background: #333; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px;">{% if lang == 'ko' %}구독{% else %}Subscribe{% endif %}</button>
+                </form>
+                <p id="subscribeMessage" style="margin-top: 10px; font-size: 0.9em; display: none;"></p>
+            </div>
 
             <footer>
                 <p>&copy; Cheer Factory</p>
@@ -377,6 +390,43 @@
                 link.setAttribute('target', '_blank');
                 link.setAttribute('rel', 'noopener noreferrer');
             });
+        });
+
+        // 이메일 구독 폼 처리
+        document.getElementById('subscribeForm')?.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const email = document.getElementById('subscribeEmail').value;
+            const messageEl = document.getElementById('subscribeMessage');
+            const button = this.querySelector('button');
+
+            button.disabled = true;
+            button.textContent = '처리중...';
+
+            try {
+                const res = await fetch('/api/subscribe', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+                const data = await res.json();
+
+                messageEl.style.display = 'block';
+                if (data.success) {
+                    messageEl.style.color = '#28a745';
+                    messageEl.textContent = data.message;
+                    document.getElementById('subscribeEmail').value = '';
+                } else {
+                    messageEl.style.color = '#dc3545';
+                    messageEl.textContent = data.error;
+                }
+            } catch (e) {
+                messageEl.style.display = 'block';
+                messageEl.style.color = '#dc3545';
+                messageEl.textContent = '오류가 발생했습니다.';
+            }
+
+            button.disabled = false;
+            button.textContent = '구독';
         });
 
         // 이미지 다운로드 함수

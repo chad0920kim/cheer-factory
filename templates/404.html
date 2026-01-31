@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>페이지를 찾을 수 없습니다 - Cheer Factory</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .error-page {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        .error-code {
+            font-size: 100px;
+            font-weight: bold;
+            color: #ddd;
+            margin: 0;
+        }
+        .error-message {
+            font-size: 24px;
+            color: #666;
+            margin: 20px 0;
+        }
+        .back-home {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 24px;
+            background: #333;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+        .back-home:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="compact-header">
+            <div class="header-top">
+                <h1><a href="/">Cheer Factory</a></h1>
+            </div>
+        </header>
+        <main>
+            <div class="error-page">
+                <p class="error-code">404</p>
+                <p class="error-message">페이지를 찾을 수 없습니다</p>
+                <a href="/" class="back-home">홈으로 돌아가기</a>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
