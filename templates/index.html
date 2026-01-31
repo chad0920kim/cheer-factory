@@ -118,6 +118,11 @@
             color: #333;
             background: #f0f0f0;
         }
+        .post-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
         .post-title-link {
             color: inherit;
             text-decoration: none;
@@ -231,19 +236,21 @@
                     </div>
                     {% endif %}
                     <div class="post-footer">
-                        <button class="like-btn" data-post-id="{{ post.id }}" onclick="toggleLike('{{ post.id }}')">
-                            <span class="like-icon">&#9825;</span>
-                            <span class="like-count" id="likes-{{ post.id }}">0</span>
-                        </button>
-                        <button class="share-link" onclick="copyPostLink('{{ post.id }}')" title="링크 복사">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="18" cy="5" r="3"></circle>
-                                <circle cx="6" cy="12" r="3"></circle>
-                                <circle cx="18" cy="19" r="3"></circle>
-                                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-                                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
-                            </svg>
-                        </button>
+                        <div class="post-actions">
+                            <button class="like-btn" data-post-id="{{ post.id }}" onclick="toggleLike('{{ post.id }}')">
+                                <span class="like-icon">&#9825;</span>
+                                <span class="like-count" id="likes-{{ post.id }}">0</span>
+                            </button>
+                            <button class="share-link" onclick="copyPostLink('{{ post.id }}')" title="링크 복사">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="18" cy="5" r="3"></circle>
+                                    <circle cx="6" cy="12" r="3"></circle>
+                                    <circle cx="18" cy="19" r="3"></circle>
+                                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                                    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                                </svg>
+                            </button>
+                        </div>
                         <a href="/admin/edit/{{ post.id }}" class="edit-link">Edit</a>
                     </div>
                 </article>
