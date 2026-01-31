@@ -139,23 +139,27 @@
         .post-title-link:hover .title-arrow {
             opacity: 1;
         }
-        .header-right.compact {
+        .header-nav {
             display: flex;
-            gap: 8px;
-            font-size: 0.85em;
+            justify-content: center;
+            gap: 12px;
+            padding: 8px 0;
+            font-size: 0.9em;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 10px;
         }
-        .header-right.compact a {
+        .header-nav a {
             color: #666;
             text-decoration: none;
         }
-        .header-right.compact a:hover {
+        .header-nav a:hover {
             color: #333;
         }
-        .header-right.compact a.active {
+        .header-nav a.active {
             color: #333;
             font-weight: 600;
         }
-        .header-right.compact .admin-link {
+        .header-nav .admin-link {
             color: #999;
         }
         /* TOP 버튼 */
@@ -192,14 +196,14 @@
         <header class="compact-header">
             <div class="header-top">
                 <h1><a href="/">Cheer Factory</a></h1>
-                <div class="header-right compact">
-                    <a href="/calendar">{% if lang == 'ko' %}달력{% else %}Calendar{% endif %}</a>
-                    <a href="/guestbook?lang={{ lang }}">{% if lang == 'ko' %}방명록{% else %}Guestbook{% endif %}</a>
-                    <a href="?lang=ko{% if query %}&q={{ query }}{% endif %}" class="{% if lang == 'ko' %}active{% endif %}">KO</a>
-                    <a href="?lang=en{% if query %}&q={{ query }}{% endif %}" class="{% if lang == 'en' %}active{% endif %}">EN</a>
-                    <a href="/admin" class="admin-link">Admin</a>
-                </div>
             </div>
+            <nav class="header-nav">
+                <a href="/calendar">{% if lang == 'ko' %}달력{% else %}Calendar{% endif %}</a>
+                <a href="/guestbook?lang={{ lang }}">{% if lang == 'ko' %}방명록{% else %}Guestbook{% endif %}</a>
+                <a href="?lang=ko{% if query %}&q={{ query }}{% endif %}" class="{% if lang == 'ko' %}active{% endif %}">KO</a>
+                <a href="?lang=en{% if query %}&q={{ query }}{% endif %}" class="{% if lang == 'en' %}active{% endif %}">EN</a>
+                <a href="/admin" class="admin-link">Admin</a>
+            </nav>
             <div class="search-box">
                 <form action="/" method="get">
                     <input type="hidden" name="lang" value="{{ lang }}">
