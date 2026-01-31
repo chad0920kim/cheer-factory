@@ -109,11 +109,30 @@
             color: #666;
             padding: 5px;
             border-radius: 4px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
             transition: color 0.2s, background 0.2s;
         }
         .share-link:hover {
             color: #333;
             background: #f0f0f0;
+        }
+        .post-title-link {
+            color: inherit;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .post-title-link:hover {
+            color: #4CAF50;
+        }
+        .post-title-link .title-arrow {
+            opacity: 0.3;
+            margin-left: 4px;
+            transition: opacity 0.2s;
+        }
+        .post-title-link:hover .title-arrow {
+            opacity: 1;
         }
     </style>
 </head>
@@ -149,7 +168,7 @@
             {% if posts %}
                 {% for post in posts %}
                 <article class="post">
-                    <h2><a href="/post/{{ post.id }}" style="color: inherit; text-decoration: none;">{{ post.title }}</a></h2>
+                    <h2><a href="/post/{{ post.id }}" class="post-title-link">{{ post.title }} <span class="title-arrow">›</span></a></h2>
                     <p class="date">{{ post.date }}</p>
                     {% if post.images and post.images|length > 0 %}
                     <!-- 이미지 슬라이더 (단일/복수 통일) -->
@@ -216,7 +235,7 @@
                             <span class="like-icon">&#9825;</span>
                             <span class="like-count" id="likes-{{ post.id }}">0</span>
                         </button>
-                        <a href="/post/{{ post.id }}" class="share-link" title="공유하기">
+                        <button class="share-link" onclick="copyPostLink('{{ post.id }}')" title="링크 복사">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <circle cx="18" cy="5" r="3"></circle>
                                 <circle cx="6" cy="12" r="3"></circle>
@@ -224,7 +243,7 @@
                                 <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
                                 <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
                             </svg>
-                        </a>
+                        </button>
                         <a href="/admin/edit/{{ post.id }}" class="edit-link">Edit</a>
                     </div>
                 </article>
@@ -287,6 +306,22 @@
 
         function isLiked(postId) {
             return getLikedPosts().includes(postId);
+        }
+
+        // 링크 복사
+        function copyPostLink(postId) {
+            const url = window.location.origin + '/post/' + postId;
+            navigator.clipboard.writeText(url).then(() => {
+                alert('링크가 복사되었습니다!');
+            }).catch(() => {
+                const input = document.createElement('input');
+                input.value = url;
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                document.body.removeChild(input);
+                alert('링크가 복사되었습니다!');
+            });
         }
 
         // 좋아요 토글
