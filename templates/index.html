@@ -142,8 +142,8 @@
         .header-nav {
             display: flex;
             align-items: center;
-            gap: 6px;
-            font-size: 0.8em;
+            gap: 5px;
+            font-size: 0.75em;
         }
         .header-nav a {
             color: #666;
@@ -197,6 +197,8 @@
             <div class="header-top">
                 <h1><a href="/">Cheer Factory</a></h1>
                 <nav class="header-nav">
+                    <a href="/admin" class="admin-link">Admin</a>
+                    <span class="divider">|</span>
                     <a href="/calendar">{% if lang == 'ko' %}달력{% else %}Calendar{% endif %}</a>
                     <span class="divider">|</span>
                     <a href="/guestbook?lang={{ lang }}">{% if lang == 'ko' %}방명록{% else %}Guestbook{% endif %}</a>
@@ -204,8 +206,6 @@
                     <a href="?lang=ko{% if query %}&q={{ query }}{% endif %}" class="{% if lang == 'ko' %}active{% endif %}">KO</a>
                     <span class="divider">|</span>
                     <a href="?lang=en{% if query %}&q={{ query }}{% endif %}" class="{% if lang == 'en' %}active{% endif %}">EN</a>
-                    <span class="divider">|</span>
-                    <a href="/admin" class="admin-link">Admin</a>
                 </nav>
             </div>
             <div class="search-box">
