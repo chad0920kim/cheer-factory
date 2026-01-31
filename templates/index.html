@@ -350,6 +350,14 @@
 
         document.addEventListener('DOMContentLoaded', loadLikes);
 
+        // 포스트 본문의 링크를 새 창에서 열기
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.content a').forEach(function(link) {
+                link.setAttribute('target', '_blank');
+                link.setAttribute('rel', 'noopener noreferrer');
+            });
+        });
+
         // 이미지 다운로드 함수
         async function downloadImage(imageUrl, title) {
             try {
