@@ -193,8 +193,8 @@
                 <h2>{{ post.title }}</h2>
                 <p class="date">{{ post.date }}</p>
 
-                {% if post.images and post.images|length > 1 %}
-                <!-- 복수 이미지: 슬라이더 -->
+                {% if post.images and post.images|length > 0 %}
+                <!-- 이미지 슬라이더 (단일/복수 통일) -->
                 <div class="image-slider" data-post-id="{{ post.id }}">
                     <div class="slider-container">
                         {% for img in post.images %}
@@ -203,16 +203,22 @@
                         </div>
                         {% endfor %}
                     </div>
+                    {% if post.images|length > 1 %}
                     <div class="slider-dots">
                         {% for img in post.images %}
                         <span class="dot {% if loop.first %}active{% endif %}" data-index="{{ loop.index0 }}"></span>
                         {% endfor %}
                     </div>
+                    {% endif %}
                 </div>
                 {% elif post.image_url %}
-                <!-- 단일 이미지 -->
-                <div class="post-image">
-                    <img src="{{ post.image_url }}" alt="{{ post.title }}">
+                <!-- 단일 이미지 (images 배열 없는 경우) -->
+                <div class="image-slider" data-post-id="{{ post.id }}">
+                    <div class="slider-container">
+                        <div class="slide active">
+                            <img src="{{ post.image_url }}" alt="{{ post.title }}">
+                        </div>
+                    </div>
                 </div>
                 {% endif %}
 
