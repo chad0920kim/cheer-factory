@@ -1,6 +1,64 @@
 {
   "posts": [
     {
+      "id": "2026-02-01-001-ko",
+      "title": "시나몬 향이 필요해",
+      "date": "2026-02-01",
+      "content": "오늘따라 코젤 다크가 간절하더라.\n\n퇴근길에 맥주 한 캔, 딱인데 말이야.\n\n집에 시나몬 가루가 없다는 사실이 떠올랐어.\n\n내일은 꼭 시나몬 가루를 사야겠다... 코젤 다크에 듬뿍 뿌려서 음미해야지.\n\n이 맛 아는 사람은 분명 나와 같은 40대 후반일 거야, 아마도. \n\n인생의 쓴맛을 달콤하게 만들어주는 시나몬 향, 놓칠 수 없지. 맛있네.",
+      "tags": [
+        "dark beverage",
+        "sugared rim",
+        "cocktail",
+        "drink",
+        "glass",
+        "soda",
+        "fizzy drink",
+        "refreshment",
+        "beverage",
+        "alcohol",
+        "bar",
+        "closeup",
+        "table",
+        "food and drink"
+      ],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1769909245/cheer-factory/jbhnfx93hffsywkdfawg.jpg",
+      "images": [
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1769909245/cheer-factory/jbhnfx93hffsywkdfawg.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1769909557/cheer-factory/d51tjom2yulcgxdvu991.jpg"
+      ],
+      "category": "diary",
+      "lang": "ko"
+    },
+    {
+      "id": "2026-02-01-001-en",
+      "title": "Craving That Cinnamon Vibe",
+      "date": "2026-02-01",
+      "content": "I'm really craving a Kozel Dark today.\n\nA can of beer on the way home from work would be perfect.\n\nBut then I remembered I'm out of cinnamon powder.\n\nI definitely need to buy some cinnamon powder tomorrow... I'm gonna sprinkle a lot on my Kozel Dark and enjoy it.\n\nAnyone who knows this taste is probably in their late 40s like me, maybe.\n\nThe scent of cinnamon makes life's bitterness sweet, can't miss out on that. It's so good.",
+      "tags": [
+        "dark beverage",
+        "sugared rim",
+        "cocktail",
+        "drink",
+        "glass",
+        "soda",
+        "fizzy drink",
+        "refreshment",
+        "beverage",
+        "alcohol",
+        "bar",
+        "closeup",
+        "table",
+        "food and drink"
+      ],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1769909245/cheer-factory/jbhnfx93hffsywkdfawg.jpg",
+      "images": [
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1769909245/cheer-factory/jbhnfx93hffsywkdfawg.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1769909557/cheer-factory/d51tjom2yulcgxdvu991.jpg"
+      ],
+      "category": "diary",
+      "lang": "en"
+    },
+    {
       "id": "2026-01-30-003-ko",
       "title": "명동 갬성 폭발! 낮술러 유혹하는 라이브 카페",
       "date": "2026-01-30",
@@ -1005,5 +1063,5 @@
       "lang": "en"
     }
   ],
-  "updated": "2026-01-31T04:31:54.571874"
+  "updated": "2026-02-01T01:32:44.419671"
 }
