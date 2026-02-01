@@ -445,6 +445,19 @@ def sitemap():
     xml_content += f'    <priority>0.7</priority>\n'
     xml_content += f'  </url>\n'
 
+    # 방명록 페이지
+    xml_content += f'  <url>\n'
+    xml_content += f'    <loc>{SITE_URL}/guestbook?lang=ko</loc>\n'
+    xml_content += f'    <changefreq>daily</changefreq>\n'
+    xml_content += f'    <priority>0.6</priority>\n'
+    xml_content += f'  </url>\n'
+
+    xml_content += f'  <url>\n'
+    xml_content += f'    <loc>{SITE_URL}/guestbook?lang=en</loc>\n'
+    xml_content += f'    <changefreq>daily</changefreq>\n'
+    xml_content += f'    <priority>0.6</priority>\n'
+    xml_content += f'  </url>\n'
+
     xml_content += '</urlset>'
 
     from flask import Response
@@ -1927,7 +1940,7 @@ def admin_naver_publish():
         if not images and post.get("image_url"):
             images = [post.get("image_url")]
 
-        category = post.get("category", "diary")
+        category = data.get("category", post.get("category", "diary"))
         queue_data = {
             "post_id": post_id,
             "title": post.get("title", ""),
