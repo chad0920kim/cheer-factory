@@ -19,6 +19,17 @@
 
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
+        /* PC에서 달력이 넓게 보이도록 container 너비 확장 */
+        .container {
+            max-width: 900px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                max-width: 480px;
+            }
+        }
+
         .calendar-nav {
             display: flex;
             justify-content: space-between;
