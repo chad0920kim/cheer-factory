@@ -1,6 +1,52 @@
 {
   "posts": [
     {
+      "id": "2026-02-03-001-ko",
+      "title": "명동 [다락방]: 7500원 김치칼국수!",
+      "date": "2026-02-03",
+      "content": "안녕하세요, 명동 직장인 맛집 탐험가입니다!\n오늘은 제가 애정하는 분식집을 소개하려고 해요.\n다락방처럼 아담하지만, 숨겨진 보석 같은 곳이랍니다.\n\n바로 그곳은... 다락방...하지만 실제는 지하에 있어요. 😉\n명동 한복판에서 김치칼국수를 7,500원에 먹을 수 있다는 게 믿겨지시나요?\n요즘 물가 생각하면 정말 혜자스러운 가격이죠.\n\n김치칼국수 국물은 칼칼하면서 시원하고, 면발도 쫄깃쫄깃해서 정말 맛있어요.\n김치도 직접 담그시는 것 같더라고요. 👍\n분식집이지만, 카레밥도 있어서 백반집 느낌도 나요.\n\n카레밥도 평범한 듯하지만, 은근히 중독성 있는 맛이에요.\n집에서 엄마가 해주는 카레 같은 푸근함이랄까? 😋\n혼밥하기도 좋고, 간단하게 점심 해결하기 딱 좋은 곳이에요.\n\n명동에서 저렴하고 맛있는 분식 찾으신다면, 꼭 한번 들러보세요!\n후회하지 않으실 거예요. 😊",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1770093949/cheer-factory/fokz19k9blfmhxk1wmbz.jpg",
+      "images": [
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1770093949/cheer-factory/fokz19k9blfmhxk1wmbz.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1770093954/cheer-factory/kstbbswjf1uldtfv004b.jpg"
+      ],
+      "category": "lunch",
+      "lang": "ko",
+      "restaurant": {
+        "restaurant_id": "f4aa417d-9afc-40fd-b76b-2e0c5342e45b",
+        "name": "다락방분식",
+        "address": "서울특별시 중구 다동 116",
+        "naver_place_id": "",
+        "visit_count": 1
+      },
+      "restaurant_name": "다락방분식",
+      "visit_count": 1
+    },
+    {
+      "id": "2026-02-03-001-en",
+      "title": "Myeongdong [Darakbang]: Kimchi Kalguksu for ₩7,500!",
+      "date": "2026-02-03",
+      "content": "Hey everyone, it's your Myeongdong office worker food explorer!\n\nToday, I'm going to introduce one of my favorite snack bars. It's cozy like a small attic ('Darakbang' in Korean), but it's like a hidden gem.\n\nThe place is called... Darakbang... but actually, it's located in the basement. 😉 Can you believe you can get Kimchi Kalguksu for only ₩7,500 in the heart of Myeongdong? With today's prices, it's a super generous deal.\n\nThe Kimchi Kalguksu soup is spicy and refreshing, and the noodles are chewy and delicious. I think they even make their own kimchi! 👍 Although it's a snack bar, they also have curry rice, so it feels a bit like a Korean diner.\n\nThe curry rice might seem ordinary, but it's surprisingly addictive. It has that comforting taste like your mom's homemade curry. 😋 It's a great place for eating alone and perfect for a quick lunch.\n\nIf you're looking for an affordable and tasty snack bar in Myeongdong, you should definitely check it out! You won't regret it. 😊",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1770093949/cheer-factory/fokz19k9blfmhxk1wmbz.jpg",
+      "images": [
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1770093949/cheer-factory/fokz19k9blfmhxk1wmbz.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1770093954/cheer-factory/kstbbswjf1uldtfv004b.jpg"
+      ],
+      "category": "lunch",
+      "lang": "en",
+      "restaurant": {
+        "restaurant_id": "f4aa417d-9afc-40fd-b76b-2e0c5342e45b",
+        "name": "다락방분식",
+        "address": "서울특별시 중구 다동 116",
+        "naver_place_id": "",
+        "visit_count": 1
+      },
+      "restaurant_name": "다락방분식",
+      "visit_count": 1
+    },
+    {
       "id": "2026-02-01-001-ko",
       "title": "시나몬 향이 필요해",
       "date": "2026-02-01",
@@ -1063,5 +1109,5 @@
       "lang": "en"
     }
   ],
-  "updated": "2026-02-01T01:32:44.419671"
+  "updated": "2026-02-03T04:49:17.824802"
 }
