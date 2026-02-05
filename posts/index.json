@@ -1,6 +1,56 @@
 {
   "posts": [
     {
+      "id": "2026-02-05-002-ko",
+      "title": "명동 순대국, 40대 직장인 찐맛집 인정!",
+      "date": "2026-02-05",
+      "content": "안녕하세요, 명동 직장인 여러분! 점심시간만 기다리는 40대 직장인입니다. \n\n오늘 소개할 곳은 명동에서 순대국으로 아주 유명한 맛집이에요.\n일찍 나왔다고 생각했는데, 세상에나 웨이팅이 4팀이나 있더라고요. 역시 맛집은 맛집인가 봐요. \n\n메뉴는 아주 심플합니다. 순대국 보통, 특! 딱 맛집의 향기가 느껴지지 않나요? 그리고 센스있게 2시 이전에는 주류 판매를 안 하신대요. 점심부터 낮술 땡기는 분들은 2시 이후에 방문하세요! \n\n드디어 순대국이 나왔어요! 뜨끈한 국물이 아주 예술입니다.\n추운 날씨에 딱 어울리는 메뉴예요. 안에 고기도 얼마나 많이 들어있는지, 정말 든든하더라고요.\n국물도 진하고, 순대도 쫄깃하고, 정말 흠잡을 데 없는 맛이었어요. \n\n가격도 착했던 걸로 기억해요.\n순대국 한 그릇에 8천원 정도 했던 것 같아요. (지금은 만원)\n명동 물가 생각하면 아주 혜자스러운 가격이죠! 내돈내산 솔직 후기입니다.\n\n명동에서 뜨끈한 국물이 생각날 땐 여기 꼭 한번 들러보세요! 후회 안 하실 겁니다.",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1770261886/cheer-factory/dkrjwgmcsfvly1ntnzag.jpg",
+      "images": [
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1770261886/cheer-factory/dkrjwgmcsfvly1ntnzag.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1770261891/cheer-factory/em3m0ko8o8devbd2b0xx.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1770261896/cheer-factory/oowh1dq27pfc8pkjte6p.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1770261901/cheer-factory/jh8i6xizmxfucfsm2qui.jpg"
+      ],
+      "category": "lunch",
+      "lang": "ko",
+      "restaurant": {
+        "restaurant_id": "d16adc2a-40d6-4166-ad45-ca341ac2716e",
+        "name": "명동순대국",
+        "address": "서울특별시 중구 을지로2가 197 천일한의원",
+        "naver_place_id": "",
+        "visit_count": 1
+      },
+      "restaurant_name": "명동순대국",
+      "visit_count": 1
+    },
+    {
+      "id": "2026-02-05-002-en",
+      "title": "Myeongdong Sundae Soup: A Real 맛집 Approved by a 40s Office Worker!",
+      "date": "2026-02-05",
+      "content": "Hi everyone, especially those working in Myeongdong! I'm a 40-something office worker who lives for lunchtime. \n\nToday, I'm introducing a famous sundae soup restaurant in Myeongdong. I thought I was early, but there were already 4 teams waiting! Guess it's really a popular place. \n\nThe menu is super simple: Regular sundae soup and Special! Doesn't that scream 맛집? And they're smart - they don't sell alcohol before 2 PM. So, if you're craving a daytime drink, come after 2! \n\nFinally, my sundae soup arrived! The hot broth is amazing. It's the perfect dish for a cold day. There's so much meat inside, it's really filling. The broth is rich, the sundae is chewy, and the taste is perfect. Can't find anything to complain about! \n\nI think the price was pretty good too. I remember the sundae soup being around 8,000 won. (Now 10,000 won) Considering Myeongdong prices, that's a steal! This is an honest review, paid for with my own money. \n\nIf you're ever craving hot soup in Myeongdong, definitely give this place a try! You won't regret it.",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1770261886/cheer-factory/dkrjwgmcsfvly1ntnzag.jpg",
+      "images": [
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1770261886/cheer-factory/dkrjwgmcsfvly1ntnzag.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1770261891/cheer-factory/em3m0ko8o8devbd2b0xx.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1770261896/cheer-factory/oowh1dq27pfc8pkjte6p.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1770261901/cheer-factory/jh8i6xizmxfucfsm2qui.jpg"
+      ],
+      "category": "lunch",
+      "lang": "en",
+      "restaurant": {
+        "restaurant_id": "d16adc2a-40d6-4166-ad45-ca341ac2716e",
+        "name": "명동순대국",
+        "address": "서울특별시 중구 을지로2가 197 천일한의원",
+        "naver_place_id": "",
+        "visit_count": 1
+      },
+      "restaurant_name": "명동순대국",
+      "visit_count": 1
+    },
+    {
       "id": "2026-02-05-001-ko",
       "title": "명동 한복판에 후난성 요리라니, 쩝",
       "date": "2026-02-05",
@@ -1165,5 +1215,5 @@
       "lang": "en"
     }
   ],
-  "updated": "2026-02-05T02:41:48.062562"
+  "updated": "2026-02-05T03:42:20.960848"
 }
