@@ -1,6 +1,62 @@
 {
   "posts": [
     {
+      "id": "2026-02-05-001-ko",
+      "title": "명동 한복판에 후난성 요리라니, 쩝",
+      "date": "2026-02-05",
+      "content": "점심 먹으러 명동 나갔다가 깜짝 놀랐잖아. \n\n글쎄, 공사 중인 곳에 중국 후난성 토속요리 전문점이 들어온다는 거야. \n\n역시 명동은 명동인가. \n\n별의별 게 다 생기는구먼. \n\n근데… 과연 한국 사람들 입맛에 맞을까? 괜한 오지랖이겠지만, 문득 궁금해지더라. 뭐, 잘 되면 좋은 거고, 안 되면… 뭐, 그런 거지. 인생사 다 그런 거 아니겠어?",
+      "tags": [
+        "Seoul",
+        "South Korea",
+        "Street scene",
+        "Restaurant promotion",
+        "Chinese cuisine",
+        "Hunan cuisine",
+        "Korean signage",
+        "Chinese restaurant",
+        "Advertising",
+        "Urban landscape",
+        "Green banner",
+        "Food photography",
+        "Asian food",
+        "Commercial district"
+      ],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1770259233/cheer-factory/dnvbxkxobz9oxofoulrn.jpg",
+      "images": [
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1770259233/cheer-factory/dnvbxkxobz9oxofoulrn.jpg"
+      ],
+      "category": "diary",
+      "lang": "ko"
+    },
+    {
+      "id": "2026-02-05-001-en",
+      "title": "Hunan Cuisine in the Middle of Myeongdong? Hmm...",
+      "date": "2026-02-05",
+      "content": "I went to Myeongdong for lunch and was totally surprised. \n\nGuess what? They're opening a Hunan Province (China) local cuisine restaurant in a place that's under construction. \n\nMyeongdong is really something. \n\nYou can find literally anything here. \n\nBut... I wonder if Korean people will like it? It's none of my business, but I just got curious. Well, if it does well, that's great, and if it doesn't... oh well. That's life, right?",
+      "tags": [
+        "Seoul",
+        "South Korea",
+        "Street scene",
+        "Restaurant promotion",
+        "Chinese cuisine",
+        "Hunan cuisine",
+        "Korean signage",
+        "Chinese restaurant",
+        "Advertising",
+        "Urban landscape",
+        "Green banner",
+        "Food photography",
+        "Asian food",
+        "Commercial district"
+      ],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1770259233/cheer-factory/dnvbxkxobz9oxofoulrn.jpg",
+      "images": [
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1770259233/cheer-factory/dnvbxkxobz9oxofoulrn.jpg"
+      ],
+      "category": "diary",
+      "lang": "en"
+    },
+    {
       "id": "2026-02-03-001-ko",
       "title": "명동 [다락방]: 7500원 김치칼국수!",
       "date": "2026-02-03",
@@ -1109,5 +1165,5 @@
       "lang": "en"
     }
   ],
-  "updated": "2026-02-03T04:49:17.824802"
+  "updated": "2026-02-05T02:41:48.062562"
 }
