@@ -1,6 +1,62 @@
 {
   "posts": [
     {
+      "id": "2026-02-08-001-ko",
+      "title": "드디어 시나몬 코젤다크!",
+      "date": "2026-02-08",
+      "content": "아, 드디어 먹어봤다. 시나몬 코젤다크.\n\n소문만 무성했던 그 녀석, 드디어 영접했지 뭐.\n\n달콤한 흑맥주에 시나몬 향이라니, 이건 반칙 아닌가.",
+      "tags": [
+        "Kozel Dark",
+        "Dark Beer",
+        "Beer",
+        "Drink",
+        "Beverage",
+        "Glass",
+        "Can",
+        "Alcoholic",
+        "Czech Beer",
+        "Refreshing",
+        "Foam",
+        "Cinnamon Rim",
+        "Craft Beer",
+        "Alcohol"
+      ],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1770535325/cheer-factory/vxmv8gvtoq9m1jas5xml.jpg",
+      "images": [
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1770535325/cheer-factory/vxmv8gvtoq9m1jas5xml.jpg"
+      ],
+      "category": "diary",
+      "lang": "ko"
+    },
+    {
+      "id": "2026-02-08-001-en",
+      "title": "Finally Tried Cinnamon Kozel Dark!",
+      "date": "2026-02-08",
+      "content": "Ah, I finally got to try it. Cinnamon Kozel Dark. \n\nI've only heard rumors about it, but I finally met it! \n\nA sweet dark beer with a cinnamon scent, isn't that cheating?",
+      "tags": [
+        "Kozel Dark",
+        "Dark Beer",
+        "Beer",
+        "Drink",
+        "Beverage",
+        "Glass",
+        "Can",
+        "Alcoholic",
+        "Czech Beer",
+        "Refreshing",
+        "Foam",
+        "Cinnamon Rim",
+        "Craft Beer",
+        "Alcohol"
+      ],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1770535325/cheer-factory/vxmv8gvtoq9m1jas5xml.jpg",
+      "images": [
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1770535325/cheer-factory/vxmv8gvtoq9m1jas5xml.jpg"
+      ],
+      "category": "diary",
+      "lang": "en"
+    },
+    {
       "id": "2026-02-05-002-ko",
       "title": "명동 순대국, 40대 직장인 찐맛집 인정!",
       "date": "2026-02-05",
@@ -1215,5 +1271,5 @@
       "lang": "en"
     }
   ],
-  "updated": "2026-02-05T03:42:20.960848"
+  "updated": "2026-02-08T07:23:18.730894"
 }
