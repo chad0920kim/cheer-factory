@@ -1,6 +1,52 @@
 {
   "posts": [
     {
+      "id": "2026-02-09-001-ko",
+      "title": "명동 찐 로컬 백반, 간판 없는 숨은 맛집!",
+      "date": "2026-02-09",
+      "content": "안녕하세요, 명동 직장인 여러분!\n점심시간만 기다리는 40대 직장인입니다.\n\n오늘은 명동 찐 로컬만 안다는 숨겨진 한식 맛집을 소개하려고 해요.\n저만 알고 싶었지만… 여러분과 함께 나누고 싶어서 용기 내봤습니다. 😉\n\n오늘의 주인공은 바로! (두구두구) 간판도 없는 허름한 백반집입니다.\n겉모습만 보고 판단하면 절대 안 돼요.\n이 가격에 이렇게 든든하게 먹을 수 있는 곳, 명동에 몇 없거든요. 👍\n\n웬만한 한식은 다 드실수 있어요.\n\n맛은… 솔직히 간이 좀 센 편이에요.\n하지만, 과하게 짜거나 자극적이지 않아서 저는 맛있게 먹었어요.\n(참고로 저는 좀 심심하게 먹는 편이에요!) \n\n분위기는 완전 옛날 백반집 느낌이에요.\n세련된 인테리어는 기대하지 마세요. 😅\n하지만, 정겨운 분위기 속에서 든든하게 한 끼 해결할 수 있다는 게 장점이죠.\n\n결론! 가성비 좋은 명동 로컬 백반집을 찾는다면 무조건 추천합니다!\n오늘 점심은 여기서 든든하게 배 채우고 오후도 힘내세요! 💪",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1770639621/cheer-factory/t5nunfpz46v5jzibffd9.jpg",
+      "images": [
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1770639621/cheer-factory/t5nunfpz46v5jzibffd9.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1770639626/cheer-factory/eifoorjvmldycdvdpkse.jpg"
+      ],
+      "category": "lunch",
+      "lang": "ko",
+      "restaurant": {
+        "restaurant_id": "157125a0-81e3-4aa5-aaf8-11a6cf2a87ff",
+        "name": "스페이스",
+        "address": "서울특별시 중구 명동2가 54-13",
+        "naver_place_id": "",
+        "visit_count": 1
+      },
+      "restaurant_name": "스페이스",
+      "visit_count": 1
+    },
+    {
+      "id": "2026-02-09-001-en",
+      "title": "Myeongdong Real Local Baekban (Korean Meal Set), A Hidden Gem Without a Sign!",
+      "date": "2026-02-09",
+      "content": "Hi Myeongdong office workers!\nI'm a 40-something office worker who always looks forward to lunchtime.\n\nToday, I'm going to introduce a hidden Korean food restaurant that only real locals in Myeongdong know about. I wanted to keep it a secret... but I decided to share it with you all! 😉\n\nToday's star is! (Drum roll) A humble baekban place without even a sign.\nDon't judge it by its appearance.\nThere aren't many places in Myeongdong where you can eat such a filling meal for this price. 👍\n\nYou can pretty much eat any common Korean dishes here.\n\nAs for the taste... honestly, it's a bit on the salty side.\nBut, it's not overly salty or spicy, so I enjoyed it. \n(Just so you know, I usually prefer my food a little bland!)\n\nThe atmosphere is totally like an old-school baekban restaurant.\nDon't expect fancy interior design. 😅\nBut, the advantage is that you can have a hearty meal in a friendly atmosphere.\n\nIn conclusion! If you're looking for a Myeongdong local baekban place with great value, I highly recommend it!\nHave a filling lunch here today and have a great afternoon! 💪",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1770639621/cheer-factory/t5nunfpz46v5jzibffd9.jpg",
+      "images": [
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1770639621/cheer-factory/t5nunfpz46v5jzibffd9.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1770639626/cheer-factory/eifoorjvmldycdvdpkse.jpg"
+      ],
+      "category": "lunch",
+      "lang": "en",
+      "restaurant": {
+        "restaurant_id": "157125a0-81e3-4aa5-aaf8-11a6cf2a87ff",
+        "name": "스페이스",
+        "address": "서울특별시 중구 명동2가 54-13",
+        "naver_place_id": "",
+        "visit_count": 1
+      },
+      "restaurant_name": "스페이스",
+      "visit_count": 1
+    },
+    {
       "id": "2026-02-08-001-ko",
       "title": "드디어 시나몬 코젤다크!",
       "date": "2026-02-08",
@@ -1271,5 +1317,5 @@
       "lang": "en"
     }
   ],
-  "updated": "2026-02-08T07:23:18.730894"
+  "updated": "2026-02-09T12:25:01.481837"
 }
