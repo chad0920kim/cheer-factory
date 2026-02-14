@@ -1,6 +1,54 @@
 {
   "posts": [
     {
+      "id": "2026-02-14-001-ko",
+      "title": "광천 손 칼국수 솔직 후기: 명동 직장인의 맛 여정?",
+      "date": "2026-02-14",
+      "content": "여러분, 안녕하세요! 명동 오피스 직장인입니다.\n오늘은 연휴를 맞아 큰 맘 먹고 명동을 벗어나 충남 광천까지 칼국수 먹으러 왔어요. 슝!\n\n솔직히 말하면, 엄청난 맛집이라 꼭 찾아와서 먹어야 할 정도는 아니에요.\n음... 그냥 깔끔한 칼국수 맛?! 딱 그 정도더라고요.\n국물이 시원하긴 한데, 막 감동적인 그런 건 아니었어요.\n\n메뉴 보니까 칼국수 말고 수육국밥도 파시네요.\n가격은 만 원! 칼국수는 8천원!\n\n광천까지 와서 칼국수 먹은 건 좀 오바였나 싶기도 하지만, 바람 쐬고 좋았어요.\n결론은, 너무 큰 기대는 말고 깔끔한 칼국수 땡길 때 방문해보세요!\n\n개인적으로는 태안서부시장 칼국수를 더 추천해요. 이건 나중에 또 포스팅 할게요.~\n명동에서 광천까지는... 글쎄요... 🤔",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1771051633/cheer-factory/ggvzfhtywrnrcgjpula9.jpg",
+      "images": [
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1771051633/cheer-factory/ggvzfhtywrnrcgjpula9.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1771051650/cheer-factory/shhf7r4layb8zdqwwwkz.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1771051655/cheer-factory/pvgsxqknbtneryizzmoa.jpg"
+      ],
+      "category": "lunch",
+      "lang": "ko",
+      "restaurant": {
+        "restaurant_id": "8d5f9d9f-8598-41e5-aaa4-234f0c07734f",
+        "name": "광천손칼국수",
+        "address": "충청남도 홍성군 광천읍 광천리 230-37",
+        "naver_place_id": "",
+        "visit_count": 1
+      },
+      "restaurant_name": "광천손칼국수",
+      "visit_count": 1
+    },
+    {
+      "id": "2026-02-14-001-en",
+      "title": "Gwangcheon Handmade Noodle Honest Review: A Myeongdong Office Worker's Food Trip?",
+      "date": "2026-02-14",
+      "content": "Hey everyone! I'm an office worker in Myeongdong.\n\nToday, during the holiday, I took a big step and went all the way from Myeongdong to Gwangcheon in Chungnam just to eat some Kalguksu (Korean knife-cut noodle soup). Whoosh!\n\nTo be honest, it's not like a super amazing restaurant that you absolutely MUST visit.\n\nUm... it just tastes like a clean and simple Kalguksu?! That's pretty much it.\nThe broth is refreshing, but it's not something that's super impressive or anything.\n\nLooking at the menu, they also sell Suyuk Gukbap (Pork Soup with Rice). It's 10,000 won! Kalguksu is 8,000 won!\n\nI wonder if it was a bit too much to come all the way to Gwangcheon just for Kalguksu, but it was nice to get some fresh air.\n\nIn conclusion, don't have too high expectations, and visit when you're craving a clean and simple Kalguksu!\n\nPersonally, I recommend the Taean Seobu Market Kalguksu more. I'll post about that later. ~\n\nFrom Myeongdong to Gwangcheon... hmmm... 🤔",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1771051633/cheer-factory/ggvzfhtywrnrcgjpula9.jpg",
+      "images": [
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1771051633/cheer-factory/ggvzfhtywrnrcgjpula9.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1771051650/cheer-factory/shhf7r4layb8zdqwwwkz.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1771051655/cheer-factory/pvgsxqknbtneryizzmoa.jpg"
+      ],
+      "category": "lunch",
+      "lang": "en",
+      "restaurant": {
+        "restaurant_id": "8d5f9d9f-8598-41e5-aaa4-234f0c07734f",
+        "name": "광천손칼국수",
+        "address": "충청남도 홍성군 광천읍 광천리 230-37",
+        "naver_place_id": "",
+        "visit_count": 1
+      },
+      "restaurant_name": "광천손칼국수",
+      "visit_count": 1
+    },
+    {
       "id": "2026-02-13-001-ko",
       "title": "명동 직장인 점심픽! 마늘곱창떡볶이",
       "date": "2026-02-13",
@@ -825,5 +873,5 @@
       "lang": "ko"
     }
   ],
-  "updated": "2026-02-13T00:14:04.301114"
+  "updated": "2026-02-14T06:51:13.932482"
 }
