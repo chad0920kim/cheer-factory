@@ -1,6 +1,56 @@
 {
   "posts": [
     {
+      "id": "2026-02-15-001-ko",
+      "title": "명동 햄폭탄 부대찌개! 밥도둑 인정",
+      "date": "2026-02-15",
+      "content": "여러분, 명동 직장인 점심 맛집 탐방기 돌아왔어요! 오늘은 햄 폭탄 부대찌개로 유명한 곳을 다녀왔습니다.\n\n사진에서 보이는 저 햄 좀 보세요. 이게 2인분인데, 햄이 정말 튼실하죠? 계란말이도 어찌나 알차게 넣어주셨는지 감동이었어요. 밥은 또 사발에 넉넉하게 담아주시더라고요. 인심 최고!\n\n솔직히 부대찌개 햄, 싸구려 햄 쓰는 곳 많잖아요? 여기는 딱 먹어보면 알아요. 일반적인 싸구려 햄 맛이 아니에요. 햄 자체가 맛있으니까 국물 맛도 깊고 진하더라고요.\n\n점심 메뉴는 부대찌개 말고도 몇 가지 더 있었는데, 저는 부대찌개 강추합니다! 가격도 착했던 걸로 기억해요. 명동 물가 생각하면 가성비 굿!\n\n분위기는 그냥 평범한 식당이에요. 막 엄청 세련되고 그런 곳은 아니지만, 편하게 밥 먹기 좋은 곳! 명동에서 든든하게 한 끼 해결하고 싶다면 여기 한번 가보세요. 후회 안 하실 겁니다!",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1771124304/cheer-factory/zev9wbptwa1p58ctyaok.jpg",
+      "images": [
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1771124304/cheer-factory/zev9wbptwa1p58ctyaok.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1771124309/cheer-factory/bh9n9yll3n5gewi0tumo.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1771124315/cheer-factory/ogskcjlvjmrydyjefbpm.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1771124321/cheer-factory/ewrt2cek8smluxb8vnbq.jpg"
+      ],
+      "category": "lunch",
+      "lang": "ko",
+      "restaurant": {
+        "restaurant_id": "c3d80531-6e02-4fc2-a644-db4570a802a0",
+        "name": "남기남부대찌개 효자동솥뚜껑 명동2호점",
+        "address": "서울특별시 중구 명동2가 55-14 2층 남기남 부대찌개",
+        "naver_place_id": "",
+        "visit_count": 1
+      },
+      "restaurant_name": "남기남부대찌개 효자동솥뚜껑 명동2호점",
+      "visit_count": 1
+    },
+    {
+      "id": "2026-02-15-001-en",
+      "title": "Myeongdong's Ham Bomb Budae-jjigae! Seriously a Rice Thief",
+      "date": "2026-02-15",
+      "content": "Hey everyone, my Myeongdong office worker lunch 맛집 (mat-jip - good eats) exploration is back! Today, I went to a place famous for their Ham Bomb Budae-jjigae (Korean army stew with ham and sausage).\n\nLook at all that ham in the picture! This is for two people, and the ham is seriously substantial, right? I was also touched by how generously they included the rolled egg. And they give you a big bowl of rice. Seriously generous!\n\nHonestly, a lot of budae-jjigae places use cheap ham, right? But you can tell right away here. It's not that typical cheap ham flavor. Because the ham itself is tasty, the soup also tastes deep and rich.\n\nThey had a few other lunch menu options besides budae-jjigae, but I highly recommend the budae-jjigae! I remember the price being pretty good too. Considering Myeongdong prices, it's a great value!\n\nThe atmosphere is just a normal restaurant. It's not super fancy or anything, but it's a good place to eat comfortably! If you want a hearty meal in Myeongdong, give this place a try. You won't regret it!",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1771124304/cheer-factory/zev9wbptwa1p58ctyaok.jpg",
+      "images": [
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1771124304/cheer-factory/zev9wbptwa1p58ctyaok.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1771124309/cheer-factory/bh9n9yll3n5gewi0tumo.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1771124315/cheer-factory/ogskcjlvjmrydyjefbpm.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1771124321/cheer-factory/ewrt2cek8smluxb8vnbq.jpg"
+      ],
+      "category": "lunch",
+      "lang": "en",
+      "restaurant": {
+        "restaurant_id": "c3d80531-6e02-4fc2-a644-db4570a802a0",
+        "name": "남기남부대찌개 효자동솥뚜껑 명동2호점",
+        "address": "서울특별시 중구 명동2가 55-14 2층 남기남 부대찌개",
+        "naver_place_id": "",
+        "visit_count": 1
+      },
+      "restaurant_name": "남기남부대찌개 효자동솥뚜껑 명동2호점",
+      "visit_count": 1
+    },
+    {
       "id": "2026-02-14-001-ko",
       "title": "광천 손 칼국수 솔직 후기: 명동 직장인의 맛 여정?",
       "date": "2026-02-14",
@@ -873,5 +923,5 @@
       "lang": "ko"
     }
   ],
-  "updated": "2026-02-14T06:51:13.932482"
+  "updated": "2026-02-15T03:02:51.752860"
 }
