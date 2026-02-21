@@ -1,6 +1,60 @@
 {
   "posts": [
     {
+      "id": "2026-02-21-001-ko",
+      "title": "명동 직장인 강추! 쫄곱순 천국",
+      "date": "2026-02-21",
+      "content": "안녕하세요, 명동 직장인 맛집 탐험가입니다! 오늘은 제가 푹 빠져있는 점심 맛집을 소개하려고 해요. 바로 그곳은… (두구두구) 쫄곱순 맛집입니다!\n\n점심시간에 뭘 먹을까 고민하다가, 늘 발길이 향하는 곳이죠. 저는 늘 즐겨먹는 쫄곱순으로 주문했어요. 사진에서 보시다시피, 비주얼부터가 아주 그냥… 침샘 폭발! \n\n이 집의 매력은 바로 넉넉한 인심! 커다란 양푼에 담긴 밥을 원하는 만큼 퍼갈 수 있는 셀프 시스템이에요. 게다가 에그 스테이션까지! 약불에 조심조심 구워야 안 튀고 안 타는 거, 다들 아시죠? 꿀팁입니다! 저희는 인당 반숙 2개, 완숙 2개, 야무지게 구워 먹었어요. \n\n쫄면은 얼마나 쫄깃한지, 순두부는 또 얼마나 부드러운지! 곱창도 야무지게 들어가 있어서, 정말 꿀 조합이에요. 빨간 양념 때문에 엄청 자극적일 것 같지만, 전혀 그렇지 않아요. 오히려 술술 들어가는 맛! 맵찔이인 저도 부담 없이 즐길 수 있답니다.\n\n가격도 착하고, 분위기도 편안해서 혼밥하기도 좋아요. 오늘 점심, 쫄깃한 쫄면과 야들야들한 순두부, 그리고 꼬소한 곱창의 환상적인 조합을 맛보러 가시는 건 어떠세요? 후회하지 않으실 거예요!",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1771670126/cheer-factory/ezafp5b60fcoxmuehfaw.jpg",
+      "images": [
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1771670126/cheer-factory/ezafp5b60fcoxmuehfaw.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1771670134/cheer-factory/hqewfngoqfcf1lkyfsmq.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1771670150/cheer-factory/h5f6s6bkkogdlcburwyb.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1771670155/cheer-factory/oha4wjpijekhmmy3dgfj.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1771670161/cheer-factory/mzby3i9dt5ukkbnrzb4a.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1771670166/cheer-factory/w3ibkuzfycikpefdzfe0.jpg"
+      ],
+      "category": "lunch",
+      "lang": "ko",
+      "restaurant": {
+        "restaurant_id": "fdbe474b-eb6c-40b9-a399-5796d79afd62",
+        "name": "세광양대창 을지로점",
+        "address": "서울특별시 중구 을지로2가 199-7",
+        "naver_place_id": "sgfco.kr",
+        "visit_count": 1
+      },
+      "restaurant_name": "세광양대창 을지로점",
+      "visit_count": 1
+    },
+    {
+      "id": "2026-02-21-001-en",
+      "title": "Myeongdong Office Worker's Pick: Jjol-Gop-Soon Heaven!",
+      "date": "2026-02-21",
+      "content": "Hey everyone, it's your Myeongdong office worker food explorer! Today, I'm gonna introduce you to my favorite lunch spot. It's a place I'm totally obsessed with... (drum roll please)... a Jjol-Gop-Soon restaurant! \n\nWhenever I'm trying to decide what to eat for lunch, I always end up here. I always order the Jjol-Gop-Soon. As you can see in the picture, the visuals are just... making my mouth water!\n\nThe charm of this place is the generous portions! It's a self-serve system where you can scoop as much rice as you want from a huge bowl. Plus, they even have an egg station! You all know you gotta cook the eggs carefully on low heat so they don't splatter or burn, right? That's a pro tip! We cooked 2 sunny-side up and 2 hard-boiled eggs per person, and ate them all up.\n\nThe chewy noodles are so good, and the soft tofu is amazing! And it has lots of 곱창 (gopchang - grilled intestines), which is a perfect combination. The red sauce might look really spicy, but it's actually not. It's so easy to eat! Even I, who can't handle spicy food very well, can enjoy it without a problem.\n\nThe price is reasonable, and the atmosphere is relaxed, so it's a great place to eat alone. How about trying the fantastic combination of chewy noodles, soft tofu, and savory 곱창 for lunch today? You won't regret it!",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1771670126/cheer-factory/ezafp5b60fcoxmuehfaw.jpg",
+      "images": [
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1771670126/cheer-factory/ezafp5b60fcoxmuehfaw.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1771670134/cheer-factory/hqewfngoqfcf1lkyfsmq.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1771670150/cheer-factory/h5f6s6bkkogdlcburwyb.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1771670155/cheer-factory/oha4wjpijekhmmy3dgfj.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1771670161/cheer-factory/mzby3i9dt5ukkbnrzb4a.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1771670166/cheer-factory/w3ibkuzfycikpefdzfe0.jpg"
+      ],
+      "category": "lunch",
+      "lang": "en",
+      "restaurant": {
+        "restaurant_id": "fdbe474b-eb6c-40b9-a399-5796d79afd62",
+        "name": "세광양대창 을지로점",
+        "address": "서울특별시 중구 을지로2가 199-7",
+        "naver_place_id": "sgfco.kr",
+        "visit_count": 1
+      },
+      "restaurant_name": "세광양대창 을지로점",
+      "visit_count": 1
+    },
+    {
       "id": "2026-02-18-001-ko",
       "title": "안산 붕궁순대국: 처제픽 인정! [솔직후기]",
       "date": "2026-02-18",
@@ -1039,5 +1093,5 @@
       "lang": "ko"
     }
   ],
-  "updated": "2026-02-18T07:08:28.874845"
+  "updated": "2026-02-21T10:41:06.133956"
 }
