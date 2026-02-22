@@ -1,6 +1,52 @@
 {
   "posts": [
     {
+      "id": "2026-02-22-001-ko",
+      "title": "안산 한우나주곰탕: 뽀얀 국물의 반전 매력! (솔직후기)",
+      "date": "2026-02-22",
+      "content": "안녕하세요, 명동 직장인 맛집 탐험대입니다! 오늘은 뜨끈하게 몸보신할 수 있는 곰탕집을 다녀왔어요.\n\n오늘 소개할 곳은 바로 '나주곰탕'인데요. 메뉴는 곰탕 단 하나! 맛집 국룰이죠? 단일 메뉴에서 느껴지는 장인의 향기... 기대감이 뿜뿜 솟아올랐어요.\n\n사실 맑은 나주곰탕을 생각했는데, 여기는 뽀얀 국물이더라고요. 고기에도 지방이 좀 있어서 살짝 기름진 깊은 맛이었어요. 맑은 곰탕 좋아하는 분들은 호불호가 갈릴 수도 있겠다는 생각이 들었어요.\n\n하지만 걱정 마세요! 깍두기 국물이 느끼함을 싹 잡아준답니다. 처음부터 넣지 말고, 반쯤 먹다가 넣어 드시는 걸 추천해요. 두 가지 맛을 즐길 수 있어서 좋았어요.\n\n가격은 12,000원. 한우를 고려하면 합리적인 가격이겠죠? 명동 물가 생각하면 평범한 수준이죠? 추운 날 뜨끈한 국물로 몸 녹이고 싶을 때 방문하면 좋을 것 같아요!\n\n계산할 때 옆집 아주머니를 마주쳤어요. 포장 해가시던데 맛집은 맛집 인가봅니다.",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1771750714/cheer-factory/v9uvcyhidofs2tz18sxh.jpg",
+      "images": [
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1771750714/cheer-factory/v9uvcyhidofs2tz18sxh.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1771750721/cheer-factory/ba9eya6a6nxazs3utuos.jpg"
+      ],
+      "category": "lunch",
+      "lang": "ko",
+      "restaurant": {
+        "restaurant_id": "0a266e71-cf5f-4b6d-a769-e952441723cc",
+        "name": "한우나주곰탕",
+        "address": "경기도 안산시 상록구 사동 1476-6",
+        "naver_place_id": "",
+        "visit_count": 1
+      },
+      "restaurant_name": "한우나주곰탕",
+      "visit_count": 1
+    },
+    {
+      "id": "2026-02-22-001-en",
+      "title": "Ansan Hanwoo Naju Gomtang: The Unexpected Charm of Milky Broth! (Honest Review)",
+      "date": "2026-02-22",
+      "content": "Hi everyone, it's the Myeongdong Office Worker Food Explorers! Today, we visited a gomtang (beef bone soup) restaurant where you can warm up and boost your energy.\n\nThe place I'm introducing today is called 'Naju Gomtang'. They only have one menu item: gomtang! Isn't that like a rule for good restaurants? The single menu gives off the aura of a master... My expectations were soaring.\n\nActually, I was expecting clear Naju gomtang, but this place served a milky white broth. The meat also had some fat, so it had a slightly greasy, deep flavor. I thought people who prefer clear gomtang might have mixed feelings about it.\n\nBut don't worry! The kkakdugi (radish kimchi) juice completely gets rid of the greasiness. I recommend not adding it from the beginning, but adding it after eating about half. It was nice to be able to enjoy two different flavors.\n\nThe price is 12,000 won. Considering it's Hanwoo (Korean beef), it's a reasonable price, right? Considering Myeongdong prices, it's about average. It's a good place to visit when you want to warm up with a hot soup on a cold day!\n\nWhile paying, I ran into a neighbor. She was getting takeout, so I guess it really is a good restaurant.",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1771750714/cheer-factory/v9uvcyhidofs2tz18sxh.jpg",
+      "images": [
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1771750714/cheer-factory/v9uvcyhidofs2tz18sxh.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1771750721/cheer-factory/ba9eya6a6nxazs3utuos.jpg"
+      ],
+      "category": "lunch",
+      "lang": "en",
+      "restaurant": {
+        "restaurant_id": "0a266e71-cf5f-4b6d-a769-e952441723cc",
+        "name": "한우나주곰탕",
+        "address": "경기도 안산시 상록구 사동 1476-6",
+        "naver_place_id": "",
+        "visit_count": 1
+      },
+      "restaurant_name": "한우나주곰탕",
+      "visit_count": 1
+    },
+    {
       "id": "2026-02-21-001-ko",
       "title": "명동 직장인 강추! 쫄곱순 천국",
       "date": "2026-02-21",
@@ -1093,5 +1139,5 @@
       "lang": "ko"
     }
   ],
-  "updated": "2026-02-21T10:41:06.133956"
+  "updated": "2026-02-22T09:03:07.295921"
 }
