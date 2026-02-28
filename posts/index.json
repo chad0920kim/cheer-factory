@@ -1,6 +1,52 @@
 {
   "posts": [
     {
+      "id": "2026-02-28-002-ko",
+      "title": "만 원 고기! 가성비 끝판왕",
+      "date": "2026-02-28",
+      "content": "여러분, 명동 직장인 점심 맛집 레이더 풀가동! 오늘 소개할 곳은 가성비 끝판왕 고깃집이에요.\n\n\"150g에 만 원\"이라는 말도 안 되는 가격, 실화입니다! 😎 솔직히 처음엔 '가격이 싼 만큼 퀄리티가 떨어지겠지?' 의심했는데, 웬걸? 맛도 괜찮더라고요.\n\n사장님이 직접 고기를 구워주시는데, 세상 꼼꼼하게 구워주세요. 🔥 덕분에 제일 맛있는 순간에 먹을 수 있다는 장점! 물론, 가격 생각하면 사장님의 잔소리도 맛있게 들립니다. 🤣\n\n분위기는 딱 동네 고깃집! 편안하게 점심부터 고기 땡길 때 가면 좋을 것 같아요. 위치는 합정 근처인데, 자세한 건 지도 앱 참고! 가성비 좋게 배부르게 먹고 싶다면 완전 추천합니다. 👍",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1772270901/cheer-factory/anbznjgrywfbz5trhdv5.jpg",
+      "images": [
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1772270901/cheer-factory/anbznjgrywfbz5trhdv5.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1772270906/cheer-factory/ldibg3kvmlivhe5xgri6.jpg"
+      ],
+      "category": "lunch",
+      "lang": "ko",
+      "restaurant": {
+        "restaurant_id": "f9d3f06b-4cb4-4fa1-b264-062553f4488c",
+        "name": "천이오겹살 합정본점",
+        "address": "서울특별시 마포구 서교동 391-17",
+        "naver_place_id": "",
+        "visit_count": 1
+      },
+      "restaurant_name": "천이오겹살 합정본점",
+      "visit_count": 1
+    },
+    {
+      "id": "2026-02-28-002-en",
+      "title": "10,000 Won Meat! The Ultimate Value-for-Money Restaurant",
+      "date": "2026-02-28",
+      "content": "Hey everyone! I've activated my Myeongdong office worker lunch 맛집 (delicious restaurant) radar! Today, I'm going to introduce you to a 고깃집 (Korean BBQ restaurant) that's the ultimate value for money. \n\n\"10,000 won for 150g\" - it's an unbelievable price, I know! 😎 Honestly, at first, I was skeptical, thinking, 'Since it's cheap, the quality must be bad, right?' But surprise! The taste was actually pretty good.\n\nThe owner grills the meat for you, and he's so meticulous about it. 🔥 Thanks to that, you get to eat it at the most delicious moment! Of course, considering the price, even the owner's nagging sounds delicious. 🤣\n\nThe atmosphere is just like a neighborhood Korean BBQ place! It's a great place to go when you want to have meat for lunch in a comfortable setting. It's located near Hapjeong, so check your map app for the details! If you want to eat your fill without breaking the bank, I highly recommend it. 👍",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1772270901/cheer-factory/anbznjgrywfbz5trhdv5.jpg",
+      "images": [
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1772270901/cheer-factory/anbznjgrywfbz5trhdv5.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1772270906/cheer-factory/ldibg3kvmlivhe5xgri6.jpg"
+      ],
+      "category": "lunch",
+      "lang": "en",
+      "restaurant": {
+        "restaurant_id": "f9d3f06b-4cb4-4fa1-b264-062553f4488c",
+        "name": "천이오겹살 합정본점",
+        "address": "서울특별시 마포구 서교동 391-17",
+        "naver_place_id": "",
+        "visit_count": 1
+      },
+      "restaurant_name": "천이오겹살 합정본점",
+      "visit_count": 1
+    },
+    {
       "id": "2026-02-28-001-ko",
       "title": "명동 김실장, 신가원 설렁탕에 푹 빠진 날!",
       "date": "2026-02-28",
@@ -1191,5 +1237,5 @@
       "lang": "ko"
     }
   ],
-  "updated": "2026-02-28T00:28:21.507215"
+  "updated": "2026-02-28T09:30:36.137691"
 }
