@@ -75,6 +75,9 @@ SITE_URL = os.getenv("SITE_URL", "https://cheer-factory.onrender.com")
 # Naver Worker API Key (로컬 워커 인증용)
 NAVER_WORKER_KEY = os.getenv("NAVER_WORKER_KEY")
 
+# Instagram Worker API Key
+INSTAGRAM_WORKER_KEY = os.getenv("INSTAGRAM_WORKER_KEY")
+
 # Naver Search API (Place 검색용)
 NAVER_CLIENT_ID = os.getenv("NAVER_CLIENT_ID")
 NAVER_CLIENT_SECRET = os.getenv("NAVER_CLIENT_SECRET")
@@ -2151,6 +2154,178 @@ def worker_complete():
             .eq("id", task_id)\
             .execute()
 
+        return jsonify({"success": True})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+# ============ Instagram Cross-Posting ============
+
+@app.route("/admin/instagram-publish", methods=["POST"])
+def admin_instagram_publish():
+    """Instagram 발행 큐에 추가"""
+    if not session.get("admin_logged_in"):
+        return jsonify({"error": "Unauthorized"}), 401
+    if not supabase:
+        return jsonify({"error": "Database not configured"}), 500
+
+    data = request.json
+    post_id = data.get("post_id", "")
+    if not post_id:
+        return jsonify({"error": "Post ID required"}), 400
+
+    posts = load_posts()
+    post = next((p for p in posts if p.get("id") == post_id), None)
+    if not post:
+        return jsonify({"error": "Post not found"}), 404
+
+    try:
+        existing = supabase.table("instagram_publish_queue").select("id, status").eq("post_id", post_id).execute()
+        if existing.data:
+            existing_status = existing.data[0].get("status")
+            if existing_status in ["pending", "processing"]:
+                return jsonify({"error": f"이미 큐에 있습니다 (상태: {existing_status})"}), 400
+    except Exception:
+        pass
+
+    try:
+        images = post.get("images", [])
+        if not images and post.get("image_url"):
+            images = [post.get("image_url")]
+
+        if not images:
+            return jsonify({"error": "Instagram에는 이미지가 최소 1개 필요합니다"}), 400
+
+        queue_data = {
+            "post_id": post_id,
+            "title": post.get("title", ""),
+            "content": post.get("content", ""),
+            "tags": post.get("tags", []),
+            "image_url": images[0] if images else "",
+            "images": images,
+            "category": data.get("category", post.get("category", "diary")),
+            "status": "pending"
+        }
+
+        if post.get("restaurant"):
+            restaurant = post.get("restaurant")
+            queue_data["restaurant_name"] = restaurant.get("name", "")
+            queue_data["restaurant_address"] = restaurant.get("address", "")
+            queue_data["visit_count"] = restaurant.get("visit_count", 1)
+
+        result = supabase.table("instagram_publish_queue").insert(queue_data).execute()
+        return jsonify({
+            "success": True,
+            "message": "Instagram 발행 큐에 추가되었습니다",
+            "queue_id": result.data[0]["id"] if result.data else None
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/admin/instagram-status", methods=["GET"])
+def admin_instagram_status():
+    """Instagram 발행 큐 상태 조회"""
+    if not session.get("admin_logged_in"):
+        return jsonify({"error": "Unauthorized"}), 401
+    if not supabase:
+        return jsonify({"error": "Database not configured"}), 500
+    try:
+        result = supabase.table("instagram_publish_queue")\
+            .select("*").order("created_at", desc=True).limit(20).execute()
+        return jsonify({"queue": result.data})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/admin/instagram-queue/delete/<int:queue_id>", methods=["POST"])
+def admin_instagram_queue_delete(queue_id):
+    """Instagram 발행 큐 항목 삭제"""
+    if not session.get("admin_logged_in"):
+        return jsonify({"error": "Unauthorized"}), 401
+    if not supabase:
+        return jsonify({"error": "Database not configured"}), 500
+    try:
+        existing = supabase.table("instagram_publish_queue")\
+            .select("id, status, title").eq("id", queue_id).execute()
+        if not existing.data:
+            return jsonify({"error": "항목을 찾을 수 없습니다"}), 404
+        item = existing.data[0]
+        supabase.table("instagram_publish_queue").delete().eq("id", queue_id).execute()
+        return jsonify({
+            "success": True,
+            "message": f"삭제됨: {item.get('title', 'Unknown')[:30]}",
+            "deleted_status": item.get("status")
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+# ============ Instagram Worker API Endpoints ============
+
+@app.route("/api/instagram-worker/poll", methods=["GET"])
+def instagram_worker_poll():
+    """Instagram Worker가 대기 작업을 가져감"""
+    worker_key = request.headers.get("X-Worker-Key")
+    if not INSTAGRAM_WORKER_KEY or worker_key != INSTAGRAM_WORKER_KEY:
+        return jsonify({"error": "Unauthorized"}), 401
+    if not supabase:
+        return jsonify({"error": "Database not configured"}), 500
+    try:
+        result = supabase.table("instagram_publish_queue")\
+            .select("*").eq("status", "pending").order("created_at").limit(1).execute()
+        if not result.data:
+            return jsonify({"task": None})
+        task = result.data[0]
+        supabase.table("instagram_publish_queue")\
+            .update({"status": "processing", "worker_key": worker_key})\
+            .eq("id", task["id"]).execute()
+        return jsonify({"task": task})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/instagram-worker/complete", methods=["POST"])
+def instagram_worker_complete():
+    """Instagram Worker가 작업 완료 보고"""
+    worker_key = request.headers.get("X-Worker-Key")
+    if not INSTAGRAM_WORKER_KEY or worker_key != INSTAGRAM_WORKER_KEY:
+        return jsonify({"error": "Unauthorized"}), 401
+    if not supabase:
+        return jsonify({"error": "Database not configured"}), 500
+
+    data = request.json
+    task_id = data.get("task_id")
+    success = data.get("success", False)
+    instagram_url = data.get("instagram_url", "")
+    instagram_media_id = data.get("instagram_media_id", "")
+    error_message = data.get("error_message", "")
+
+    if not task_id:
+        return jsonify({"error": "Task ID required"}), 400
+
+    try:
+        if success:
+            update_data = {
+                "status": "published",
+                "instagram_url": instagram_url,
+                "instagram_media_id": instagram_media_id,
+                "published_at": datetime.now().isoformat()
+            }
+        else:
+            current = supabase.table("instagram_publish_queue")\
+                .select("retry_count, max_retries").eq("id", task_id).execute()
+            if current.data:
+                retry_count = current.data[0].get("retry_count", 0) + 1
+                max_retries = current.data[0].get("max_retries", 3)
+                if retry_count >= max_retries:
+                    update_data = {"status": "failed", "error_message": error_message, "retry_count": retry_count}
+                else:
+                    update_data = {"status": "pending", "error_message": error_message, "retry_count": retry_count}
+            else:
+                update_data = {"status": "failed", "error_message": error_message}
+
+        supabase.table("instagram_publish_queue").update(update_data).eq("id", task_id).execute()
         return jsonify({"success": True})
     except Exception as e:
         return jsonify({"error": str(e)}), 500

@@ -395,6 +395,7 @@
                     <button class="tab-btn" onclick="switchTab('prompt')">Prompt</button>
                     <button class="tab-btn" onclick="switchTab('stats')">Stats</button>
                     <button class="tab-btn" onclick="switchTab('naver')">Naver</button>
+                    <button class="tab-btn" onclick="switchTab('instagram')">Instagram</button>
                 </div>
 
                 <!-- Write Tab -->
@@ -649,6 +650,42 @@
                         </p>
                         <pre style="background: #f5f5f5; padding: 12px; border-radius: 8px; font-size: 12px; overflow-x: auto;">cd mrt_blog_generator
 python -m naver.cheer_factory_worker</pre>
+                    </div>
+                </div>
+
+                <!-- Instagram Tab -->
+                <div id="tab-instagram" class="tab-content">
+                    <div class="admin-section">
+                        <h2>Instagram Publishing Queue</h2>
+                        <p style="font-size: 13px; color: #666; margin-bottom: 12px;">
+                            Cheer Factory 포스트를 Instagram에 발행합니다. 로컬 Worker가 실행 중이어야 합니다.
+                        </p>
+                        <button onclick="refreshInstagramQueue()" id="refreshIgQueueBtn">Refresh Queue</button>
+
+                        <div id="instagramQueueStatus" style="margin-top: 16px;">
+                            <p style="color: #888;">Click refresh to load queue status...</p>
+                        </div>
+                    </div>
+
+                    <div class="admin-section">
+                        <h2>Quick Publish to Instagram</h2>
+                        <p style="font-size: 13px; color: #666; margin-bottom: 12px;">
+                            최근 포스트를 선택하여 Instagram에 캐러셀로 발행합니다.
+                        </p>
+                        <select id="igPostSelector" style="width: 100%; padding: 10px; margin-bottom: 12px; border: 1px solid #ddd; border-radius: 8px;">
+                            <option value="">Select a post...</option>
+                        </select>
+                        <button onclick="queueForInstagram()" id="queueIgBtn" class="primary">Queue for Instagram</button>
+                    </div>
+
+                    <div class="admin-section">
+                        <h2>Worker Setup</h2>
+                        <p style="font-size: 13px; color: #666; margin-bottom: 12px;">
+                            로컬 PC에서 Worker를 실행하세요:
+                        </p>
+                        <pre style="background: #f5f5f5; padding: 12px; border-radius: 8px; font-size: 12px; overflow-x: auto;">pip install instagrapi pillow
+python instagram_worker.py          # 상시 실행
+python instagram_worker.py --once   # 1회 실행</pre>
                     </div>
                 </div>
 
@@ -1033,6 +1070,10 @@ python -m naver.cheer_factory_worker</pre>
             if (tabName === 'naver') {
                 loadNaverTab();
             }
+            // Load instagram tab data
+            if (tabName === 'instagram') {
+                loadInstagramTab();
+            }
         }
 
         // Naver Publishing functions
@@ -1179,6 +1220,152 @@ python -m naver.cheer_factory_worker</pre>
 
             btn.disabled = false;
             btn.textContent = 'Queue for Naver';
+        }
+
+        // Instagram Publishing functions
+        async function loadInstagramTab() {
+            await Promise.all([
+                loadIgPostSelector(),
+                refreshInstagramQueue()
+            ]);
+        }
+
+        async function loadIgPostSelector() {
+            const selector = document.getElementById('igPostSelector');
+
+            try {
+                const res = await fetch('/admin/stats');
+                const data = await res.json();
+
+                if (data.recent_posts && data.recent_posts.length > 0) {
+                    selector.innerHTML = '<option value="">Select a post...</option>' +
+                        data.recent_posts.map(p =>
+                            `<option value="${p.id}">${p.title.substring(0, 40)}${p.title.length > 40 ? '...' : ''} (${p.date})</option>`
+                        ).join('');
+                }
+            } catch (e) {
+                console.error('Failed to load posts:', e);
+            }
+        }
+
+        async function refreshInstagramQueue() {
+            const btn = document.getElementById('refreshIgQueueBtn');
+            const statusDiv = document.getElementById('instagramQueueStatus');
+
+            btn.disabled = true;
+            btn.textContent = 'Loading...';
+
+            try {
+                const res = await fetch('/admin/instagram-status');
+                const data = await res.json();
+
+                if (data.error) {
+                    statusDiv.innerHTML = `<p class="error">Error: ${data.error}</p>`;
+                } else if (data.queue && data.queue.length > 0) {
+                    statusDiv.innerHTML = `
+                        <div class="naver-queue-container">
+                            <table class="naver-queue-table">
+                                <thead>
+                                    <tr>
+                                        <th>Title</th>
+                                        <th style="text-align: center;">Status</th>
+                                        <th>Result</th>
+                                        <th style="text-align: center; width: 60px;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${data.queue.map(item => `
+                                        <tr>
+                                            <td>${item.title.substring(0, 30)}${item.title.length > 30 ? '...' : ''}</td>
+                                            <td style="text-align: center;">
+                                                <span class="status-badge status-${item.status}">${item.status}</span>
+                                            </td>
+                                            <td>
+                                                ${item.instagram_url ? `<a href="${item.instagram_url}" target="_blank" style="color: #E1306C;">View</a>` :
+                                                  item.error_message ? `<span style="color: #c62828;" title="${item.error_message}">${item.error_message.substring(0, 20)}...</span>` : '-'}
+                                            </td>
+                                            <td style="text-align: center;">
+                                                ${['pending', 'processing', 'failed'].includes(item.status) ?
+                                                  `<button onclick="deleteIgQueueItem(${item.id})" class="delete-queue-btn" title="Delete">×</button>` : '-'}
+                                            </td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+                } else {
+                    statusDiv.innerHTML = '<p style="color: #888;">No items in queue</p>';
+                }
+            } catch (e) {
+                statusDiv.innerHTML = `<p class="error">Error: ${e.message}</p>`;
+            }
+
+            btn.disabled = false;
+            btn.textContent = 'Refresh Queue';
+        }
+
+        async function deleteIgQueueItem(queueId) {
+            if (!confirm('이 항목을 삭제하시겠습니까?')) {
+                return;
+            }
+
+            try {
+                const res = await fetch(`/admin/instagram-queue/delete/${queueId}`, {
+                    method: 'POST'
+                });
+                const data = await res.json();
+
+                if (data.error) {
+                    alert('Error: ' + data.error);
+                } else {
+                    refreshInstagramQueue();
+                }
+            } catch (e) {
+                alert('Error: ' + e.message);
+            }
+        }
+
+        async function queueForInstagram() {
+            const selector = document.getElementById('igPostSelector');
+            const btn = document.getElementById('queueIgBtn');
+            const status = document.getElementById('status');
+
+            const postId = selector.value;
+
+            if (!postId) {
+                status.textContent = 'Please select a post';
+                status.className = 'status error';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Queuing...';
+
+            try {
+                const res = await fetch('/admin/instagram-publish', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ post_id: postId })
+                });
+                const data = await res.json();
+
+                if (data.error) {
+                    status.textContent = 'Error: ' + data.error;
+                    status.className = 'status error';
+                } else {
+                    status.textContent = 'Post queued for Instagram publishing!';
+                    status.className = 'status success';
+                    selector.value = '';
+                    refreshInstagramQueue();
+                }
+            } catch (e) {
+                status.textContent = 'Error: ' + e.message;
+                status.className = 'status error';
+            }
+
+            btn.disabled = false;
+            btn.textContent = 'Queue for Instagram';
         }
 
         // Stats functions
