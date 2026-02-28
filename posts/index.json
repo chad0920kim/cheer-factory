@@ -1,6 +1,58 @@
 {
   "posts": [
     {
+      "id": "2026-02-28-001-ko",
+      "title": "명동 김실장, 신가원 설렁탕에 푹 빠진 날!",
+      "date": "2026-02-28",
+      "content": "안녕하세요, 명동 직장인 김실장입니다!\n점심시간, 다들 뭐 드셨어요?\n저는 우연히 지나가다 발견한 설렁탕집에 다녀왔어요.\n\n'신가원'이라는 곳인데, 뭔가 찐 맛집 느낌이 팍 오더라고요.\n맛집 특징 아시죠? 메뉴 단촐!\n설렁탕의 유래가 뭐였더라... 갑자기 궁금해지네.\n\n드디어 설렁탕 등장!\n뽀얀 국물이 진짜 진해 보이죠?\n한 숟가락 딱 뜨는데, 깊고 담백한 맛이 최고예요.\n김치랑 깍두기도 완전 꿀맛!\n\n왕만두도 하나 시켰는데, 5개 나오더라고요.\n속이 꽉 차서 완전 든든!\n설렁탕 국물에 적셔 먹으니 더 맛있었어요.\n가격은 메뉴판 참조\n\n명동에서 뜨끈한 국물 생각날 때, 건너편 신가원도 괜찮아요.\n혼밥하기도 좋고, 든든하게 배 채울 수 있어요.\n오늘 점심도 성공적! 그럼, 다음 맛집 리뷰에서 또 만나요!",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1772238244/cheer-factory/zqjjfjc6ylz3sbr3dgx3.jpg",
+      "images": [
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1772238244/cheer-factory/zqjjfjc6ylz3sbr3dgx3.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1772238249/cheer-factory/p6nb7txuok4yekv6chnx.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1772238255/cheer-factory/dgnfcurzb9oxm5wle3vi.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1772238260/cheer-factory/pu2q4sfz9hxrf34sopmr.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1772238266/cheer-factory/f3ilutzfrc6ice9susyo.jpg"
+      ],
+      "category": "lunch",
+      "lang": "ko",
+      "restaurant": {
+        "restaurant_id": "620430df-7645-402c-b05c-fcf481df58cd",
+        "name": "신가원 설렁탕",
+        "address": "서울특별시 중구 다동 141 신가원설렁탕",
+        "naver_place_id": "",
+        "visit_count": 1
+      },
+      "restaurant_name": "신가원 설렁탕",
+      "visit_count": 1
+    },
+    {
+      "id": "2026-02-28-001-en",
+      "title": "Kim Manager from Myeongdong Totally Fell for Shingawon Seolleongtang!",
+      "date": "2026-02-28",
+      "content": "Hi everyone, this is Kim Manager, a worker in Myeongdong!\n\nWhat did you all have for lunch?\nI accidentally found a seolleongtang (ox bone soup) place while passing by and decided to try it out.\n\nIt's called 'Shingawon', and it just had that feeling of a real hidden gem. \nYou know how it is with good restaurants, right? Simple menu!\nWhat was the origin of seolleongtang again...? I suddenly got curious.\n\nFinally, the seolleongtang arrived!\nThe milky broth looks so rich, right?\nAs soon as I took a spoonful, the deep and savory flavor was the best.\nThe kimchi and radish kimchi were also super delicious!\n\nI also ordered a king-sized dumpling, and it came with 5. \nIt was so filling with lots of stuff inside!\nIt was even tastier when I dipped it in the seolleongtang broth.\nPrice as per menu.\n\nWhen you're craving a hot soup in Myeongdong, Shingawon across the street is a good option.\nIt's good for eating alone, and you can fill up your stomach.\nToday's lunch was also a success! See you in the next restaurant review!",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1772238244/cheer-factory/zqjjfjc6ylz3sbr3dgx3.jpg",
+      "images": [
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1772238244/cheer-factory/zqjjfjc6ylz3sbr3dgx3.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1772238249/cheer-factory/p6nb7txuok4yekv6chnx.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1772238255/cheer-factory/dgnfcurzb9oxm5wle3vi.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1772238260/cheer-factory/pu2q4sfz9hxrf34sopmr.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1772238266/cheer-factory/f3ilutzfrc6ice9susyo.jpg"
+      ],
+      "category": "lunch",
+      "lang": "en",
+      "restaurant": {
+        "restaurant_id": "620430df-7645-402c-b05c-fcf481df58cd",
+        "name": "신가원 설렁탕",
+        "address": "서울특별시 중구 다동 141 신가원설렁탕",
+        "naver_place_id": "",
+        "visit_count": 1
+      },
+      "restaurant_name": "신가원 설렁탕",
+      "visit_count": 1
+    },
+    {
       "id": "2026-02-22-001-ko",
       "title": "안산 한우나주곰탕: 뽀얀 국물의 반전 매력! (솔직후기)",
       "date": "2026-02-22",
@@ -1139,5 +1191,5 @@
       "lang": "ko"
     }
   ],
-  "updated": "2026-02-22T09:03:07.295921"
+  "updated": "2026-02-28T00:28:21.507215"
 }
