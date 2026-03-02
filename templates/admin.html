@@ -705,6 +705,17 @@ python instagram_worker.py --once   # 1회 실행</pre>
     </div>
 
     <script>
+        // 401 Unauthorized 시 로그인 페이지로 리다이렉트
+        async function authFetch(url, options = {}) {
+            const res = await fetch(url, options);
+            if (res.status === 401) {
+                alert('세션이 만료되었습니다. 다시 로그인해주세요.');
+                window.location.href = '/admin/login';
+                throw new Error('Session expired');
+            }
+            return res;
+        }
+
         let generatedTags = [];
         let selectedImage = null;
         let currentPage = 1;
@@ -795,7 +806,7 @@ python instagram_worker.py --once   # 1회 실행</pre>
             selectedImage = null;
 
             try {
-                const res = await fetch('/admin/search-images', {
+                const res = await authFetch('/admin/search-images', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ query, page })
@@ -915,7 +926,7 @@ python instagram_worker.py --once   # 1회 실행</pre>
                 const photographers = [];
 
                 for (const img of selectedImages) {
-                    const res = await fetch('/admin/download-image', {
+                    const res = await authFetch('/admin/download-image', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
@@ -988,7 +999,7 @@ python instagram_worker.py --once   # 1회 실행</pre>
             actionsDiv.style.display = 'none';
 
             try {
-                const res = await fetch('/admin/generate-image', {
+                const res = await authFetch('/admin/generate-image', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ title, content, tags })
@@ -1088,7 +1099,7 @@ python instagram_worker.py --once   # 1회 실행</pre>
             const selector = document.getElementById('postSelector');
 
             try {
-                const res = await fetch('/admin/stats');
+                const res = await authFetch('/admin/stats');
                 const data = await res.json();
 
                 if (data.recent_posts && data.recent_posts.length > 0) {
@@ -1110,7 +1121,7 @@ python instagram_worker.py --once   # 1회 실행</pre>
             btn.textContent = 'Loading...';
 
             try {
-                const res = await fetch('/admin/naver-status');
+                const res = await authFetch('/admin/naver-status');
                 const data = await res.json();
 
                 if (data.error) {
@@ -1165,7 +1176,7 @@ python instagram_worker.py --once   # 1회 실행</pre>
             }
 
             try {
-                const res = await fetch(`/admin/naver-queue/delete/${queueId}`, {
+                const res = await authFetch(`/admin/naver-queue/delete/${queueId}`, {
                     method: 'POST'
                 });
                 const data = await res.json();
@@ -1197,7 +1208,7 @@ python instagram_worker.py --once   # 1회 실행</pre>
             btn.textContent = 'Queuing...';
 
             try {
-                const res = await fetch('/admin/naver-publish', {
+                const res = await authFetch('/admin/naver-publish', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ post_id: postId, category: document.getElementById('naverCategorySelector').value })
@@ -1234,7 +1245,7 @@ python instagram_worker.py --once   # 1회 실행</pre>
             const selector = document.getElementById('igPostSelector');
 
             try {
-                const res = await fetch('/admin/stats');
+                const res = await authFetch('/admin/stats');
                 const data = await res.json();
 
                 if (data.recent_posts && data.recent_posts.length > 0) {
@@ -1256,7 +1267,7 @@ python instagram_worker.py --once   # 1회 실행</pre>
             btn.textContent = 'Loading...';
 
             try {
-                const res = await fetch('/admin/instagram-status');
+                const res = await authFetch('/admin/instagram-status');
                 const data = await res.json();
 
                 if (data.error) {
@@ -1311,7 +1322,7 @@ python instagram_worker.py --once   # 1회 실행</pre>
             }
 
             try {
-                const res = await fetch(`/admin/instagram-queue/delete/${queueId}`, {
+                const res = await authFetch(`/admin/instagram-queue/delete/${queueId}`, {
                     method: 'POST'
                 });
                 const data = await res.json();
@@ -1343,7 +1354,7 @@ python instagram_worker.py --once   # 1회 실행</pre>
             btn.textContent = 'Queuing...';
 
             try {
-                const res = await fetch('/admin/instagram-publish', {
+                const res = await authFetch('/admin/instagram-publish', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ post_id: postId })
@@ -1375,7 +1386,7 @@ python instagram_worker.py --once   # 1회 실행</pre>
             const seoStatus = document.getElementById('seoStatus');
 
             try {
-                const res = await fetch('/admin/stats');
+                const res = await authFetch('/admin/stats');
                 const data = await res.json();
 
                 if (data.error) {
@@ -1467,7 +1478,7 @@ python instagram_worker.py --once   # 1회 실행</pre>
             status.textContent = '';
 
             try {
-                const res = await fetch('/admin/invalidate-cache', {
+                const res = await authFetch('/admin/invalidate-cache', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' }
                 });
@@ -1515,7 +1526,7 @@ python instagram_worker.py --once   # 1회 실행</pre>
             btn.style.color = 'white';
 
             try {
-                const res = await fetch(`/admin/prompt?type=${type}`);
+                const res = await authFetch(`/admin/prompt?type=${type}`);
                 const data = await res.json();
                 if (data.error) {
                     textarea.value = 'Error: ' + data.error;
@@ -1543,7 +1554,7 @@ python instagram_worker.py --once   # 1회 실행</pre>
             status.textContent = '';
 
             try {
-                const res = await fetch('/admin/prompt', {
+                const res = await authFetch('/admin/prompt', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -1645,7 +1656,7 @@ python instagram_worker.py --once   # 1회 실행</pre>
             formData.append('image', file);
 
             try {
-                const res = await fetch('/admin/analyze-image', {
+                const res = await authFetch('/admin/analyze-image', {
                     method: 'POST',
                     body: formData
                 });
@@ -1694,7 +1705,7 @@ python instagram_worker.py --once   # 1회 실행</pre>
             status.textContent = '';
 
             try {
-                const res = await fetch('/admin/generate', {
+                const res = await authFetch('/admin/generate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ topic })
@@ -1739,7 +1750,7 @@ python instagram_worker.py --once   # 1회 실행</pre>
             status.textContent = '';
 
             try {
-                const res = await fetch('/admin/search-naver-place', {
+                const res = await authFetch('/admin/search-naver-place', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ name, address })
@@ -1825,7 +1836,7 @@ python instagram_worker.py --once   # 1회 실행</pre>
                     const formData = new FormData();
                     formData.append('image', file);
 
-                    const res = await fetch('/admin/analyze-image', {
+                    const res = await authFetch('/admin/analyze-image', {
                         method: 'POST',
                         body: formData
                     });
@@ -1915,7 +1926,7 @@ python instagram_worker.py --once   # 1회 실행</pre>
             status.className = 'status';
 
             try {
-                const res = await fetch('/admin/generate-lunch-content', {
+                const res = await authFetch('/admin/generate-lunch-content', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -1959,7 +1970,7 @@ python instagram_worker.py --once   # 1회 실행</pre>
             status.className = 'status';
 
             try {
-                const res = await fetch('/admin/generate-lunch-title', {
+                const res = await authFetch('/admin/generate-lunch-title', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -2006,7 +2017,7 @@ python instagram_worker.py --once   # 1회 실행</pre>
             preview.innerHTML = '<p style="color: #888;">AI is creating thumbnail...</p>';
 
             try {
-                const res = await fetch('/admin/generate-lunch-thumbnail', {
+                const res = await authFetch('/admin/generate-lunch-thumbnail', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ title })
@@ -2071,7 +2082,7 @@ python instagram_worker.py --once   # 1회 실행</pre>
                 status.textContent = '';
 
                 try {
-                    const res = await fetch('/admin/publish', {
+                    const res = await authFetch('/admin/publish', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
@@ -2140,7 +2151,7 @@ python instagram_worker.py --once   # 1회 실행</pre>
                     const imageUrls = lunchImages.map(img => img.url);
                     const visitCount = parseInt(document.getElementById('visitCount').value) || 1;
 
-                    const res = await fetch('/admin/publish', {
+                    const res = await authFetch('/admin/publish', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
