@@ -1,6 +1,52 @@
 {
   "posts": [
     {
+      "id": "2026-03-02-002-ko",
+      "title": "대동집 보쌈, 집 앞 단골 맛집!😋",
+      "date": "2026-03-02",
+      "content": "오늘은 퇴근하고 집 앞에서 술 한잔하기도 좋고, 점심에 든든하게 식사하기도 좋은 곳을 소개 합니다.\n\n바로 그곳은... (두구두구) 동네 주민 맛집 분위기 뿜뿜하는 곳!\n\n대동집 그랑시티자이점 (집 앞 단골집. 내돈내산)\n\n개인적으로 여기 보쌈 구성이 진짜 괜찮더라고요. 👍\n\n보쌈이랑 같이 잔치국수(7,000원) 시켜서 호로록 먹으면 진짜 꿀맛! 😋\n보쌈의 느끼함도 잡아주고, 깔끔하게 마무리되는 느낌이랄까?\n\n연휴가 끝나가요~ 남은 연휴 잘 보내세요.",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1772443797/cheer-factory/c7gpxj6fjc1afoixmuwj.jpg",
+      "images": [
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1772443797/cheer-factory/c7gpxj6fjc1afoixmuwj.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1772443803/cheer-factory/llzpw03cguywvkor6iyd.jpg"
+      ],
+      "category": "lunch",
+      "lang": "ko",
+      "restaurant": {
+        "restaurant_id": "2ff5bcde-9bd1-4fd2-9dab-fa3a7dd6386d",
+        "name": "대동집 안산그랑시티자이점",
+        "address": "경기도 안산시 상록구 사동 1639-7 155호",
+        "naver_place_id": "www.대동집.com",
+        "visit_count": 1
+      },
+      "restaurant_name": "대동집 안산그랑시티자이점",
+      "visit_count": 1
+    },
+    {
+      "id": "2026-03-02-002-en",
+      "title": "Daedong House Bossam, My Go-To Restaurant Near Home! 😋",
+      "date": "2026-03-02",
+      "content": "Today, I'm gonna introduce a place that's perfect for grabbing a drink after work or having a hearty meal for lunch right near my house. \n\nAnd that place is... (drumroll) a neighborhood restaurant with a real local vibe!\n\nDaedong House Grand City Xi Branch (My go-to place near home. Paid for by me!)\n\nPersonally, I think their bossam set is really good. 👍\n\nIf you order the banquet noodles (7,000 won) with the bossam and slurp it down, it's seriously delicious! 😋 It kinda gets rid of the greasiness of the bossam and gives you a clean finish, you know?\n\nThe holidays are coming to an end~ Have a great rest of the holiday!",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1772443797/cheer-factory/c7gpxj6fjc1afoixmuwj.jpg",
+      "images": [
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1772443797/cheer-factory/c7gpxj6fjc1afoixmuwj.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1772443803/cheer-factory/llzpw03cguywvkor6iyd.jpg"
+      ],
+      "category": "lunch",
+      "lang": "en",
+      "restaurant": {
+        "restaurant_id": "2ff5bcde-9bd1-4fd2-9dab-fa3a7dd6386d",
+        "name": "대동집 안산그랑시티자이점",
+        "address": "경기도 안산시 상록구 사동 1639-7 155호",
+        "naver_place_id": "www.대동집.com",
+        "visit_count": 1
+      },
+      "restaurant_name": "대동집 안산그랑시티자이점",
+      "visit_count": 1
+    },
+    {
       "id": "2026-03-02-001-ko",
       "title": "해미돼비국밥: 맑은데 맛있다? 😉",
       "date": "2026-03-02",
@@ -1291,5 +1337,5 @@
       "lang": "ko"
     }
   ],
-  "updated": "2026-03-02T00:25:50.688938"
+  "updated": "2026-03-02T09:35:33.233214"
 }
