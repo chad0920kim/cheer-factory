@@ -1,0 +1,16 @@
+자비스, 모바일 바이브 코딩은 혁명이다!
+TAGS: Android development,App development,Software development,Code,Script,Android Studio,AAB,Build process,Mobile app,Debugging,Development environment,Automation,Command line,Python project
+IMAGES: https://res.cloudinary.com/df0kpimbc/image/upload/v1772957190/cheer-factory/igei4cnj5kdppey60dae.jpg,https://res.cloudinary.com/df0kpimbc/image/upload/v1772957321/cheer-factory/ekkw3rqacje73nx9dtx7.png
+CATEGORY: diary
+
+인사쟁이 10년 넘게 하다 보니 이젠 코딩에 '바이브' 좀 넣어볼까 싶더라.
+
+근데 세상 좋아졌어. 자비스 덕분에.
+
+아이디어 떠오르면 핸드폰 슥 열어서 몇 글자 끄적여.
+
+그럼 AI가 알아서 VIBE 코딩을 해준다? 이거 완전 개꿀이거든요.
+
+퇴근길 지하철에서도 뚝딱, 침대에 누워서도 뚝딱.
+
+이러다 나 진짜 개발자로 전직하는 거 아냐? (넝담~).
