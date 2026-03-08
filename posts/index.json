@@ -1,6 +1,56 @@
 {
   "posts": [
     {
+      "id": "2026-03-08-002-ko",
+      "title": "명동 직장인 강추! 칼칼한 닭한마리, 닭곰탕",
+      "date": "2026-03-08",
+      "content": "안녕하세요, 명동 직장인 맛집 탐험가입니다!\n오늘 소개할 곳은 칼칼하고 시원한 국물이 끝내주는 닭한마리 맛집이에요.\n특히 닭무침, 닭곰탕도 같이 팔아서 취향따라 골라 먹기 좋더라고요.\n\n요즘처럼 쌀쌀한 날씨에 뜨끈한 국물이 땡기잖아요?\n여기는 진짜 국물이 진국이라 몸보신하는 기분까지 든다니까요.\n가격도 착해서 부담없이 즐길 수 있어요.\n\n닭한마리 먹을 때 마늘 듬뿍 넣는 거, 국룰 아닌가요?\n저는 마늘 완전 사랑해서 듬뿍듬뿍 넣었어요.\n후추 톡톡 뿌려 먹으면 풍미가 훨씬 살아나는 거, 다들 아시죠?\n\n반찬도 깔끔하게 나오는데, 웬걸? 낙지젓갈이 나오는 거 있죠!\n비싼 낙지젓갈을 반찬으로 주시다니, 사장님 인심 최고!\n오늘도 든든하게 한 끼 해결하고 갑니다.\n명동에서 닭한마리 생각날 땐 여기 강추해요!",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1772957871/cheer-factory/ou47grmickuirt7vm3sa.jpg",
+      "images": [
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1772957871/cheer-factory/ou47grmickuirt7vm3sa.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1772957877/cheer-factory/kjqvpnryysfvjcr0tlka.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1772957882/cheer-factory/ncwa90yizu42smticmdm.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1772957887/cheer-factory/kind7c02fyrxiggju2oz.jpg"
+      ],
+      "category": "lunch",
+      "lang": "ko",
+      "restaurant": {
+        "restaurant_id": "a3f6170c-9d33-4bab-91f6-4129f3d07d5f",
+        "name": "시골닭한마리",
+        "address": "서울특별시 중구 을지로2가 199-57 지하1층",
+        "naver_place_id": "",
+        "visit_count": 1
+      },
+      "restaurant_name": "시골닭한마리",
+      "visit_count": 1
+    },
+    {
+      "id": "2026-03-08-002-en",
+      "title": "Myeongdong Office Worker's Pick! Spicy Chicken Stew (Dak Han Mari) & Chicken Soup",
+      "date": "2026-03-08",
+      "content": "Hi everyone, your Myeongdong office worker food explorer here!\n\nToday I'm gonna introduce a dak han mari (Korean chicken stew) place with a really amazing, spicy, and refreshing broth. They also sell chicken salad (dak muchim) and chicken soup (dak gomtang), so it's great to pick whatever you like!\n\nThese days, when the weather's chilly, you crave some hot soup, right? The broth here is seriously the real deal, and it makes you feel like you're getting a boost of energy. And the price is reasonable, so you can enjoy it without worrying about your wallet.\n\nIsn't adding a ton of garlic to dak han mari like, a must-do? I absolutely love garlic, so I added a lot! And you all know that a sprinkle of pepper really brings out the flavor, right?\n\nThe side dishes are also neat and tidy, and guess what? They give you baby octopus kimchi (nakji jeotgal)! Giving expensive nakji jeotgal as a side dish? The owner's generosity is the best!\n\nI'm leaving with a full stomach again today. If you're craving dak han mari in Myeongdong, I highly recommend this place!",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1772957871/cheer-factory/ou47grmickuirt7vm3sa.jpg",
+      "images": [
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1772957871/cheer-factory/ou47grmickuirt7vm3sa.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1772957877/cheer-factory/kjqvpnryysfvjcr0tlka.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1772957882/cheer-factory/ncwa90yizu42smticmdm.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1772957887/cheer-factory/kind7c02fyrxiggju2oz.jpg"
+      ],
+      "category": "lunch",
+      "lang": "en",
+      "restaurant": {
+        "restaurant_id": "a3f6170c-9d33-4bab-91f6-4129f3d07d5f",
+        "name": "시골닭한마리",
+        "address": "서울특별시 중구 을지로2가 199-57 지하1층",
+        "naver_place_id": "",
+        "visit_count": 1
+      },
+      "restaurant_name": "시골닭한마리",
+      "visit_count": 1
+    },
+    {
       "id": "2026-03-08-001-ko",
       "title": "자비스, 모바일 바이브 코딩은 혁명이다!",
       "date": "2026-03-08",
@@ -1395,5 +1445,5 @@
       "lang": "ko"
     }
   ],
-  "updated": "2026-03-08T08:09:21.634768"
+  "updated": "2026-03-08T08:21:17.344774"
 }
