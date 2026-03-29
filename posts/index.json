@@ -1,6 +1,58 @@
 {
   "posts": [
     {
+      "id": "2026-03-29-001-ko",
+      "title": "명동 직장인의 퇴근 후 맥주 한 잔 🍺",
+      "date": "2026-03-29",
+      "content": "안녕하세요, 명동 직장인 맛집 탐험가입니다! 😎\n점심시간만 기다리는 40대 직장인, 저 맞습니다!\n\n금요일 퇴근 후에는 시원한 생맥주 한 잔🍺이 그렇게 꿀맛일 수가 없어요.🍻 피로가 싹 풀리는 기분! 주말에는 분위기 좋게 화이트 와인🥂이나 레드 와인🍷 한잔 하면서 마무리하면 완벽한 주말 완성!",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1774765416/cheer-factory/efvcfqmtqfztmtou7cy4.jpg",
+      "images": [
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1774765416/cheer-factory/efvcfqmtqfztmtou7cy4.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1774765422/cheer-factory/llpgfouggtva0nnrvwwk.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1774765427/cheer-factory/npder3ny9xwfv0dvddyu.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1774765433/cheer-factory/ecxetuc2cf8cekgwhmpn.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1774765438/cheer-factory/dirzmt6hzdck6vsye63i.jpg"
+      ],
+      "category": "lunch",
+      "lang": "ko",
+      "restaurant": {
+        "restaurant_id": "91d300a3-41b1-485a-80ba-fea7fc1e2de2",
+        "name": "로얄호프치킨 안산그랑시티자이점",
+        "address": "경기도 안산시 상록구 사동 1639 근린생활시설동 1층 123, 124호",
+        "naver_place_id": "로얄호프치킨.COM",
+        "visit_count": 1
+      },
+      "restaurant_name": "로얄호프치킨 안산그랑시티자이점",
+      "visit_count": 1
+    },
+    {
+      "id": "2026-03-29-001-en",
+      "title": "A Myeongdong Office Worker's After-Work Beer 🍺",
+      "date": "2026-03-29",
+      "content": "Hi everyone, it's your Myeongdong office worker foodie explorer! 😎\nThat's right, I'm a 40-something office worker who's always waiting for lunchtime!\n\nThere's nothing better than a cold draft beer 🍺 after work on Friday. 🍻 It just washes away all the fatigue! And if I can finish off the weekend with a glass of white wine 🥂 or red wine 🍷 in a nice atmosphere, it's the perfect weekend!",
+      "tags": [],
+      "image_url": "https://res.cloudinary.com/df0kpimbc/image/upload/v1774765416/cheer-factory/efvcfqmtqfztmtou7cy4.jpg",
+      "images": [
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1774765416/cheer-factory/efvcfqmtqfztmtou7cy4.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1774765422/cheer-factory/llpgfouggtva0nnrvwwk.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1774765427/cheer-factory/npder3ny9xwfv0dvddyu.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1774765433/cheer-factory/ecxetuc2cf8cekgwhmpn.jpg",
+        "https://res.cloudinary.com/df0kpimbc/image/upload/v1774765438/cheer-factory/dirzmt6hzdck6vsye63i.jpg"
+      ],
+      "category": "lunch",
+      "lang": "en",
+      "restaurant": {
+        "restaurant_id": "91d300a3-41b1-485a-80ba-fea7fc1e2de2",
+        "name": "로얄호프치킨 안산그랑시티자이점",
+        "address": "경기도 안산시 상록구 사동 1639 근린생활시설동 1층 123, 124호",
+        "naver_place_id": "로얄호프치킨.COM",
+        "visit_count": 1
+      },
+      "restaurant_name": "로얄호프치킨 안산그랑시티자이점",
+      "visit_count": 1
+    },
+    {
       "id": "2026-03-08-002-ko",
       "title": "명동 직장인 강추! 칼칼한 닭한마리, 닭곰탕",
       "date": "2026-03-08",
@@ -1445,5 +1497,5 @@
       "lang": "ko"
     }
   ],
-  "updated": "2026-03-17T03:12:58.313036"
+  "updated": "2026-03-29T06:28:36.558778"
 }
